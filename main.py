@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
-prefixes = ['cb!', 'cB', 'CB', 'Cb']
+prefixes = ['cb ', 'cB', 'CB', 'Cb']
 client = commands.Bot(command_prefix=prefixes)
 client.remove_command('help')
 extensions = [

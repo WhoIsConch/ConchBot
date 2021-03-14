@@ -31,7 +31,7 @@ class Fun(commands.Cog):
                     return
         await self.client.process_commands(message)
         await cursor.close()
-        db.close
+        await db.close()
 
     @commands.group(invoke_without_command=True, enabled=False)
     async def joke(self, ctx):
@@ -70,7 +70,7 @@ class Fun(commands.Cog):
         await ctx.send(f"AI bot channel set to {channel.mention}.")
         await db.commit()
         await cursor.close()
-        db.close
+        await db.close()
 
     @commands.command(aliases=['repeat'])
     async def echo(self, ctx, channel:discord.TextChannel=None, *, msg):

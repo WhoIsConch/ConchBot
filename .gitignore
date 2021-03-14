@@ -4,4 +4,4 @@ CogTemplate.txt
 currency.db
 pycache/
 .vscode/
-cogs/pycache/
+cogs/__pycache__/

@@ -11,12 +11,16 @@ class Fun(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
+    async def connect_to_db(self, message):
         db = await aiosqlite.connect('aichannels.db')
         cursor = await db.cursor()
         await cursor.execute(f'SELECT channel_id FROM main WHERE guild_id = {message.channel.guild.id}')
         result = await cursor.fetchone()
+        return result
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        result = await self.connect_to_db(message)
         if message.author.bot:
             return
         else:

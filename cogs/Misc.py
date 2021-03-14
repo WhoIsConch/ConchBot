@@ -1,0 +1,37 @@
+import discord
+from discord.ext import commands
+
+class Misc(commands.Cog):
+    def __init__(self, client):
+        self.client = client
+
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        for channel in guild.text_channels:
+            if channel.permissions_for(guild.me).send_messages:
+                embed = discord.Embed(
+                    title="Thanks for inviting me to your server!",
+                    colour=discord.Colour.green()
+                )
+                embed.add_field(name="What am I?", value="I'm a Discord bot who focuses on fun!", inline=False)
+                embed.add_field(name="What can I do?", value="Tons of things! I have currency commands, fun commands, and more!")
+                embed.set_footer(text="For any support regarding Conchbot, please run cb support.")
+                embed.set_author(name=self.client.user.name, icon_url=self.client.user.avatar_url)
+                embed.set_image(url=self.client.avatar_url)
+                await channel.send(embed=embed)
+            break
+
+    @commands.command()
+    async def invite(self, ctx):
+        embed = discord.Embed(
+            title="ConchBot Invites",
+            colour=ctx.author.colour
+        )
+        embed.add_field(name="ConchBot Invite:", value="You can invite ConchBot to your server "
+        "[here](https://discord.com/api/oauth2/authorize?client_id=733467297666170980&permissions=388102&scope=bot)")
+        embed.add_field(name="Support Server Invite:", value="You can join ConchBot Support "
+        "[here](https://discord.gg/PyAcRfukvc)")
+        await ctx.send(embed=embed)
+
+def setup(client):
+    client.add_cog(Misc(client))

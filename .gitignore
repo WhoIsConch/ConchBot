@@ -1,0 +1,6 @@
+*.env
+aichannels.db
+CogTemplate.txt
+currency.db
+pycache/
+.vscode/

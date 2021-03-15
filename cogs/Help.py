@@ -64,6 +64,8 @@ class Help(commands.Cog):
             title="AI Command",
             colour=ctx.author.colour
         )
+        embed.add_field(name="**COMMAND DISABLED**", value="Command is currently disabled due to "
+        "threading issues.", inline=False)
         embed.add_field(name="Description:", value="Sets up an AI chatbot channel. After setting up the channel"
         ", you can speak to ConchBot's AI.", inline=False)
         embed.add_field(name="How to use:", value="cb ai #{channel you want chatbot to speak in}", inline=False)

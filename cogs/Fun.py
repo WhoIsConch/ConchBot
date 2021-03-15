@@ -18,24 +18,24 @@ class Fun(commands.Cog):
         result = await cursor.fetchone()
         return result
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        result = await self.connect_to_db(message)
-        if message.author.bot:
-            return
-        else:
-            if result is None:
-                return
-            else:
-                if message.channel.id == result[0]:
-                    await message.channel.trigger_typing()
-                    response = await rs.get_ai_response(message.content)
-                    await message.reply(response)
-                else:
-                    return
-        await self.client.process_commands(message)
-        await cursor.close()
-        await db.close()
+    # @commands.Cog.listener()
+    # async def on_message(self, message):
+    #     result = await self.connect_to_db(message)
+    #     if message.author.bot:
+    #         return
+    #     else:
+    #         if result is None:
+    #             return
+    #         else:
+    #             if message.channel.id == result[0]:
+    #                 await message.channel.trigger_typing()
+    #                 response = await rs.get_ai_response(message.content)
+    #                 await message.reply(response)
+    #             else:
+    #                 return
+    #     await self.client.process_commands(message)
+    #     await cursor.close()
+    #     await db.close()
 
     @commands.group(invoke_without_command=True, enabled=False)
     async def joke(self, ctx):
@@ -62,7 +62,7 @@ class Fun(commands.Cog):
         await rs.close()
 
     @commands.command(aliases=['chatbot'])
-    async def ai(self, ctx, channel:discord.TextChannel):
+    async def ai(self, ctx, channel:discord.TextChannel, disabled=True):
         db = await aiosqlite.connect('aichannels.db')
         cursor = await db.cursor()
         await cursor.execute(f'SELECT channel_id FROM main WHERE guild_id = {ctx.guild.id}')

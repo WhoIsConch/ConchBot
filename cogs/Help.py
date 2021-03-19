@@ -134,7 +134,7 @@ class Help(commands.Cog):
         embed.add_field(name="Description:", value="Shows the profile photo of you or someone else!",
         inline=False)
         embed.add_field(name="How to use:", value="cb pfp @{someone else[optional]}", inline=False)
-        embed.add_field(name="Aliases:", value="avatar", inline=False)
+        embed.add_field(name="Aliases:", value="'avatar'", inline=False)
         embed.set_footer(text="To see a list of fun commands, use 'cb help fun.'")
         await ctx.send(embed=embed)
 
@@ -234,29 +234,33 @@ class Help(commands.Cog):
             title="Currency Commands",
             colour=ctx.author.colour
         )
-        embed.add_field(name="**WARNING**", value="**Currency commands are currently disabled while we fix "
-        "a few commands and finish adding the commands in. Commands here are not final.**")
-        embed.add_field(name="Balance", value="Shows your bank and wallet balance.")
+        embed.add_field(name="Inventory", value="Shows your bank and wallet balance, as well as what items you own.")
         embed.add_field(name="Deposit", value="Deposit moners from your wallet to your bank.")
         embed.add_field(name="Withdraw", value="Withdraws moners from your bank to your wallet.")
         embed.add_field(name="Buy", value="Buy something from the shop.")
         embed.add_field(name="Sell", value="Sell something you have in your inventory.")
+        embed.add_field(name="Shop", value="View the items in the shop available for purchase.")
         embed.add_field(name="Beg", value="Beg for some moners.")
+        embed.add_field(name="Steal", value="Steal from other people!")
+        embed.add_field(name="Give", value="A highly interactive command to let you give people either"
+        " moners or items!")
         embed.add_field(name="Slots", value="Bet your money, can get doubled, pentupled, or dectupled!")
         embed.add_field(name="Daily", value="Collect your daily moners.")
+        embed.add_field(name="Use", value="Use an item in your inventory!")
         embed.set_footer(text="For more information on a command, please use 'cb help command'")
         await ctx.send(embed=embed)
     
     @help.command()
-    async def balance(self, ctx):
+    async def inventory(self, ctx):
         embed = discord.Embed(
-                title="Balance Command",
+                title="Inventory Command",
                 colour=ctx.author.colour
             )
-        embed.add_field(name="Description:", value="Shows your bank and wallet balance.", inline=False)
-        embed.add_field(name="How to use:", value="cb balance", inline=False)
-        embed.add_field(name="Aliases:", value="'bal'", inline=False)
-        embed.set_footer(text="To see a list of currency commands, use 'cb help fun.'")
+        embed.add_field(name="Description:", value="Shows your bank and wallet balance, as well as "
+        "the items in your inventory.", inline=False)
+        embed.add_field(name="How to use:", value="cb inventoty", inline=False)
+        embed.add_field(name="Aliases:", value="'inv,' 'bal', 'balance', 'bag.'", inline=False)
+        embed.set_footer(text="To see a list of currency commands, use 'cb help currency.'")
         await ctx.send(embed=embed)
 
     @help.command()
@@ -269,7 +273,7 @@ class Help(commands.Cog):
         "your bank.", inline=False)
         embed.add_field(name="How to use:", value="cb deposit {amount to deposit, or 'ALL'}", inline=False)
         embed.add_field(name="Aliases:", value="'dep'", inline=False)
-        embed.set_footer(text="To see a list of currency commands, use 'cb help fun.'")
+        embed.set_footer(text="To see a list of currency commands, use 'cb help currency.'")
         await ctx.send(embed=embed)
 
     @help.command()
@@ -282,7 +286,7 @@ class Help(commands.Cog):
         "your wallet", inline=False)
         embed.add_field(name="How to use:", value="cb withdraw {amount to withdraw, or 'ALL'}", inline=False)
         embed.add_field(name="Aliases:", value="'with'", inline=False)
-        embed.set_footer(text="To see a list of currency commands, use 'cb help fun.'")
+        embed.set_footer(text="To see a list of currency commands, use 'cb help currency.'")
         await ctx.send(embed=embed)
 
     @help.command()
@@ -294,7 +298,7 @@ class Help(commands.Cog):
         embed.add_field(name="Description:", value="Buy something from the shop.", inline=False)
         embed.add_field(name="How to use:", value="cb buy {item}", inline=False)
         embed.add_field(name="Aliases:", value="*No aliases*", inline=False)
-        embed.set_footer(text="To see a list of currency commands, use 'cb help fun.'")
+        embed.set_footer(text="To see a list of currency commands, use 'cb help currency.'")
         await ctx.send(embed=embed)
 
     @help.command()
@@ -306,7 +310,19 @@ class Help(commands.Cog):
         embed.add_field(name="Description:", value="Sell something you have in your inventory.", inline=False)
         embed.add_field(name="How to use:", value="cb sell {item} {amount[optional]}", inline=False)
         embed.add_field(name="Aliases:", value="*No aliases*", inline=False)
-        embed.set_footer(text="To see a list of currency commands, use 'cb help fun.'")
+        embed.set_footer(text="To see a list of currency commands, use 'cb help currency.'")
+        await ctx.send(embed=embed)
+
+    @help.command()
+    async def shop(self, ctx):
+        embed = discord.Embed(
+            title="Shop Command",
+            colour=ctx.author.colour
+        )
+        embed.add_field(name="Description:", value="View the items in the shop that are available for purchase.", inline=False)
+        embed.add_field(name="How To Use:", value="cb shop", inline=False)
+        embed.add_field(name="Aliases:", value="*No Aliases*", inline=False)
+        embed.set_footer(text="To see a list of currency commands, use 'cb help currency.'")
         await ctx.send(embed=embed)
 
     @help.command()
@@ -318,8 +334,31 @@ class Help(commands.Cog):
         embed.add_field(name="Description:", value="Beg for some moners.", inline=False)
         embed.add_field(name="How to use:", value="cb beg", inline=False)
         embed.add_field(name="Aliases:", value="*No aliases*", inline=False)
-        embed.set_footer(text="To see a list of currency commands, use 'cb help fun.'")
+        embed.set_footer(text="To see a list of currency commands, use 'cb help currency.'")
         await ctx.send(embed=embed)
+
+    @help.command()
+    async def steal(self, ctx):
+        embed = discord.Embed(
+            title="Steal Command",
+            colour = ctx.author.colour
+        )
+        embed.add_field(name="Description:", value="Steal moners from other users!", inline=False)
+        embed.add_field(name="How to use:", value="'cb steal {user or ID}'", inline=False)
+        embed.add_field(name="Aliases:", value="'rob,' 'yoink.'", inline=False)
+        embed.set_footer(text="To see a list of currency commands, use 'cb help currency.'")
+
+    @help.command()
+    async def give(self, ctx):
+        embed = discord.Embed(
+            title="Give Command",
+            colour = ctx.author.colour
+        )
+        embed.add_field(name="Description:", value="A highly interactive command that lets you give "
+        "moners and items to your friends!", inline=False)
+        embed.add_field(name="How to use:", value="cb give @user {'item' **or** 'moners'}", inline=False)
+        embed.add_field(name="Aliases:", value="'gift.'", inline=False)
+        embed.set_footer(text="To see a list of currency commands, use 'cb help currency.'")
 
     @help.command()
     async def slots(self, ctx):
@@ -331,7 +370,7 @@ class Help(commands.Cog):
         "or dectupled!", inline=False)
         embed.add_field(name="How to use:", value="cb slots {amount to bet}", inline=False)
         embed.add_field(name="Aliases:", value="*No aliases*", inline=False)
-        embed.set_footer(text="To see a list of currency commands, use 'cb help fun.'")
+        embed.set_footer(text="To see a list of currency commands, use 'cb help currency.'")
         await ctx.send(embed=embed)
 
     @help.command()
@@ -343,8 +382,19 @@ class Help(commands.Cog):
         embed.add_field(name="Description:", value="Collect your daily moners.", inline=False)
         embed.add_field(name="How to use:", value="cb daily", inline=False)
         embed.add_field(name="Aliases:", value="*No aliases*", inline=False)
-        embed.set_footer(text="To see a list of currency commands, use 'cb help fun.'")
+        embed.set_footer(text="To see a list of currency commands, use 'cb help currency.'")
         await ctx.send(embed=embed)
+
+    @help.command()
+    async def use(self, ctx):
+        embed = discord.Embed(
+                title="Use Command",
+                colour = ctx.author.colour
+            )
+        embed.add_field(name="Description:", value="Use an item in your inventory!", inline=False)
+        embed.add_field(name="How to use:", value="'cb use {item}", inline=False)
+        embed.add_field(name="Aliases:", value="*No Aliases*", inline=False)
+        embed.set_footer(text="To see a list of fun commands, use 'cb help fun.'")
 
     @help.command()
     async def support(self, ctx):

@@ -4,6 +4,11 @@ import aiosqlite
 import discord
 from discord.ext import commands
 from prsaw import RandomStuff
+import asyncio
+import sqlite3
+import threading
+import httpx
+import multiprocessing
 
 rs = RandomStuff(async_mode=True)
 
@@ -11,15 +16,20 @@ class Fun(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    async def connect_to_db(self, message):
-        db = await aiosqlite.connect('aichannels.db')
-        cursor = await db.cursor()
-        await cursor.execute(f'SELECT channel_id FROM main WHERE guild_id = {message.channel.guild.id}')
-        result = await cursor.fetchone()
-        return result
+    # async def connect_to_db(self, message):
+    #     try:
+    #         db = await aiosqlite.connect('aichannels.db')
+    #         cursor = await db.cursor()
+    #         await cursor.execute(f'SELECT channel_id FROM main WHERE guild_id = {message.channel.guild.id}')
+    #         result = await cursor.fetchone()
+    #         return result
+    #     except RuntimeError:
+    #         print(threading.active_count())
 
     # @commands.Cog.listener()
     # async def on_message(self, message):
+    #     await self.client.process_commands(message)
+    #     await asyncio.sleep(1)
     #     result = await self.connect_to_db(message)
     #     if message.author.bot:
     #         return
@@ -28,14 +38,14 @@ class Fun(commands.Cog):
     #             return
     #         else:
     #             if message.channel.id == result[0]:
-    #                 await message.channel.trigger_typing()
-    #                 response = await rs.get_ai_response(message.content)
-    #                 await message.reply(response)
+    #                 try:
+    #                     await message.channel.trigger_typing()
+    #                     response = await rs.get_ai_response(message.content)
+    #                     await message.reply(response)
+    #                 except httpx.ReadTimeout:
+    #                     print(threading.active_count())
     #             else:
     #                 return
-    #     await self.client.process_commands(message)
-    #     await cursor.close()
-    #     await db.close()
 
     @commands.group(invoke_without_command=True, enabled=False)
     async def joke(self, ctx):
@@ -137,7 +147,7 @@ class Fun(commands.Cog):
                 colour=ctx.author.colour
             )
             embed.set_image(url=ctx.author.avatar_url)
-            ctx.send(embed=embed)
+            await ctx.send(embed=embed)
         else:
             embed = discord.Embed(
                 title=f"{member}'s Avatar",
@@ -170,6 +180,8 @@ class Fun(commands.Cog):
     async def ai_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must mention a channel for me to set the chatbot to.")
+        if isinstance(error, commands.DisabledCommand):
+            await ctx.send("Due to some issues, the AI command is currently unavailable.")
 
     @echo.error
     async def echo_error(self, ctx, error):

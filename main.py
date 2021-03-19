@@ -4,8 +4,9 @@ import os
 import discord
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
+from itertools import cycle
 
-prefixes = ['cb ', 'cB', 'CB', 'Cb']
+prefixes = ['cb ', 'Cb ', 'cB ']
 client = commands.Bot(command_prefix=prefixes)
 client.remove_command('help')
 extensions = [
@@ -15,7 +16,8 @@ extensions = [
     "cogs.Support",
     "cogs.Utility",
     "cogs.DBLCog",
-    "cogs.Snipe"
+    "cogs.Snipe",
+    "cogs.Currency"
 ]
 
 for extension in extensions:
@@ -27,10 +29,13 @@ async def on_ready():
     print("ConchBot is online!")
     await client.loop.create_task(status_loop())
 
+statuses = cycle(["NEW plethora of currency commands!", 
+        "Revamped ConchBot!", "cb help"])
+
 async def status_loop():
     while True:
-        await client.change_presence(activity=discord.Game(name=f"with {len(client.guilds)} awesome servers!"))
-        await asyncio.sleep(300)
+        await client.change_presence(activity=discord.Game(next(statuses)))
+        await asyncio.sleep(15)
         
 load_dotenv('.env')
 client.run(os.getenv('TOKEN'))

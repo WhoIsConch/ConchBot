@@ -244,6 +244,9 @@ class Currency(commands.Cog):
     async def steal(self, ctx, victim:discord.Member):
         await self.open_account(ctx.author)
         await self.open_account(victim)
+        if victim == ctx.author:
+            await ctx.send("You can't give items to yourself.")
+            return
         walamt1, bankamt1 = await self.get_amt(ctx.author)
         walamt2, bankamt2 = await self.get_amt(victim)
         if walamt1[0] + bankamt1[0] < 100:
@@ -273,6 +276,9 @@ class Currency(commands.Cog):
         await self.open_account(user)
         db = await aiosqlite.connect('currency.db')
         cursor = await db.cursor()
+        if user == ctx.author:
+            await ctx.send("You can't give items to yourself.")
+            return
         if mode == "item":
             await ctx.send(f"What item would you like to give to {user.name}?")
             msg = await self.client.wait_for('message', check=lambda message: message.author == ctx.author, timeout=10)
@@ -483,6 +489,20 @@ class Currency(commands.Cog):
                 await ctx.send("You ate an apple.")
                 await self.item_func(ctx.author, "apple", -1)
 
+    @commands.command()
+    @commands.is_owner()
+    async def editmoners(self, ctx, user:discord.Member, amount:int):
+        await self.open_account(user)
+        await self.update_bank(user, amount)
+        await ctx.send(f"Successfully given {user.name} {amount} moners.")
+    
+    @commands.command()
+    @commands.is_owner()
+    async def edititems(self, ctx, user:discord.Member, item, amount:int):
+        await self.open_account(user)
+        await self.item_func(user, item, amount)
+        await ctx.send(f"Successfully given {user.name} {amount} {item}s.")
+
     @deposit.error
     async def deposit_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
@@ -520,8 +540,8 @@ class Currency(commands.Cog):
             await ctx.send("You took too long and I got bored.")
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("That member doesn't exist.")
-        else:
-            raise error
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("You must use the give command as follows: `cb give @user {mode: moners or items}")
 
     @slots.error
     async def slots_error(self, ctx, error):

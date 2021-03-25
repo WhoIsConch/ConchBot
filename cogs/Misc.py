@@ -15,11 +15,16 @@ class Misc(commands.Cog):
                 )
                 embed.add_field(name="What am I?", value="I'm a Discord bot who focuses on fun!", inline=False)
                 embed.add_field(name="What can I do?", value="Tons of things! I have currency commands, fun commands, and more!")
+                embed.add_field(name="Links:", value="You can join my support server [here](https://discord.gg/PyAcRfukvc), "
+                "invite me [here]((https://discord.com/api/oauth2/authorize?client_id=733467297666170980&permissions=388102&scope=bot)"
+                ", or join the creator's community server [here](https://discord.gg/n8XyytfxMk).")
                 embed.set_footer(text="For any support regarding Conchbot, please run cb support.")
                 embed.set_author(name=self.client.user.name, icon_url=self.client.user.avatar_url)
-                embed.set_image(url=self.client.avatar_url)
+                embed.set_image(url=self.client.user.avatar_url)
                 await channel.send(embed=embed)
             break
+        channel1 = self.client.get_channel(793927796354449459)
+        await channel1.send(f"ConchBot has joined a server called {guild.name}!")
 
     @commands.command()
     async def invite(self, ctx):
@@ -31,6 +36,8 @@ class Misc(commands.Cog):
         "[here](https://discord.com/api/oauth2/authorize?client_id=733467297666170980&permissions=388102&scope=bot)")
         embed.add_field(name="Support Server Invite:", value="You can join ConchBot Support "
         "[here](https://discord.gg/PyAcRfukvc)")
+        embed.add_field(name="ConchBot's creator (UnsoughtConch)'s community server:",
+        value="You can join Conch's community server [here](https://discord.gg/n8XyytfxMk)")
         await ctx.send(embed=embed)
 
 def setup(client):

@@ -6,8 +6,8 @@ from discord.ext import commands, tasks
 from dotenv import load_dotenv
 from itertools import cycle
 
-prefixes = ['cb ', 'Cb ', 'cB ']
-client = commands.Bot(command_prefix=prefixes)
+prefixes = ['cb ', 'Cb', 'cB', 'CB']
+client = commands.Bot(command_prefix=prefixes, intents=discord.Intents.all())
 client.remove_command('help')
 extensions = [
     "cogs.Help",
@@ -17,7 +17,9 @@ extensions = [
     "cogs.Utility",
     "cogs.DBLCog",
     "cogs.Snipe",
-    "cogs.Currency"
+    "cogs.Currency",
+    "cogs.Image",
+    "cogs.Secret"
 ]
 
 for extension in extensions:
@@ -31,6 +33,13 @@ async def on_ready():
 
 statuses = cycle(["NEW plethora of currency commands!", 
         "Revamped ConchBot!", "cb help"])
+
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send("Sorry, but that command does not exist.")
+    else:
+        print(error)
 
 async def status_loop():
     while True:

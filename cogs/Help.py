@@ -16,8 +16,10 @@ class Help(commands.Cog):
         " \"cb help fun\"", inline=False)
         embed.add_field(name="Utility Commands", value="For information on our fun commands, please "
         "use \"cb help utility\"", inline=False)
-        embed.add_field(name="Currency Commands", value="Currency commands are temporarily disabled due to "
-        "the new update. They will be available soon.", inline=False)
+        embed.add_field(name="Currency Commands", value="For more information on our currency commands, please"
+        " use \"cb help currency\"", inline=False)
+        embed.add_field(name="Image Commands", value="For more information on our image commands, please use "
+        "\"cb help image\"")
         embed.add_field(name="Support Commands", value="For information on our support commands, please use"
         " \"cb help misc\"", inline=False)
         embed.set_footer(text="You can get a support server invite and invite the bot with 'cb invite'")
@@ -29,14 +31,15 @@ class Help(commands.Cog):
             title="ConchBot Fun Commands",
             colour = ctx.author.colour
         )
-        embed.add_field(name="Joke", value="Command group that returns a joke. "
-        "***Commands currently disabled.***", inline=False)
         embed.add_field(name="AI", value="Sets up an AI chatbot channel.", inline=False)
         embed.add_field(name="Echo", value="Sends a message in a specified channel.", inline=False)
         embed.add_field(name="8ball", value="Ask the 8ball a question!")
         embed.add_field(name="Google", value="Googles something for you!")
         embed.add_field(name="Chance", value="Rates the chance of something happening")
         embed.add_field(name="Pfp", value="Shows you or someone else's profile photo.")
+        embed.add_field(name="Joke", value="Get a joke from the r/jokes subreddit.", inline=False)
+        embed.add_field(name="Meme", value="Get a nice little meme from the r/memes subreddit.")
+        embed.add_field(name="Reddit", value="Specify a subreddit and get a post from there!")
         embed.set_footer(text="For more information on a certain command, please use 'cb help command.'")
         await ctx.send(embed=embed)
     
@@ -46,15 +49,9 @@ class Help(commands.Cog):
             title="Joke Command",
             colour = ctx.author.colour
         )
-        embed.add_field(name="**COMMAND CURRENTLY DISABLED**", value="Due to some errors, the joke command and"
-        " subcommands are currently disabled.", inline=False)
-        embed.add_field(name="Description:", value="Command Group that returns a joke.", inline=False)
-        embed.add_field(name="Subcommands:", value="JOKE: returns a joke. \nDEV: Returns a developer joke."
-        "\nSPOOKY: returns a spooky joke.\nPUN: Returns a pun.", inline=False)
-        embed.add_field(name="How to use:", value="'cb joke,' 'cb joke dev', 'cb joke spooky,' 'cb joke pun.'",
-        inline=False)
-        embed.add_field(name='Alaises:', value="DEV: 'developer,' 'programmer.'\nSPOOKY: 'scary,' 'spook'",
-        inline=False)
+        embed.add_field(name="Description:", value="Returns a joke from the r/jokes subreddit!", inline=False)
+        embed.add_field(name="How to use:", value="'cb joke.", inline=False)
+        embed.add_field(name='Alaises:', value="*No Aliases*",inline=False)
         embed.set_footer(text="To see a list of fun commands, use 'cb help fun.'")
         await ctx.send(embed=embed)
     
@@ -137,6 +134,28 @@ class Help(commands.Cog):
         embed.add_field(name="Aliases:", value="'avatar'", inline=False)
         embed.set_footer(text="To see a list of fun commands, use 'cb help fun.'")
         await ctx.send(embed=embed)
+
+    @help.command()
+    async def meme(self, ctx):
+        embed = discord.Embed(
+            title="Meme Command",
+            colour = ctx.author.colour
+        )
+        embed.add_field(name="Description:", value="Returns a meme from the r/memes subreddit.", inline=False)
+        embed.add_field(name="How to use:", value="'cb meme.'", inline=False)
+        embed.add_field(name="Aliases:", value="*No Aliases*", inline=False)
+        embed.set_footer(text="To see a list of fun commands, use 'cb help fun.'")
+
+    @help.command()
+    async def reddit(self, ctx):
+        embed = discord.Embed(
+            title="Reddit Command",
+            colour = ctx.author.colour
+        )
+        embed.add_field(name="Description:", value="Returns a post from the specified subreddit!", inline=False)
+        embed.add_field(name="How to use:", value="'cb reddit {subreddit}'", inline=False)
+        embed.add_field(name="Aliases:", value="*No Aliases*", inline=False)
+        embed.set_footer(text="To see a list of fun commands, use 'cb help fun.'")
 
     @help.command()
     async def utility(self, ctx):
@@ -359,6 +378,7 @@ class Help(commands.Cog):
         embed.add_field(name="How to use:", value="cb give @user {'item' **or** 'moners'}", inline=False)
         embed.add_field(name="Aliases:", value="'gift.'", inline=False)
         embed.set_footer(text="To see a list of currency commands, use 'cb help currency.'")
+        await ctx.send(embed=embed)
 
     @help.command()
     async def slots(self, ctx):
@@ -406,6 +426,7 @@ class Help(commands.Cog):
         " information.")
         embed.add_field(name="Report", value="Report a ConchBot bug.")
         embed.add_field(name="Suggest", value="Give a ConchBot suggestion!")
+        embed.add_field(name="Invite", value="Invite ConchBot to your server, and gain an invite to the Support server!")
         embed.set_footer(text="For more information on a command, please use 'cb help command.'")
         await ctx.send(embed=embed)
 
@@ -419,7 +440,7 @@ class Help(commands.Cog):
         " Discord server.", inline=False)
         embed.add_field(name="How to use:", value="cb support", inline=False)
         embed.add_field(name="Aliases:", value="*No aliases*", inline=False)
-        embed.set_footer(text="To see a list of support commands, use 'cb help fun.'")
+        embed.set_footer(text="To see a list of support commands, use 'cb help support.'")
         await ctx.send(embed=embed)
 
     @help.command()
@@ -432,7 +453,7 @@ class Help(commands.Cog):
         embed.add_field(name="How to use:", value="cb report {detailed description of bug, such as "
         "what happened to cause the bug, what happens, etc.}", inline=False)
         embed.add_field(name="Aliases:", value="*No aliases*", inline=False)
-        embed.set_footer(text="To see a list of support commands, use 'cb help fun.'")
+        embed.set_footer(text="To see a list of support commands, use 'cb help support.'")
         await ctx.send(embed=embed)
 
     @help.command()
@@ -444,8 +465,92 @@ class Help(commands.Cog):
         embed.add_field(name="Description:", value="Suggests an idea to the ConchBot dev!", inline=False)
         embed.add_field(name="How to use:", value="cb suggest {suggestion}", inline=False)
         embed.add_field(name="Aliases:", value="*No aliases*", inline=False)
-        embed.set_footer(text="To see a list of support commands, use 'cb help fun.'")
+        embed.set_footer(text="To see a list of support commands, use 'cb help support.'")
         await ctx.send(embed=embed)
+
+    @help.command()
+    async def invite(self, ctx):
+        embed = discord.Embed(
+                title="Invite Command",
+                colour=ctx.author.colour
+            )
+        embed.add_field(name="Description:", value="Gives an invite to ConchBot's support server, "
+        "as well as gives you a ConchBot invite!", inline=False)
+        embed.add_field(name="How to use:", value="cb invite", inline=False)
+        embed.add_field(name="Aliases:", value="*No aliases*", inline=False)
+        embed.set_footer(text="To see a list of support commands, use 'cb help supports.'")
+        await ctx.send(embed=embed)
+
+    @help.command()
+    async def image(self, ctx):
+        embed = discord.Embed(title="Image Commands", colour=ctx.author.colour)
+        embed.add_field(name="Fuck Command", value="Creates a meme in the 'all my homies hate' format!", inline=False)
+        embed.add_field(name="Brain Command", value="Creates a meme in the 'are you going to sleep?' format!", inline=False)
+        embed.add_field(name="Mentalillness", value="Creates a meme in the 'drawings made by people with mental "
+        "ilness' format!", inline=False)
+        embed.add_field(name="idputmy", value="Creates a meme in the 'this is where I'd put my trophy, if I had one'"
+        " format!", inline=False)
+        embed.add_field(name="isthis", value="Creates a meme in the 'is this a pigeon?' format!", inline=False)
+        embed.set_footer(text="For more information on a command, please use 'cb help command.'")
+
+    @help.command()
+    async def fuck(self, ctx):
+        embed = discord.Embed(
+            title="Fuck Command",
+            colour = ctx.author.colour
+        )
+        embed.add_field(name="Description:", value="Creates a meme in the 'all my homies hate' format!",
+        inline=False)
+        embed.add_field(name="How to use:", value="cb fuck {value1}, {value2(optional)}", inline=False)
+        embed.add_field(name="Aliases:", value="*No Aliases*", inline=False)
+        embed.set_footer(text="To see a list of fun commands, use 'cb help image.'")
+    
+    @help.command()
+    async def brain(self, ctx):
+        embed = discord.Embed(
+            title="Brain Command",
+            colour = ctx.author.colour
+        )
+        embed.add_field(name="Description:", value="Creates a meme in the 'you still awake?' format!",
+        inline=False)
+        embed.add_field(name="How to use:", value="cb brain {value}", inline=False)
+        embed.add_field(name="Aliases:", value="*No Aliases*", inline=False)
+        embed.set_footer(text="To see a list of fun commands, use 'cb help image.'")
+
+    @help.command()
+    async def mentalillness(self, ctx):
+        embed = discord.Embed(
+            title="Mentalillness Command",
+            colour = ctx.author.colour
+        )
+        embed.add_field(name="Description:", value="Creates a meme in the 'drawings made by people with mental "
+        "illnesses' format!", inline=False)
+        embed.add_field(name="How to use:", value="'cb mentalillness {image attachement or url}", inline=False)
+        embed.add_field(name="Aliases:", value="*No Aliases*", inline=False)
+        embed.set_footer(text="To see a list of fun commands, use 'cb help image.'")
+    
+    @help.command()
+    async def idputmy(self, ctx):
+        embed = discord.Embed(
+            title="Idputmy Command",
+            colour = ctx.author.colour
+        )
+        embed.add_field(name="Description:", value="Creates a meme in the 'this is where I'd put my trophy, "
+        "if I had one' format!", inline=False)
+        embed.add_field(name="How to use:", value="cb idputmy {text}", inline=False)
+        embed.add_field(name="Aliases:", value="*No Aliases*", inline=False)
+        embed.set_footer(text="To see a list of fun commands, use 'cb help image.'")
+
+    @help.command()
+    async def isthis(self, ctx):
+        embed = discord.Embed(
+            title="Isthis Command",
+            colour = ctx.author.colour
+        )
+        embed.add_field(name="Description:", value="Creates a meme in the 'is this a pigeon?' format!", inline=False)
+        embed.add_field(name="How to use:", value="cb isthis {val1}, {val2}, {val3}", inline=False)
+        embed.add_field(name="Aliases:", value="*No Aliases*", inline=False)
+        embed.set_footer(text="To see a list of fun commands, use 'cb help image.'")
 
 def setup(client):
     client.add_cog(Help(client))

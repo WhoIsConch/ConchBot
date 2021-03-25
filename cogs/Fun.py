@@ -1,14 +1,25 @@
-import random
-
-import aiosqlite
-import discord
-from discord.ext import commands
-from prsaw import RandomStuff
 import asyncio
+import multiprocessing
+import os
+import random
 import sqlite3
 import threading
+
+import aiosqlite
+import asyncpraw
+import discord
 import httpx
-import multiprocessing
+from discord.ext import commands
+from dotenv import load_dotenv
+from prsaw import RandomStuff
+
+load_dotenv('.env')
+
+reddit = asyncpraw.Reddit(client_id = os.getenv("redditid"),
+                    client_secret = os.getenv("redditsecret"),
+                    username = "UnsoughtConch",
+                    password = os.getenv('redditpassword'),
+                    user_agent = "ConchBotPraw")
 
 rs = RandomStuff(async_mode=True)
 
@@ -47,32 +58,74 @@ class Fun(commands.Cog):
     #             else:
     #                 return
 
-    @commands.group(invoke_without_command=True, enabled=False)
+
+    @commands.command()
+    async def meme(self, ctx):
+        msg = await ctx.send("Getting your meme...")
+        subreddit = await reddit.subreddit('memes')
+        top = subreddit.top(limit=50)
+        all_subs = []
+
+        async for submission in top:
+            all_subs.append(submission)
+        
+        ransub = random.choice(all_subs)
+
+        embed = discord.Embed(title=ransub.title, colour=ctx.author.colour)
+        embed.set_image(url=ransub.url)
+        embed.set_footer(text=f"Posted by {ransub.author} on Reddit. | ❤ {ransub.ups} | 💬 {ransub.num_comments}")
+        await msg.delete()
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def reddit(self, ctx, subreddit):
+        message = await ctx.send("This may take a hot minute... Sit tight!")
+        subreddit = await reddit.subreddit(subreddit)
+        top = subreddit.top(limit=50)
+        all_subs = []
+
+        async for submission in top:
+            all_subs.append(submission)
+        
+        ransub = random.choice(all_subs)
+        if ransub.over_18:
+            if ctx.channel.is_nsfw() == True:
+                pass
+            else:
+                await ctx.send("Looks like that post is marked over 18, meaning you need to be in an NSFW marked"
+                " channel to look at that post.")
+                return
+        if ransub.is_self:
+            embed = discord.Embed(title=f"{ransub.author}'s Post", colour=ctx.author.colour)
+            embed.add_field(name=ransub.title, value=ransub.selftext)
+            embed.set_footer(text=f"❤ {ransub.ups} | 💬 {ransub.num_comments}")
+        else:
+            embed = discord.Embed(title=ransub.title, colour=ctx.author.colour, url=ransub.url)
+            embed.set_footer(text=f"Posted by {ransub.author} on Reddit. | ❤ {ransub.ups} | 💬 {ransub.num_comments}")
+            embed.set_image(url=ransub.url)
+        await message.delete()
+        await ctx.send(embed=embed)
+
+    @commands.command()
     async def joke(self, ctx):
-        anyjoke = await rs.get_joke(_type="any")
-        await ctx.send(anyjoke)
-        await rs.close()
-    
-    @joke.command(aliases=['developer', 'programmer'], enabled=False)
-    async def dev(self, ctx):
-        devjoke = await rs.get_joke(_type="dev")
-        await ctx.send(devjoke)
-        await rs.close()
+        msg = await ctx.send("Grabbing your joke...")
+        subreddit = await reddit.subreddit("jokes")
+        top = subreddit.top(limit=50)
+        all_subs = []
 
-    @joke.command(aliases=['scary', 'spook'], enabled=False)
-    async def spooky(self, ctx):
-        spookjoke = await rs.get_joke(_type="spooky")
-        await ctx.send(spookjoke)
-        await rs.close()
-    
-    @joke.command(enabled=False)
-    async def pun(self, ctx):
-        punjoke = await rs.get_joke(_type="pun")
-        await ctx.send(punjoke)
-        await rs.close()
+        async for submission in top:
+            all_subs.append(submission)
+        
+        ransub = random.choice(all_subs)
 
-    @commands.command(aliases=['chatbot'])
-    async def ai(self, ctx, channel:discord.TextChannel, disabled=True):
+        embed = discord.Embed(name=f"{ransub.author}'s Joke", colour=ctx.author.colour)
+        embed.add_field(name=ransub.title, value=ransub.selftext)
+        embed.set_footer(text=f"❤ {ransub.ups} | 💬 {ransub.num_comments}")
+        await msg.delete()
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=['chatbotchannel'])
+    async def aichannel(self, ctx, channel:discord.TextChannel, disabled=True):
         db = await aiosqlite.connect('aichannels.db')
         cursor = await db.cursor()
         await cursor.execute(f'SELECT channel_id FROM main WHERE guild_id = {ctx.guild.id}')
@@ -85,6 +138,12 @@ class Fun(commands.Cog):
         await db.commit()
         await cursor.close()
         await db.close()
+
+    @commands.command(aliases=['chatbot'])
+    async def ai(self, ctx, *, message):
+        await ctx.trigger_typing()
+        response = await rs.get_ai_response(message)
+        await ctx.reply(response)
 
     @commands.command(aliases=['repeat'])
     async def echo(self, ctx, channel:discord.TextChannel=None, *, msg):
@@ -155,27 +214,7 @@ class Fun(commands.Cog):
             )
             embed.set_image(url=member.avatar_url)
             await ctx.send(embed=embed)
-
-    @joke.error
-    async def joke_error(self, ctx, error):
-        if isinstance(error, commands.DisabledCommand):
-            await ctx.send("Sorry! The joke commands have been disabled until further notice.")
     
-    @dev.error
-    async def dev_error(self, ctx, error):
-        if isinstance(error, commands.DisabledCommand):
-            await ctx.send("Sorry! The joke commands have been disabled until further notice.")
-
-    @spooky.error
-    async def spooky_error(self, ctx, error):
-        if isinstance(error, commands.DisabledCommand):
-            await ctx.send("Sorry! The joke commands have been disabled until further notice.")
-
-    @pun.error
-    async def pun_error(self, ctx, error):
-        if isinstance(error, commands.DisabledCommand):
-            await ctx.send("Sorry! The joke commands have been disabled until further notice.")
-
     @ai.error
     async def ai_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):

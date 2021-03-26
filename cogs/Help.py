@@ -492,6 +492,7 @@ class Help(commands.Cog):
         " format!", inline=False)
         embed.add_field(name="isthis", value="Creates a meme in the 'is this a pigeon?' format!", inline=False)
         embed.set_footer(text="For more information on a command, please use 'cb help command.'")
+        await ctx.send(embed=embed)
 
     @help.command()
     async def fuck(self, ctx):
@@ -504,6 +505,7 @@ class Help(commands.Cog):
         embed.add_field(name="How to use:", value="cb fuck {value1}, {value2(optional)}", inline=False)
         embed.add_field(name="Aliases:", value="*No Aliases*", inline=False)
         embed.set_footer(text="To see a list of fun commands, use 'cb help image.'")
+        await ctx.send(embed=embed)
     
     @help.command()
     async def brain(self, ctx):
@@ -516,6 +518,7 @@ class Help(commands.Cog):
         embed.add_field(name="How to use:", value="cb brain {value}", inline=False)
         embed.add_field(name="Aliases:", value="*No Aliases*", inline=False)
         embed.set_footer(text="To see a list of fun commands, use 'cb help image.'")
+        await ctx.send(embed=embed)
 
     @help.command()
     async def mentalillness(self, ctx):
@@ -528,6 +531,7 @@ class Help(commands.Cog):
         embed.add_field(name="How to use:", value="'cb mentalillness {image attachement or url}", inline=False)
         embed.add_field(name="Aliases:", value="*No Aliases*", inline=False)
         embed.set_footer(text="To see a list of fun commands, use 'cb help image.'")
+        await ctx.send(embed=embed)
     
     @help.command()
     async def idputmy(self, ctx):
@@ -540,6 +544,7 @@ class Help(commands.Cog):
         embed.add_field(name="How to use:", value="cb idputmy {text}", inline=False)
         embed.add_field(name="Aliases:", value="*No Aliases*", inline=False)
         embed.set_footer(text="To see a list of fun commands, use 'cb help image.'")
+        await ctx.send(embed=embed)
 
     @help.command()
     async def isthis(self, ctx):
@@ -551,6 +556,7 @@ class Help(commands.Cog):
         embed.add_field(name="How to use:", value="cb isthis {val1}, {val2}, {val3}", inline=False)
         embed.add_field(name="Aliases:", value="*No Aliases*", inline=False)
         embed.set_footer(text="To see a list of fun commands, use 'cb help image.'")
+        await ctx.send(embed=embed)
 
 def setup(client):
     client.add_cog(Help(client))

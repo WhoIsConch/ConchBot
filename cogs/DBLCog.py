@@ -10,11 +10,11 @@ dbltoken = os.getenv('DBLTOKEN')
 class DBLcog(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.dbl = dbl.DBLClient(self.client, dbltoken, autopost=True)
+        self.dbl = dbl.DBLClient(self.client, dbltoken, autopost=True, webhook_path='/dblwebhook', webhook_auth='password', webhook_port=5000)
     
     @commands.Cog.listener()
     async def on_dbl_vote(self, data):
-        print(":)")
+        print(data)
     
     @commands.Cog.listener()
     async def on_guild_post(self):

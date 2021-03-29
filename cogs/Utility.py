@@ -23,8 +23,11 @@ class Utility(commands.Cog):
         servers = list(self.client.guilds)
         embed = discord.Embed(title="Guilds", colour=ctx.author.colour)
         for x in range(len(servers)):
-            embed.add_field(name=servers[x-1].name, value="Serber", inline=False)
+            embed.add_field(name=servers[x-1].name, value=servers[x-1].member_count, inline=False)
+        embed.add_field(name="Total Guilds:", value=len(self.client.guilds))
+        embed.add_field(name="Total Members:", value=len(set(self.client.get_all_members())))
         await ctx.send(embed=embed)
+        await ctx.send(f"Total Guilds: {len(self.client.guilds)}\nTotal Members: {len(set(self.client.get_all_members()))}")
 
     @commands.command()
     @commands.is_owner()

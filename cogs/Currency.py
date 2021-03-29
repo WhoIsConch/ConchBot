@@ -21,6 +21,47 @@ shop = {
     }
 }
 
+tasks = {
+    "Cats" : {
+        "reward" : 100,
+        "req" : "Come get your food kitties!",
+        "desc" : "Help someone feed their cats!",
+        "dialogue" : "While you were walking, an elderly man asks you if you can feed his cats, as he dropped the "
+        "cat bowls and cannot bend down to grab them. Type `Come get your food kitties!`",
+        "thank" : "Old Man: Thank you sonny. Here's 100 moners for your troubles."
+    },
+    "Help" : {
+        "reward" : 200,
+        "req" : "Here, I'll help you up!",
+        "desc" : "Help someone who fell back onto their feet!",
+        "dialogue" : "As you walk down the street, you see someone trip and fall. Type `Here, I'll help you up!` to "
+        "help them back up!",
+        "thank" : "Guy: Oh, thank you! Here, take 200 moners for helping me up."
+    },
+    "Street" : {
+        "reward" : "3 apples",
+        "rewardnum" : 3,
+        "rewarditem" : "apple",
+        "req" : "We can cross the street together.",
+        "desc" : "Help an old lady cross the street!",
+        "dialogue" : "As you walk down the street, you see an elderly lady with her hands full of groceries at a "
+        "crosswalk. She looks like she needs help. Type `We can cross the street together.` to help her cross the street!",
+        "thank" : "Old Lady: Oh, that was very kind of you, dear. Let me see what I have in my bag for you. Here "
+        "you go, three apples. Thanks again!"
+    },
+    "Technician" : {
+    "reward" : "One Computer",
+    "rewardnum" : 1,
+    "rewarditem" : "computer",
+    "req" : "Pick up all the screws! Screws everywhere!",
+    "desc" : "Help a technician pick up his screws!",
+    "dialogue" : "You go into a tech shop to look for some new tech. As you walk around, you see a technician working "
+    "on a new PC build drop all of his screws on the floor! type `Pick up all the screws! Screws everywhere!` to "
+    "help him pick up the screws.",
+    "thank" : "Technician: Thank you for helping me, may I offer you a new PC for your help?"
+    }
+}
+
 class Currency(commands.Cog):
     def __init__(self, client):
         self.client = client
@@ -228,16 +269,33 @@ class Currency(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    @commands.cooldown(1, 15, BucketType.user)
     async def beg(self, ctx):
         await self.open_account(ctx.author)
         amt = random.randint(1, 100)
         people = ['Phil Swift', 'Hugh Jass', 'Mike Oxlong', 'UnsoughtConch', 'That bitch stacy',
                 'Your grumpy old neighbor', 'Jerk Mehoff', 'That one kid from school who only showers once a month', 'I',
-                'Jeff Bezos', 'Bobby', 'Garret Bobby Ferguson']
+                'Jeff Bezos', 'Bobby', 'Garret Bobby Ferguson', "Fay Gott", "Nick Gur", "Ree Todd", "Totally Not a Burglar"]
 
-        await self.update_bank(ctx.author, amt)
-        await ctx.send(f"{random.choice(people)} gave you {amt} coins!")
+        person = random.choice(people)
+
+        chance = random.randint(0, 2)
+        
+        
+        if person == "UnsoughtConch":
+            await ctx.send(f"UnsoughtConch ran `cb editmoners` and gave you {random.randint(100, 1000)} moners!")
+            return
+        
+        elif person == "Totally Not a Burglar":
+            namt = random.randint(1, 100)
+            await ctx.send(f"Totally Not a Burglar stole {namt} from you!")
+            await self.update_bank(ctx.author, -namt)
+
+        elif chance == 2:
+            await ctx.send(f"{person} gave you {amt} coins, but sadly it was stored in the balls.")
+
+        else:
+            await self.update_bank(ctx.author, amt)
+            await ctx.send(f"{person} gave you {amt} coins!")
     
     @commands.command(aliases=['rob', 'yoink'])
     @commands.cooldown(1, 1, BucketType.user)
@@ -429,6 +487,7 @@ class Currency(commands.Cog):
         await ctx.send("You need to specify an item to use.")
     
     @use.command()
+    @commands.cooldown(1, 15, BucketType.user)
     async def watch(self, ctx):
         await self.open_account(ctx.author)
         amount = await self.item_func(ctx.author, "watch")
@@ -447,6 +506,7 @@ class Currency(commands.Cog):
                 await self.update_bank(ctx.author, tip)
 
     @use.command()
+    @commands.cooldown(1, 15, BucketType.user)
     async def computer(self, ctx):
         await self.open_account(ctx.author)
         amount = await self.item_func(ctx.author, "computer")
@@ -469,6 +529,7 @@ class Currency(commands.Cog):
                 await self.update_bank(ctx.author, reward)
 
     @use.command()
+    @commands.cooldown(1, 15, BucketType.user)
     async def apple(self, ctx):
         await self.open_account(ctx.author)
         amount = await self.item_func(ctx.author, "apple")
@@ -502,6 +563,55 @@ class Currency(commands.Cog):
         await self.open_account(user)
         await self.item_func(user, item, amount)
         await ctx.send(f"Successfully given {user.name} {amount} {item}s.")
+
+    @commands.group(aliases=["tasks"], invoke_without_command=True)
+    async def task(self, ctx):
+        db = await aiosqlite.connect('tasks.db')
+        cursor = await db.cursor()
+        await cursor.execute(f"SELECT task FROM u{ctx.author.id}")
+        result = await cursor.fetchall()
+        embed = discord.Embed(title="Available tasks", colour=ctx.author.colour)
+        for entry in tasks:
+            flag = False
+            for a in result:
+                if entry in a:
+                    flag = True
+            if flag == True:
+                embed.add_field(name=f"{entry} ✅", value=f"Description: {tasks[entry].get('desc')}\nReward: {tasks[entry].get('reward')}")
+            else:
+                embed.add_field(name=entry, value=f"Description: {tasks[entry].get('desc')}\nReward: {tasks[entry].get('reward')}")
+        embed.set_footer(text="To do a task, use 'cb task start {task name}' | ✅ means finished task")
+        await ctx.send(embed=embed)
+
+    @task.command()
+    async def start(self, ctx, task):
+        await self.open_account(ctx.author)
+        db = await aiosqlite.connect('tasks.db')
+        cursor = await db.cursor()
+        await cursor.execute(f"CREATE TABLE IF NOT EXISTS u{ctx.author.id} (task, status)")
+        await cursor.execute(f"SELECT task FROM u{ctx.author.id} WHERE task = '{task}'")
+        result = await cursor.fetchone()
+        if result is not None:
+            await ctx.send("You have already completed this task!")
+            return
+        try:
+            tasks[task].get('desc')
+        except:
+            await ctx.send("That's not a valid task.")
+            return
+        await ctx.send(tasks[task].get('dialogue'))
+        msg = await self.client.wait_for('message', check=lambda message: message.author == ctx.author, timeout=30)
+        req = tasks[task].get('req')
+        if req in msg.content.lower() or msg.content:
+            try:
+                await self.update_bank(ctx.author, tasks[task].get('reward'))
+            except:
+                await self.item_func(ctx.author, tasks[task].get('rewarditem'), tasks[task].get('rewardnum'))
+            await ctx.send(tasks[task].get('thank'))
+            await cursor.execute(f"INSERT INTO u{ctx.author.id} (task) VALUES ('{task}')")
+        await db.commit()
+        await cursor.close()
+        await db.close()
 
     @deposit.error
     async def deposit_error(self, ctx, error):
@@ -564,6 +674,21 @@ class Currency(commands.Cog):
             else:
                 em = discord.Embed(title="**Woah there pal!**", description=f'Come back in {int(h)} hours, {int(m)} minutes and {int(s)} seconds to collect more daily moners!', colour=discord.Colour.red())
                 await ctx.send(embed=em)
+
+    @watch.error
+    async def watch_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(f"You have to wait {int(error.retry_after)} seconds before using something else!")
+    
+    @computer.error
+    async def computer_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(f"You have to wait {int(error.retry_after)} seconds before using something else!")
+    
+    @apple.error
+    async def apple_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(f"You have to wait {int(error.retry_after)} seconds before using something else!")
 
 def setup(client):
     client.add_cog(Currency(client))

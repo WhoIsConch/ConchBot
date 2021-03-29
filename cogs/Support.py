@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands.cooldowns import BucketType
 
+blacklist = [689230188743229487]
 
 class Support(commands.Cog):
     def __init__(self, client):
@@ -22,6 +23,9 @@ class Support(commands.Cog):
     
     @commands.command()
     async def report(self, ctx, *, bug):
+        if ctx.author.id in blacklist:
+            await ctx.send("Sorry, but you are blacklisteed from reporting bugs and adding suggestions.")
+            return
         channel = self.client.get_channel(795711741606101024)
         db = await aiosqlite.connect('aichannels.db')
         cursor = await db.cursor()
@@ -44,6 +48,9 @@ class Support(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 86400, BucketType.user)
     async def suggest(self, ctx, *, suggestion):
+        if ctx.author.id in blacklist:
+            await ctx.send("Sorry, but you are blacklisteed from reporting bugs and adding suggestions.")
+            return
         channel = self.client.get_channel(819029394534039604)
         if len(suggestion)>100:
             await ctx.send("Please keep your suggestion under 100 characters as to not flood the suggestions channel.")

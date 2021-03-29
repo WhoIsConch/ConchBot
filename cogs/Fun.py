@@ -27,37 +27,38 @@ class Fun(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    # async def connect_to_db(self, message):
-    #     try:
-    #         db = await aiosqlite.connect('aichannels.db')
-    #         cursor = await db.cursor()
-    #         await cursor.execute(f'SELECT channel_id FROM main WHERE guild_id = {message.channel.guild.id}')
-    #         result = await cursor.fetchone()
-    #         return result
-    #     except RuntimeError:
-    #         print(threading.active_count())
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.author.bot:
+            return
+        else:
+            if message.channel.name == "conchchat":
+                await message.channel.trigger_typing()
+                aimsg = await rs.get_ai_response(message.content)
+                await message.reply(aimsg)
+                return
 
-    # @commands.Cog.listener()
-    # async def on_message(self, message):
-    #     await self.client.process_commands(message)
-    #     await asyncio.sleep(1)
-    #     result = await self.connect_to_db(message)
-    #     if message.author.bot:
-    #         return
-    #     else:
-    #         if result is None:
-    #             return
-    #         else:
-    #             if message.channel.id == result[0]:
-    #                 try:
-    #                     await message.channel.trigger_typing()
-    #                     response = await rs.get_ai_response(message.content)
-    #                     await message.reply(response)
-    #                 except httpx.ReadTimeout:
-    #                     print(threading.active_count())
-    #             else:
-    #                 return
-
+    @commands.command(aliases=["chatbot"])
+    @commands.has_permissions(manage_guild=True)
+    async def ai(self, ctx):
+        await ctx.send("You can set up a chatbot channel by naming any channel 'conchchat,' or I can do it for you! "
+        "would you like me to do it for you? `Yes` or `no`.")
+        msg = await self.client.wait_for('message', check=lambda message: message.author == ctx.author, timeout=10)
+        if "yes" in msg.content.lower():
+            await ctx.send("What category would you like this channel in? Channel categories ***must be the exact "
+            "name, capitalization and all.***")
+            msg0 = await self.client.wait_for('message', check=lambda message: message.author == ctx.author, timeout=10)
+            category = discord.utils.get(ctx.guild.categories, name=msg0.content)
+            try:
+                channel = await ctx.guild.create_text_channel('conchchat', category=category)
+            except:
+                await ctx.send("I'm sorry, but I do not have the `manage guild` requirement needed to create channels.")
+                return
+            await ctx.send(f"Done! The channel `conchchat` was created in the category `{msg0.content}`")
+        elif "no" in msg.content.lower():
+            await ctx.send("Okay. Cancelling...")
+        else:
+            await ctx.send("That's not a valid option.")
 
     @commands.command()
     async def meme(self, ctx):
@@ -71,7 +72,7 @@ class Fun(commands.Cog):
         
         ransub = random.choice(all_subs)
 
-        embed = discord.Embed(title=ransub.title, colour=ctx.author.colour)
+        embed = discord.Embed(title=ransub.title, colour=ctx.author.colour, url=ransub.url)
         embed.set_image(url=ransub.url)
         embed.set_footer(text=f"Posted by {ransub.author} on Reddit. | ❤ {ransub.ups} | 💬 {ransub.num_comments}")
         await msg.delete()
@@ -123,27 +124,6 @@ class Fun(commands.Cog):
         embed.set_footer(text=f"❤ {ransub.ups} | 💬 {ransub.num_comments}")
         await msg.delete()
         await ctx.send(embed=embed)
-
-    @commands.command(aliases=['chatbotchannel'])
-    async def aichannel(self, ctx, channel:discord.TextChannel, disabled=True):
-        db = await aiosqlite.connect('aichannels.db')
-        cursor = await db.cursor()
-        await cursor.execute(f'SELECT channel_id FROM main WHERE guild_id = {ctx.guild.id}')
-        result = await cursor.fetchone()
-        if result is None:
-            await cursor.execute(f'INSERT INTO main (guild_id, channel_id) VALUES ({ctx.guild.id}, {channel.id})')
-        else:
-            await cursor.execute(f'UPDATE main SET channel_id = {channel.id} WHERE guild_id = {ctx.guild.id}')
-        await ctx.send(f"AI bot channel set to {channel.mention}.")
-        await db.commit()
-        await cursor.close()
-        await db.close()
-
-    @commands.command(aliases=['chatbot'])
-    async def ai(self, ctx, *, message):
-        await ctx.trigger_typing()
-        response = await rs.get_ai_response(message)
-        await ctx.reply(response)
 
     @commands.command(aliases=['repeat'])
     async def echo(self, ctx, channel:discord.TextChannel=None, *, msg):
@@ -214,13 +194,11 @@ class Fun(commands.Cog):
             )
             embed.set_image(url=member.avatar_url)
             await ctx.send(embed=embed)
-    
+
     @ai.error
     async def ai_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You must mention a channel for me to set the chatbot to.")
-        if isinstance(error, commands.DisabledCommand):
-            await ctx.send("Due to some issues, the AI command is currently unavailable.")
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("You don't have the permissions to do that! Please contact a server admin to do that for you.")
 
     @echo.error
     async def echo_error(self, ctx, error):

@@ -6,7 +6,7 @@ from discord.ext import commands, tasks
 from dotenv import load_dotenv
 from itertools import cycle
 
-prefixes = ['cb ', 'Cb', 'cB', 'CB']
+prefixes = ['cb ', 'cB ', 'Cb ', 'CB ']
 client = commands.Bot(command_prefix=prefixes, intents=discord.Intents.all())
 client.remove_command('help')
 extensions = [
@@ -31,9 +31,6 @@ async def on_ready():
     print("ConchBot is online!")
     await client.loop.create_task(status_loop())
 
-statuses = cycle(["NEW plethora of currency commands!", 
-        "Revamped ConchBot!", "cb help"])
-
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
@@ -42,6 +39,9 @@ async def on_command_error(ctx, error):
         print(error)
 
 async def status_loop():
+    statuses = cycle(["New plethora of currency commands!", 
+        "Revamped ConchBot!", "cb help", f"Watching {len(set(client.get_all_members()))} "
+        f"users and {len(client.guilds)} servers.", "New memes and media commands!"])
     while True:
         await client.change_presence(activity=discord.Game(next(statuses)))
         await asyncio.sleep(15)

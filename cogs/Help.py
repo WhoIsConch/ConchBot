@@ -31,7 +31,7 @@ class Help(commands.Cog):
             title="ConchBot Fun Commands",
             colour = ctx.author.colour
         )
-        embed.add_field(name="AI", value="Sets up an AI chatbot channel.", inline=False)
+        embed.add_field(name="AI", value="Tells you how to talk to ConchBot's AI!", inline=False)
         embed.add_field(name="Echo", value="Sends a message in a specified channel.", inline=False)
         embed.add_field(name="8ball", value="Ask the 8ball a question!")
         embed.add_field(name="Google", value="Googles something for you!")
@@ -61,12 +61,10 @@ class Help(commands.Cog):
             title="AI Command",
             colour=ctx.author.colour
         )
-        embed.add_field(name="**COMMAND DISABLED**", value="Command is currently disabled due to "
-        "threading issues.", inline=False)
-        embed.add_field(name="Description:", value="Sets up an AI chatbot channel. After setting up the channel"
-        ", you can speak to ConchBot's AI.", inline=False)
-        embed.add_field(name="How to use:", value="cb ai #{channel you want chatbot to speak in}", inline=False)
-        embed.add_field(name="Aliases:", value="'Chatbot'", inline=False)
+        embed.add_field(name="Description:", value="Tells you how to talk to ConchBot's AI!", inline=False)
+        embed.add_field(name="How to use:", value="Just name any channel 'conchchat', or have ConchBot do it for you by "
+        "using 'cb ai'", inline=False)
+        embed.add_field(name="Aliases:", value="'ChatBot'", inline=False)
         embed.set_footer(text="To see a list of fun commands, use 'cb help fun.'")
         await ctx.send(embed=embed)
 

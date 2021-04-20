@@ -34,48 +34,6 @@ class Utility(commands.Cog):
     async def servers(self, ctx):
         await ctx.send({len(self.client.guilds)})
 
-    @commands.command()
-    @commands.has_permissions(kick_members=True)
-    async def kick(self, ctx, member:discord.Member, *, reason=None):
-        embed = discord.Embed(
-            colour = discord.Colour.red(),
-            title="**Member Kicked**"
-        )
-        embed.add_field(name="User:", value=member.name)
-        embed.add_field(name="Reason:", value=reason)
-        embed.set_footer(text="ConchBot Moderation")
-
-        await member.kick(reason=reason)
-        await ctx.send(embed=embed)
-    
-    @commands.command()
-    @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx, member:discord.Member, *, reason=None):
-        embed = discord.Embed(
-            colour=discord.Colour.red(),
-            title="**Member Banned**"
-        )
-        embed.add_field(name="User:", value=member.name)
-        embed.add_field(name="Reason:", value=reason)
-        
-        await member.ban(reason=reason)
-        await ctx.send(embed=embed)
-    
-    @commands.command()
-    @commands.has_permissions(ban_members=True)
-    async def unban(self, ctx, *, member):
-        banned_users = await ctx.guild.bans()
-        member_name, member_descriminator = member.split('#')
-
-        for ban_entry in banned_users:
-            user = ban_entry.user
-
-            if (user.name, user.discriminator) == (member_name, member.member_descriminator):
-                await ctx.guild.unban(user)
-                await ctx.send(f"{member_name}{member_descriminator} has been unbanned.")
-            else:
-                await ctx.send("Member not found. Make sure they are banned, and that you have used the correct format.")
-
     @commands.command(aliases=["purge"])
     @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, amount:int):
@@ -101,31 +59,6 @@ class Utility(commands.Cog):
         embed.add_field(name="Bot Developers:", value="UnsoughtConch")
         await ctx.send(embed=embed)
 
-    @kick.error
-    async def kick_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You must specify a user to kick.")
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You don't have the permissions required to kick other users.")
-        if isinstance(error, commands.MemberNotFound):
-            await ctx.send("Member not found.")
-
-    @ban.error
-    async def ban_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You must specify a user to ban.")
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You don't have the permissions required to ban other users.")
-        if isinstance(error, commands.MemberNotFound):
-            await ctx.send("Member not found.")
-    
-    @unban.error
-    async def unban_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You must specify a user to kick in the correct `username+descriminator` format.")
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You do not have the permissions required to unban other users.")
-   
     @clear.error
     async def clear_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):

@@ -1,13 +1,16 @@
 import asyncio
+import json
 import multiprocessing
 import os
 import random
 import sqlite3
 import threading
 
+import aiohttp
 import aiosqlite
 import asyncpraw
 import discord
+import DiscordUtils
 import httpx
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -21,7 +24,7 @@ reddit = asyncpraw.Reddit(client_id = os.getenv("redditid"),
                     password = os.getenv('redditpassword'),
                     user_agent = "ConchBotPraw")
 
-rs = RandomStuff(async_mode=True)
+rs = RandomStuff(async_mode=True, api_key = os.getenv("aiapikey"))
 
 class Fun(commands.Cog):
     def __init__(self, client):
@@ -32,11 +35,18 @@ class Fun(commands.Cog):
         if message.author.bot:
             return
         else:
-            if message.channel.name == "conchchat":
+            try:
+                if message.channel.name == "conchchat":
+                    await message.channel.trigger_typing()
+                    aimsg = await rs.get_ai_response(message.content)
+                    await message.reply(aimsg)
+            except AttributeError:
                 await message.channel.trigger_typing()
                 aimsg = await rs.get_ai_response(message.content)
                 await message.reply(aimsg)
-                return
+            except httpx.ReadTimeout:
+                await ctx.send("It seems my API has timed out. Please give me a few minutes, and if the problem "
+                "continues, please contact UnsoughtConch via my `cb support` command.")
 
     @commands.command(aliases=["chatbot"])
     @commands.has_permissions(manage_guild=True)
@@ -106,6 +116,148 @@ class Fun(commands.Cog):
             embed.set_image(url=ransub.url)
         await message.delete()
         await ctx.send(embed=embed)
+
+    @commands.command()
+    async def itft(self, ctx):
+        async with aiohttp.ClientSession() as session:
+            async with session.get('http://itsthisforthat.com/api.php?json') as thing:
+                try:
+                    load = await thing.read()
+                    jdata = json.loads(load)
+                    embed = discord.Embed(title="Wait, what does your startup do?", colour=ctx.author.colour)
+                    embed.add_field(name="So, basically, it's like a", value=f"**{jdata['this']}**", inline=False)
+                    embed.add_field(name="For", value=f"**{jdata['that']}**", inline=False)
+                    embed.set_footer(text="ItsThisForThat API | itsthisforthat.com")
+                    await ctx.send(embed=embed)
+                except:
+                    await ctx.send("Woops! Something went wrong.")
+
+    @commands.command()
+    async def lyrics(self, ctx, *, values):
+        band, song = values.split(",")
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://api.lyrics.ovh/v1/{band}/{song}") as lyrics:
+                load = await lyrics.read()
+                lyricdata = json.loads(load)
+                lyricsraw = lyricdata["lyrics"]
+                print(len(lyricsraw))
+                try:
+                    embeds = []
+                    num1 = 0
+                    lyrc = lyricsraw.split('\n\n\n\n')
+                    for section in lyrc:
+                        num1 += 1
+                        num = discord.Embed().add_field(name=f"{song} Lyrics Part {num1}", value=section)
+                        embeds.append(num)
+                    paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
+                    paginator.add_reaction('⏪', "back")
+                    paginator.add_reaction('⏩', "next")
+                    
+                    await paginator.run(embeds)
+            
+                except KeyError:
+                    await ctx.send("Invalid song or band name.")
+                
+                except:
+                    await ctx.send("Sorry, something went wrong.")
+
+    @commands.group(invoke_without_command=True)
+    async def fbi(self, ctx):
+        await ctx.send("What page?")
+        msg = await self.client.wait_for('message', check=lambda message: message.author == ctx.author, timeout=10)
+        page = int(msg.content)
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://api.fbi.gov/wanted/v1/list", params={'page': page}) as response:
+                data = json.loads(await response.read())
+                embeds = []
+                for item in data["items"]:
+                    embed = discord.Embed(title=f"FBI Wanted | {item['title']}")
+                    embed.add_field(name="Details:", value=item['details'])
+                    embed.add_field(name="Warning Message:", value=item['warning_message'])
+                    embed.add_field(name="Reward:", value=item['reward_text'])
+                    embed.add_field(name="UID:", value=item['uid'])
+                    embed.set_footer(text="Data from FBI API | For more info on an entry, use 'cb fbi details {UID}'")
+                    embeds.append(embed)
+                
+                paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
+                paginator.add_reaction('⏪', "back")
+                paginator.add_reaction('⏩', "next")
+                    
+                await paginator.run(embeds)
+
+    @fbi.command()
+    async def details(self, ctx, uid, value=None):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://api.fbi.gov/@wanted-person/{uid}") as response:
+                data = json.loads(await response.read())
+                
+                details = data["details"]
+                title = data["title"]
+                desc = data["description"]
+                reward = data["reward_text"]
+                warnmsg = data["warning_message"]
+                sex = data["sex"]
+                if value is None:
+                    pass
+                else:
+                    embed = discord.Embed(title=f"FBI Wanted | {title}", colour=discord.Colour.red(),
+                    description=f"Published on {data['publication']}", url=data['url'])
+                    try:
+                        embed.add_field(name=value, value=data[value])
+                        embed.set_footer(text="Data from FBI API | https://api.fbi.gov.docs")
+                        await ctx.send(embed=embed)
+                        return
+                    except:
+                        await ctx.send("That's an invalid value. Use 'cb help fbi' for more details.")
+                        return
+                    return
+                embed = discord.Embed(title=f"FBI Wanted | {title}", colour=discord.Colour.red(),
+                description=f"Published on {data['publication']}", url=data["url"])
+                if details is not None:
+                    embed.add_field(name="Details:",value=details, inline=False)
+                else:
+                    pass
+                if desc is not None:
+                    embed.add_field(name="Description", value=desc)
+                else:
+                    pass
+                if warnmsg is not None:
+                    embed.add_field(name="Warning Message:", value=warnmsg, inline=False)
+                else:
+                    pass
+                if reward is not None:
+                    embed.add_field(name="Reward:", value=reward)
+                else:
+                    pass
+                if sex is not None:
+                    embed.add_field(name="Sex:", value=sex, inline=False)
+                else:
+                    pass
+
+                embed.set_thumbnail(url="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Seal_of_the_Federal_Bureau_of_Investigation.svg/300px-Seal_of_the_Federal_Bureau_of_Investigation.svg.png")
+                try:
+                    embed.set_image(url = data["images"][0]["large"])
+                except:
+                    pass
+
+                await ctx.send(embed=embed)
+
+    @commands.command()
+    async def covid(self, ctx, country):
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://covid-api.mmediagroup.fr/v1/cases") as response:
+                data = json.loads(await response.read())
+                try:
+                    embed = discord.Embed(title=f"COVID-19 in {country}", colour=discord.Colour.gold(),)
+                    embed.add_field(name="Cases:", value=data[country]['All']['confirmed'])
+                    embed.add_field(name="Recovered Cases:", value=data[country]['All']['recovered'])
+                    embed.add_field(name="Deaths:", value=data[country]['All']['deaths'])
+                    embed.add_field(name="Country Population:", value=data[country]['All']['population'])
+                    embed.add_field(name="Life Expectancy:", value=data[country]['All']['life_expectancy'])
+                    embed.set_footer(text="Stats brought to you by M-Media-Group's COVID-19 API")
+                    await ctx.send(embed=embed)
+                except:
+                    await ctx.send("Country not found. Country names ***are case-sensitive***.")
 
     @commands.command()
     async def joke(self, ctx):
@@ -204,6 +356,24 @@ class Fun(commands.Cog):
     async def echo_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must specify a message to send!")
+
+    @lyrics.error
+    async def lyrics_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("You didn't seem to tell me a song or a band.")
+        else:
+            await ctx.send("You need to tell me what person and song, separated by a comma.")
+
+    @fbi.error
+    async def fbi_error(self, ctx, error):
+        await ctx.send("Sorry, something went wrong. We're not sure what it is. Try again later.")
+    
+    @details.error
+    async def details_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("You need to provide a valid **UID.** These can be found via the `cb fbi` command.")
+        else:
+            await ctx.send("We can't seem to get the details of that person.")
 
     @_8ball.error
     async def _8ball_error(self, ctx, error):

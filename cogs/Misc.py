@@ -1,5 +1,7 @@
+import aiosqlite
 import discord
 from discord.ext import commands
+
 
 class Misc(commands.Cog):
     def __init__(self, client):
@@ -7,6 +9,8 @@ class Misc(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
+        db = await aiosqlite.connect('config.db')
+        cursor = await db.cursor()
         for channel in guild.text_channels:
             if channel.permissions_for(guild.me).send_messages:
                 embed = discord.Embed(
@@ -25,6 +29,10 @@ class Misc(commands.Cog):
             break
         channel1 = self.client.get_channel(793927796354449459)
         await channel1.send(f"ConchBot has joined a server called {guild.name}!")
+        await cursor.execute(f"SELECT guild_id FROM config WHERE guild_id = {guild.id}")
+        check = await cursor.fetchone()
+        if check is None:
+            await cursor.execute(f"INSERT INTO config (guild_id) VALUES ({guild.id})")
 
     @commands.command()
     async def invite(self, ctx):
@@ -39,6 +47,41 @@ class Misc(commands.Cog):
         embed.add_field(name="ConchBot's creator (UnsoughtConch)'s community server:",
         value="You can join Conch's community server [here](https://discord.gg/n8XyytfxMk)")
         await ctx.send(embed=embed)
+
+    @commands.group(invoke_without_command=True)
+    @commands.is_owner()
+    async def blacklist(self, ctx):
+        await ctx.send("You can `add` or `remove` users.")
+    
+    @blacklist.command()
+    async def add(self, ctx, id):
+        db = await aiosqlite.connect("config.db")
+        cursor = await db.cursor()
+        await cursor.execute(f"SELECT id FROM blacklist WHERE id = {id}")
+        result = await cursor.fetchone()
+        if result is None:
+            await cursor.execute(f"INSERT INTO blacklist (id) VALUES ({id})")
+            await ctx.send("ID blacklisted.")
+        else:
+            await ctx.send("That ID is already blacklisted.")
+        await db.commit()
+        await cursor.close()
+        await db.close()
+
+    @blacklist.command()
+    async def remove(self, ctx, id):
+        db = await aiosqlite.connect("config.db")
+        cursor = await db.cursor()
+        await cursor.execute(f"SELECT id FROM blacklist WHERE id = {id}")
+        result = await cursor.fetchone()
+        if result is None:
+            await ctx.send("That ID is not blacklisted.")
+        else:
+            await cursor.execute(f"DELETE FROM blacklist WHERE id = {id}")
+            await ctx.send("ID removed from blacklist.")
+        await db.commit()
+        await cursor.close()
+        await db.close()
 
 def setup(client):
     client.add_cog(Misc(client))

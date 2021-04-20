@@ -3,8 +3,6 @@ import discord
 from discord.ext import commands
 from discord.ext.commands.cooldowns import BucketType
 
-blacklist = [689230188743229487]
-
 class Support(commands.Cog):
     def __init__(self, client):
         self.client = client
@@ -27,7 +25,7 @@ class Support(commands.Cog):
             await ctx.send("Sorry, but you are blacklisteed from reporting bugs and adding suggestions.")
             return
         channel = self.client.get_channel(795711741606101024)
-        db = await aiosqlite.connect('aichannels.db')
+        db = await aiosqlite.connect('config.db')
         cursor = await db.cursor()
         await cursor.execute('SELECT num FROM bugnum WHERE placeholder = 1')
         result = await cursor.fetchone()
@@ -48,22 +46,21 @@ class Support(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 86400, BucketType.user)
     async def suggest(self, ctx, *, suggestion):
-        if ctx.author.id in blacklist:
-            await ctx.send("Sorry, but you are blacklisteed from reporting bugs and adding suggestions.")
-            return
         channel = self.client.get_channel(819029394534039604)
         if len(suggestion)>100:
             await ctx.send("Please keep your suggestion under 100 characters as to not flood the suggestions channel.")
-            return
-        embed = discord.Embed(
-            title="Someone has a suggestion!",
-            colour=ctx.author.colour
-        )
-        embed.add_field(name="Submitted by:", value=ctx.author.name)
-        embed.add_field(name="Suggestion:", value=suggestion)
-        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-        await ctx.send("Your suggestion has been submitted!")
-        await channel.send(embed=embed)
+        elif len(suggestion)<10:
+            await ctx.send("That suggestion is too short. Your suggestion must be more than 10 characters long.")
+        else:
+            embed = discord.Embed(
+                title="Someone has a suggestion!",
+                colour=ctx.author.colour
+            )
+            embed.add_field(name="Submitted by:", value=ctx.author.name)
+            embed.add_field(name="Suggestion:", value=suggestion)
+            embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+            await ctx.send("Your suggestion has been submitted!")
+            await channel.send(embed=embed)
     
     @report.error
     async def report_error(self, ctx, error):

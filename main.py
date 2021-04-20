@@ -1,12 +1,19 @@
 import asyncio
+import datetime
 import os
+import traceback
+from itertools import cycle
 
+import aiosqlite
 import discord
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
-from itertools import cycle
 
-prefixes = ['cb ', 'cB ', 'Cb ', 'CB ']
+from extras.errors import Blacklisted
+
+# prefixes = ['cb!']
+prefixes = ['cb ', 'Cb ', 'CB ', 'cB ']
+
 client = commands.Bot(command_prefix=prefixes, intents=discord.Intents.all())
 client.remove_command('help')
 extensions = [
@@ -15,7 +22,6 @@ extensions = [
     "cogs.Fun",
     "cogs.Support",
     "cogs.Utility",
-    "cogs.DBLCog",
     "cogs.Snipe",
     "cogs.Currency",
     "cogs.Image",
@@ -31,12 +37,33 @@ async def on_ready():
     print("ConchBot is online!")
     await client.loop.create_task(status_loop())
 
+@client.before_invoke
+async def before_command(ctx):
+    db = await aiosqlite.connect("config.db")
+    cursor = await db.cursor()
+    await cursor.execute("CREATE TABLE IF NOT EXISTS blacklist (id INT)")
+    await cursor.execute(f"SELECT id FROM blacklist WHERE id = {ctx.author.id}")
+    memcheck = await cursor.fetchone()
+    if memcheck is not None:
+        raise await Blacklisted(ctx).memsend()
+    else:
+        await cursor.execute(f"SELECT id FROM blacklist WHERE id = {ctx.guild.id}")
+        guildcheck = await cursor.fetchone()
+        if guildcheck is not None:
+            raise await Blacklisted(ctx).guildsend()
+
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         await ctx.send("Sorry, but that command does not exist.")
+    elif isinstance(error, commands.CommandOnCooldown):
+        pass
     else:
-        print(error)
+        ctx.command.reset_cooldown(ctx)
+        channel = client.get_channel(833508151802069002)
+        now = datetime.datetime.now()
+        time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+        await channel.send(f"Error occured at {time} invoked by {ctx.author} in {ctx.guild}. Error:\n```py\n{error}```")
 
 async def status_loop():
     statuses = cycle(["New plethora of currency commands!", 

@@ -1,7 +1,5 @@
 *.env
-aichannels.db
 CogTemplate.txt
-currency.db
 pycache/
 .vscode/
 __pycache__/
@@ -10,5 +8,5 @@ text.png
 /MemeTemplates
 ARIAL.ttf
 Meme.png
-tasks.db
-config.db
+ConchPixel32.png
+config.db-journal

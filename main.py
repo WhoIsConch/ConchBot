@@ -3,18 +3,20 @@ import datetime
 import os
 import traceback
 from itertools import cycle
-
+import dbl
 import aiosqlite
 import discord
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
-from extras.errors import Blacklisted
+from extras import errors
 
-# prefixes = ['cb!']
-prefixes = ['cb ', 'Cb ', 'CB ', 'cB ']
-
+load_dotenv('.env')
+prefixes = ['cb!']
+# prefixes = ['cb ', 'Cb ', 'CB ', 'cB ']
+dbltoken = os.getenv('DBLTOKEN')
 client = commands.Bot(command_prefix=prefixes, intents=discord.Intents.all())
+dblc = dbl.DBLClient(client, dbltoken)
 client.remove_command('help')
 extensions = [
     "cogs.Help",
@@ -25,7 +27,10 @@ extensions = [
     "cogs.Snipe",
     "cogs.Currency",
     "cogs.Image",
-    "cogs.Secret"
+    "cogs.Secret",
+    "cogs.owner",
+    'cogs.DBLCog',
+    "cogs.tags"
 ]
 
 for extension in extensions:
@@ -44,27 +49,31 @@ async def before_command(ctx):
     await cursor.execute("CREATE TABLE IF NOT EXISTS blacklist (id INT)")
     await cursor.execute(f"SELECT id FROM blacklist WHERE id = {ctx.author.id}")
     memcheck = await cursor.fetchone()
+    votelockcmds = ['idputmy', 'isthis', 'tradeoffer']
     if memcheck is not None:
-        raise await Blacklisted(ctx).memsend()
+        raise await errors.Blacklisted(ctx).memsend()
     else:
         await cursor.execute(f"SELECT id FROM blacklist WHERE id = {ctx.guild.id}")
         guildcheck = await cursor.fetchone()
         if guildcheck is not None:
-            raise await Blacklisted(ctx).guildsend()
+            raise await errors.Blacklisted(ctx).guildsend()
+    if str(ctx.command) in votelockcmds:
+        status = await dblc.get_user_vote(ctx.author.id)
+        if status is False:
+            raise await errors.VoteLockedCmd(ctx).send()
 
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         await ctx.send("Sorry, but that command does not exist.")
-    elif isinstance(error, commands.CommandOnCooldown):
-        pass
     else:
         ctx.command.reset_cooldown(ctx)
         channel = client.get_channel(833508151802069002)
         now = datetime.datetime.now()
         time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
-        await channel.send(f"Error occured at {time} invoked by {ctx.author} in {ctx.guild}. Error:\n```py\n{error}```")
-
+        await channel.send(f"Error occured at {time} invoked by {ctx.author} in {ctx.guild} with command "
+        f"{ctx.command}. Error:\n```py\n{error}```")
+        
 async def status_loop():
     statuses = cycle(["New plethora of currency commands!", 
         "Revamped ConchBot!", "cb help", f"Watching {len(set(client.get_all_members()))} "
@@ -73,5 +82,4 @@ async def status_loop():
         await client.change_presence(activity=discord.Game(next(statuses)))
         await asyncio.sleep(15)
         
-load_dotenv('.env')
 client.run(os.getenv('TOKEN'))

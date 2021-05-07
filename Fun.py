@@ -35,26 +35,28 @@ class Fun(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        await self.client.process_commands(message)
         if message.author.bot:
             return
         else:
             if message.channel.name == "conchchat":
                 try:
-                    flag = False
-                    votes = await self.dbl.get_bot_upvotes()
-                    for item in votes:
-                        if int(item['id']) == int(message.author.id):
-                            flag = True
-                            break
-                    if flag is True:
-                        await message.channel.trigger_typing()
-                        aimsg = await rs.get_ai_response(message.content)
-                        await message.reply(aimsg)
-                    else:
-                        await message.channel.trigger_typing()
-                        aimsg = await rs.get_ai_response(message.content)
-                        await message.reply(f"{aimsg}\n\n*Consider voting for me on Top.gg! (<https://bit.ly/2PiLbwh>) "
-                        "It only takes a second of your time and you won't see this message anymore!*")
+                    if False is True:
+                        flag = False
+                        votes = await self.dbl.get_bot_upvotes()
+                        for item in votes:
+                            if int(item['id']) == int(message.author.id):
+                                flag = True
+                                break
+                        if flag is True:
+                            await message.channel.trigger_typing()
+                            aimsg = await rs.get_ai_response(message.content)
+                            await message.reply(aimsg)
+                        else:
+                            await message.channel.trigger_typing()
+                            aimsg = await rs.get_ai_response(message.content)
+                            await message.reply(f"{aimsg}\n\n*Consider voting for me on Top.gg! (<https://bit.ly/2PiLbwh>) "
+                            "It only takes a second of your time and you won't see this message anymore!*")
                 except AttributeError:
                     await message.channel.trigger_typing()
                     aimsg = await rs.get_ai_response(message.content)

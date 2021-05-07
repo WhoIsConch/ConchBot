@@ -87,6 +87,12 @@ cmds = {
         "htu" : "cb covid {country}",
         "aliases" : "*No Aliases*"
     },
+    "snipe" : {
+        "title" : "Snipe and Snipe Edit Commands",
+        "desc" : "\"Snipe\" gets a previously deleted message, while \"snipe edit\" gets a previously edited message.",
+        "htu" : "\"cb snipe\" or \"cb snipe edit\"",
+        "alaises" : "*No Aliases"
+    },
     "ping" : {
         "title" : "Ping Command",
         "desc" : "Gives you the bot's ping.",
@@ -177,6 +183,12 @@ cmds = {
         "htu" : "cb use {item}",
         "aliases" : "*No Aliases*"
     },
+    'task' : {
+        "title" : "Task Command",
+        "desc" : "Complete listed tasks!",
+        "htu" : "cb task",
+        "aliases" : "\"tasks\""
+    },
     "supportc" : {
         "title" : "SupportC Command",
         "desc" : "Returns some extra support information, along with a link to ConchBot's server.",
@@ -243,6 +255,30 @@ cmds = {
         "htu" : "cb isthis {value1}, {value2}, {value3}",
         "aliases" : "*No Aliases*"
     },
+    "tradeoffer" : {
+        "title" : "Trade Offer Command",
+        "desc" : "Creates a meme in the \"Trade Offer\" format!",
+        "htu" : "cb tradeoffer {ireceive}, {youreceive}",
+        "aliases" : "*No Aliases*"
+    },
+    "tag" : {
+        "title" : "Tag Command Group",
+        "desc" : "You can create, edit, and delete tags, or custom commands!",
+        "htu" : "\"cb tag {create, edit, or delete} {name[create and edit], ID[delete]}, {content[create and edit]}\"",
+        "aliases" : "tags"
+    },
+    "updates" : {
+        "title" : "Updates Command",
+        "desc" : "Shows you ConchBot's latest updates!",
+        "htu" : "cb updates",
+        "aliases" : "\"update\""
+    },
+    "leave" : {
+        "title" : "Leave Command",
+        "desc" : "Removes ConchBot from your server.",
+        "htu" : "cb leave",
+        "aliases" : "*No Aliases*"
+    }
 }
 
 class Help(commands.Cog):
@@ -256,12 +292,24 @@ class Help(commands.Cog):
                 title="ConchBot Commands",
                 colour=ctx.author.colour
             )
-            embed0.add_field(name="Fun Commands", value="You can view fun commands on page 1.", inline=False)
-            embed0.add_field(name="Utility Commands", value="You can view utility commands on page 2.", inline=False)
-            embed0.add_field(name="Currency Commands", value="You can view currency commands on page 3.", inline=False)
-            embed0.add_field(name="Image Commands", value="You can view image commands on page 4.", inline=False)
-            embed0.add_field(name="Support Commands", value="You can view support commands on page 5.", inline=False)
-            embed0.set_footer(text="You can get a support server invite and invite the bot with 'cb invite'")
+            embed0.add_field(name="ConchBot Help", value="ConchBot is a small bot trying to grow, so your support would"
+            " be amazing! Even as much as a vote on Top.gg or DBL can help greatly.\nMy command prefix is `cb `.\n"
+            "You can see my latest updates via \"cb updates\"", inline=False)
+            embed0.add_field(name="Fun Commands", value="`AI, Echo, 8ball, Google, Chance, Pfp, Joke, Meme, Reddit`\n"
+            "View more information on page `1`.")
+            embed0.add_field(name="Utility Commands", value="`Ping, Clear, Stats`\nView more information on page `2`.")
+            embed0.add_field(name="Economy Commands", value="`Inventory, Deposit, Withdraw, Buy, Sell, Shop, Beg, "
+            "Steal, Give, Slots, Daily, Use`\nView more information on page `3`.")
+            embed0.add_field(name="Image Commands", value="`Fuck, Brain, MentalIllness, idputmy, isthis`\nView more"
+            " information on page `4`.")
+            embed0.add_field(name="Support Commands", value="`Report, Suggest, Invite, Vote, Vote Claim`\nView more"
+            " information on page `5`.")
+            embed0.add_field(name="Extra Links", value="[Invite Me!](https://top.gg/bot/733467297666170980/invite/)"
+            " | [Support Server](https://discord.gg/PyAcRfukvc) | [Website](https://conch.glitch.me) "
+            "| [Vote on Top.gg](https://top.gg/bot/733467297666170980/vote/)"
+            " | [Vote on Discord Bot List](https://discordbotlist.com/bots/conchbot/upvote)", inline=False)
+            embed0.set_footer(text = "Discord ConchBot | Made by UnsoughtConch")
+            
             
             embed1 = discord.Embed(
                 title="ConchBot Fun Commands",
@@ -276,6 +324,9 @@ class Help(commands.Cog):
             embed1.add_field(name="Joke", value="Get a joke from the r/jokes subreddit.", inline=False)
             embed1.add_field(name="Meme", value="Get a nice little meme from the r/memes subreddit.", inline=False)
             embed1.add_field(name="Reddit", value="Specify a subreddit and get a post from there!", inline=False)
+            embed1.add_field(name="Snipe", value="Snipe a previously deleted message, or an edited message with \"snipe edit!\"")
+            embed1.add_field(name="FBI", value="Look through the FBI watchlist! \"fbi details\" gives you a more descriptive"
+            "version of the person you are looking at.")
             embed1.set_footer(text="For more information on a certain command, please use 'cb help command.'")
             
             embed2 = discord.Embed(
@@ -284,12 +335,12 @@ class Help(commands.Cog):
             )
             embed2.add_field(name="Ping", value="To see my ping. Maybe you're into knowing how long it'll take me"
             " to respond.", inline=False)
-            embed2.add_field(name="Kick", value="Kick a member.", inline=False)
-            embed2.add_field(name="Ban", value="Ban someone.", inline=False)
-            embed2.add_field(name="Unban", value="Unban someone.", inline=False)
             embed2.add_field(name="Clear", value="Clear a certain amount of messages from a channel.", inline=False)
             embed2.add_field(name="Stats", value="View ConchBot's stats, such as server count, bot version, "
             "Python version and more.", inline=False)
+            embed2.add_field(name="Tag", value="Creates a custom command, or tag!")
+            embed2.add_field(name="Updates", value="Shows ConchBot's latest updates!")
+            embed2.add_field(name="Leave", value="Makes ConchBot leave your server.")
             embed2.set_footer(text="For more information on a certain command, please use 'cb help command'")
 
             embed3 = discord.Embed(
@@ -319,6 +370,7 @@ class Help(commands.Cog):
             embed4.add_field(name="idputmy", value="Creates a meme in the 'this is where I'd put my trophy, if I had one'"
             " format!", inline=False)
             embed4.add_field(name="isthis", value="Creates a meme in the 'is this a pigeon?' format!", inline=False)
+            embed4.add_field(name="tradeoffer", value="Creates a meme in the 'Trade Offer' format!", inline=False)
             embed4.set_footer(text="For more information on a command, please use 'cb help command.'")
             
             embed5 = discord.Embed(title="Support Commands", colour=ctx.author.colour)
@@ -328,14 +380,13 @@ class Help(commands.Cog):
             embed5.add_field(name="Suggest", value="Give a ConchBot suggestion!", inline=False)
             embed5.add_field(name="Invite", value="Invite ConchBot to your server, and gain an invite to the Support server!", inline=False)
             embed5.add_field(name="Vote", value="Returns links where you can vote for ConchBot", inline=False)
-            embed5.add_field(name="Vote Claim", value="Claims your ConchBot vote! [DISABLED COMMAND]", inline=False)
             embed5.set_footer(text="For more information on a command, please use 'cb help command.'")
 
             embeds = [embed0, embed1, embed2, embed3, embed4, embed5]
 
             paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
             paginator.add_reaction('⏪', "back")
-            paginator.add_reaction('🏠', "first")
+            paginator.add_reaction('0️⃣', "first")
             paginator.add_reaction('1️⃣', "page 1")
             paginator.add_reaction('2️⃣', "page 2")
             paginator.add_reaction('3️⃣', "page 3")

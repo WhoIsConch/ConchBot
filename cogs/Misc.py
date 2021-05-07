@@ -1,11 +1,15 @@
 import aiosqlite
 import discord
+import os
+import dbl
 from discord.ext import commands
 
+dbltoken = os.getenv('DBLTOKEN')
 
 class Misc(commands.Cog):
     def __init__(self, client):
         self.client = client
+        self.dbl = dbl.DBLClient(self.client, dbltoken)
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
@@ -82,6 +86,7 @@ class Misc(commands.Cog):
         await db.commit()
         await cursor.close()
         await db.close()
+
 
 def setup(client):
     client.add_cog(Misc(client))

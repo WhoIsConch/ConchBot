@@ -5,7 +5,7 @@ from io import BytesIO
 import asyncpraw
 import discord
 import PIL.Image
-import requests
+from aiohttp_requests import requests
 import urllib3
 from discord.ext import commands
 from PIL import ImageDraw, ImageFont
@@ -68,7 +68,7 @@ class Image(commands.Cog):
         if url is None:
             url = ctx.message.attachments[0].url
         try:
-            response = requests.get(url)
+            response = await requests.get(url)
         except:
             await ctx.send("You must provide a valid image URL.")
             return
@@ -118,6 +118,25 @@ class Image(commands.Cog):
         img.save("Meme.png")
         await msg.delete()
         await ctx.send(file=discord.File("Meme.png"))        
+
+    @commands.command()
+    async def tradeoffer(self, ctx, *, text):
+        try:
+            text_one, text_two = text.split(',')
+        except ValueError:
+            await ctx.send("You must separate three values by commas.")
+            return
+        msg = await ctx.send("Creating your meme...")
+        img = PIL.Image.open("MemeTemplates/TradeOffer.jpg")
+        font = ImageFont.truetype("arial.ttf", 50)
+        draw = ImageDraw.Draw(img)
+        text_one = textwrap.fill(text_one, width=15)
+        text_two = textwrap.fill(text_two, width=13)
+        draw.text((32, 179), text_one, font=font, fill="White", stroke_width=5, stroke_fill="Black")
+        draw.text((320, 184), text_two, font=font, fill="White", stroke_width=5, stroke_fill="Black")
+        img.save("Meme.png")
+        await msg.delete()
+        await ctx.send(file=discord.File("Meme.png"))       
 
     @fuck.error
     async def fuck_error(self, ctx, error):

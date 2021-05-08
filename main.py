@@ -12,8 +12,8 @@ from dotenv import load_dotenv
 from extras import errors
 
 load_dotenv('.env')
-prefixes = ['cb!']
-# prefixes = ['cb ', 'Cb ', 'CB ', 'cB ']
+# prefixes = ['cb!']
+prefixes = ['cb ', 'Cb ', 'CB ', 'cB ']
 dbltoken = os.getenv('DBLTOKEN')
 client = commands.Bot(command_prefix=prefixes, intents=discord.Intents.all())
 dblc = dbl.DBLClient(client, dbltoken)

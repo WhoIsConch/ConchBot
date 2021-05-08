@@ -51,16 +51,14 @@ class DBLcog(commands.Cog):
     async def test(self, ctx):
         data = {'bot': '733467297666170980', 'user': '579041484796461076', 'type': 'upvote', 'query': '', 'isWeekend': False}
         channel = self.client.get_channel(724050498847506436)
-        await channel.send(data)
         ID = int(data['user'])
         user = self.client.get_user(ID)
-        await channel.send(user)
         if user is None:
             pass
         else:
             await user.send("Thanks for voting for ConchBot! Due to this, you'll get awesome perks, such as:"
             "\nUnlocked image commands!\nNo message on the AI!\nA `bronze conch` currency item! (Use with `cb use bronze`)")
-        await Currency.item_func(ID, "Bronze Conch", True, 1)
+        await Currency.item_func(self, user, "Bronze Conch", 1)
 
 def setup(client):
     client.add_cog(DBLcog(client))

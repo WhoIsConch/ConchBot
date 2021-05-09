@@ -12,8 +12,8 @@ from dotenv import load_dotenv
 from extras import errors
 
 load_dotenv('.env')
-# prefixes = ['cb!']
-prefixes = ['cb ', 'Cb ', 'CB ', 'cB ']
+prefixes = ['cb!']
+# prefixes = ['cb ', 'Cb ', 'CB ', 'cB ']
 dbltoken = os.getenv('DBLTOKEN')
 client = commands.Bot(command_prefix=prefixes, intents=discord.Intents.all())
 dblc = dbl.DBLClient(client, dbltoken)
@@ -30,7 +30,8 @@ extensions = [
     "cogs.Secret",
     "cogs.owner",
     'cogs.DBLCog',
-    "cogs.tags"
+    "cogs.tags",
+    "cogs.nsfw"
 ]
 
 for extension in extensions:
@@ -61,6 +62,9 @@ async def before_command(ctx):
         status = await dblc.get_user_vote(ctx.author.id)
         if status is False:
             raise await errors.VoteLockedCmd(ctx).send()
+    print(ctx.cog)
+    if ctx.cog == commands.cog.nsfw.NSW:
+        raise await errors.NSFWCmd(ctx).send()
 
 @client.event
 async def on_command_error(ctx, error):

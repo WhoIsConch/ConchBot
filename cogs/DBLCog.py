@@ -33,32 +33,17 @@ class DBLcog(commands.Cog):
     @commands.Cog.listener()
     async def on_dbl_vote(self, data):
         channel = self.client.get_channel(724050498847506436)
-        await channel.send(data)
         user = self.client.get_user(int(data['user']))
-        await channel.send(user)
-        if user is None:
-            pass
-        else:
-            await user.send("Thanks for voting for ConchBot! Due to this, you'll get awesome perks, such as:"
-            "\nUnlocked image commands!\nNo message on the AI!\nA `bronze conch` currency item! (Use with `cb use bronze`)")
-        await Currency.item_func(user, "Bronze Conch", 1)
-
-    @commands.Cog.listener()
-    async def on_guild_post(self):
-        print("Server count successfully posted!")
-
-    @commands.command()
-    async def test(self, ctx):
-        data = {'bot': '733467297666170980', 'user': '579041484796461076', 'type': 'upvote', 'query': '', 'isWeekend': False}
-        channel = self.client.get_channel(724050498847506436)
-        ID = int(data['user'])
-        user = self.client.get_user(ID)
         if user is None:
             pass
         else:
             await user.send("Thanks for voting for ConchBot! Due to this, you'll get awesome perks, such as:"
             "\nUnlocked image commands!\nNo message on the AI!\nA `bronze conch` currency item! (Use with `cb use bronze`)")
         await Currency.item_func(self, user, "Bronze Conch", 1)
+
+    @commands.Cog.listener()
+    async def on_guild_post(self):
+        print("Server count successfully posted!")
 
 def setup(client):
     client.add_cog(DBLcog(client))

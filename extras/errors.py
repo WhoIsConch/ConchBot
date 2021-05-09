@@ -15,3 +15,10 @@ class VoteLockedCmd(Exception):
     async def send(self):
         await self.ctx.send("The three latest image generation commands are vote locked! You can either wait for "
         "them to become available or vote for ConchBot at (<https://bit.ly/2PiLbwh>)!")
+
+class NSFWCmd(Exception):
+    def __init__(self, ctx):
+        self.ctx = ctx
+    
+    async def send(self):
+        await self.ctx.send("This command is only available in NSFW channels!")

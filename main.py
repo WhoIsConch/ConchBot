@@ -62,8 +62,7 @@ async def before_command(ctx):
         status = await dblc.get_user_vote(ctx.author.id)
         if status is False:
             raise await errors.VoteLockedCmd(ctx).send()
-    print(ctx.cog)
-    if ctx.cog == commands.cog.nsfw.NSW:
+    if ctx.cog.qualified_name == "NSFW" and not ctx.channel.is_nsfw():
         raise await errors.NSFWCmd(ctx).send()
 
 @client.event

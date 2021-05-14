@@ -109,11 +109,9 @@ class Currency(commands.Cog):
 
         return walamt, bankamt
 
-    async def item_func(self, user, item, flag = False, amount=None):
+    async def item_func(self, user, item, amount=None):
         db = await aiosqlite.connect("currency.db")
         cursor = await db.cursor()
-        if flag is true:
-            user.id == user
         await cursor.execute(f"SELECT amount FROM u{user.id} WHERE item = '{item}'")
         oldamount = await cursor.fetchone()
         if oldamount is None:

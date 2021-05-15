@@ -13,7 +13,7 @@ class Owner(commands.Cog):
     @commands.is_owner()
     async def load(self, ctx, cog=None):
         if cog is None:
-            await ctx.send("Available cogs:\nBotConfig\nCurrency\nDBLCog\nFun\nHelp\nImage\nMisc\nOwner\nSecret\n"
+            await ctx.send("Available cogs:\nBotConfig\nCurrency\nFun\nHelp\nImage\nMisc\nOwner\nSecret\n"
             "Snipe\nSupport\nUtility")
         else:
             try:
@@ -30,7 +30,7 @@ class Owner(commands.Cog):
     @commands.is_owner()
     async def unload(self, ctx, cog=None):
         if cog is None:
-            await ctx.send("Available cogs:\nBotConfig\nCurrency\nDBLCog\nFun\nHelp\nImage\nMisc\nOwner\nSecret\n"
+            await ctx.send("Available cogs:\nBotConfig\nCurrency\nFun\nHelp\nImage\nMisc\nOwner\nSecret\n"
             "Snipe\nSupport\nUtility")
         else:
             try:
@@ -47,7 +47,7 @@ class Owner(commands.Cog):
     @commands.is_owner()
     async def reload(self, ctx, cog=None):
         if cog is None:
-            await ctx.send("Available cogs:\nBotConfig\nCurrency\nDBLCog\nFun\nHelp\nImage\nMisc\nOwner\nSecret\n"
+            await ctx.send("Available cogs:\nBotConfig\nCurrency\nFun\nHelp\nImage\nMisc\nOwner\nSecret\n"
             "Snipe\nSupport\nUtility")
         else:
             try:
@@ -65,7 +65,7 @@ class Owner(commands.Cog):
     @commands.is_owner()
     async def commit(self, ctx, db=None):
         if db is None:
-            await ctx.send("currency.db, config.db, tasks.db, tags.db")
+            await ctx.send("db/currency.db, db/config.db, db/tasks.db, db/tags.db")
         db = sqlite3.connect(db)
         cursor = db.cursor()
         await ctx.send("Committing database...")

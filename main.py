@@ -1,22 +1,28 @@
 import asyncio
 import datetime
 import os
-import traceback
 from itertools import cycle
-import dbl
 import aiosqlite
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 from dotenv import load_dotenv
 
-from extras import errors
+from cogs.utils import errors
 
-load_dotenv('.env')
-prefixes = ['cb!']
-# prefixes = ['cb ', 'Cb ', 'CB ', 'cB ']
-dbltoken = os.getenv('DBLTOKEN')
-client = commands.Bot(command_prefix=prefixes, intents=discord.Intents.all())
-dblc = dbl.DBLClient(client, dbltoken)
+load_env = load_dotenv()
+
+def prefix(bot, message):
+    prefixes = aiosqlite.connect('db/config.db')
+    cursor = prefixes.cursor()
+    cursor.execute(f"SELECT prefix from prefixes WHERE guildid = '{message.guild.id}'")
+    result = cursor.fetchone()
+    prefix = str(result[0])
+    user_id = bot.user.id
+    base = [f'<@!{user_id}> ', f'<@{user_id}> ', 'cb ', 'Cb ', 'CB ', 'cB ', 'cb!', 'Cb!', 'CB!', 'cB!']
+    base.append(prefix)
+    return base
+
+client = commands.Bot(command_prefix=prefix, intents=discord.Intents.all())
 client.remove_command('help')
 extensions = [
     "cogs.Help",
@@ -29,7 +35,6 @@ extensions = [
     "cogs.Image",
     "cogs.Secret",
     "cogs.owner",
-    'cogs.DBLCog',
     "cogs.tags",
     "cogs.nsfw"
 ]
@@ -45,12 +50,11 @@ async def on_ready():
 
 @client.before_invoke
 async def before_command(ctx):
-    db = await aiosqlite.connect("config.db")
+    db = await aiosqlite.connect("db/config.db")
     cursor = await db.cursor()
     await cursor.execute("CREATE TABLE IF NOT EXISTS blacklist (id INT)")
     await cursor.execute(f"SELECT id FROM blacklist WHERE id = {ctx.author.id}")
     memcheck = await cursor.fetchone()
-    votelockcmds = ['idputmy', 'isthis', 'tradeoffer']
     if memcheck is not None:
         raise await errors.Blacklisted(ctx).memsend()
     else:
@@ -58,10 +62,6 @@ async def before_command(ctx):
         guildcheck = await cursor.fetchone()
         if guildcheck is not None:
             raise await errors.Blacklisted(ctx).guildsend()
-    if str(ctx.command) in votelockcmds:
-        status = await dblc.get_user_vote(ctx.author.id)
-        if status is False:
-            raise await errors.VoteLockedCmd(ctx).send()
     if ctx.cog.qualified_name == "NSFW" and not ctx.channel.is_nsfw():
         raise await errors.NSFWCmd(ctx).send()
 

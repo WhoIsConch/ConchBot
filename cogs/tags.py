@@ -10,14 +10,14 @@ class Tags(commands.Cog):
         self.client = client
 
     async def create_table(self, id):
-        db = await aiosqlite.connect("tags.db")
+        db = await aiosqlite.connect("db/tags.db")
         cursor = await db.cursor()
 
         await cursor.execute(f"CREATE TABLE IF NOT EXISTS g{id} (name TEXT, content TEXT, creator_id INT, created_at TEXT"
         ", last_edited TEXT, tag_id TEXT)")
 
     async def check_existance(self, name, guild):
-        db = await aiosqlite.connect("tags.db")
+        db = await aiosqlite.connect("db/tags.db")
         cursor = await db.cursor()
 
         await cursor.execute(f"SELECT name FROM g{guild} WHERE name = '{name.lower()}'")
@@ -31,7 +31,7 @@ class Tags(commands.Cog):
     async def edit_info(self, guild, name, column, info):
         today = datetime.date.today()
         d2 = today.strftime("%B %d, %Y")
-        db = await aiosqlite.connect("tags.db")
+        db = await aiosqlite.connect("db/tags.db")
         cursor = await db.cursor()
 
         await cursor.execute(f"UPDATE g{guild} SET {column} = '{info}' WHERE name = '{name}'")
@@ -43,7 +43,7 @@ class Tags(commands.Cog):
 
     @commands.group(invoke_without_command=True, aliases=['tags'])
     async def tag(self, ctx, content, *, val1=None):
-        db = await aiosqlite.connect("tags.db")
+        db = await aiosqlite.connect("db/tags.db")
         cursor = await db.cursor()
         await self.create_table(ctx.guild.id)
 
@@ -58,7 +58,7 @@ class Tags(commands.Cog):
                     return
                 today = datetime.date.today()
                 d2 = today.strftime("%B %d, %Y")
-                db = await aiosqlite.connect("tags.db")
+                db = await aiosqlite.connect("db/tags.db")
                 cursor = await db.cursor()
                 await self.create_table(ctx.guild.id)
 

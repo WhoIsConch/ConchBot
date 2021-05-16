@@ -1,11 +1,8 @@
 import asyncio
-import datetime
 import os
 from itertools import cycle
-import aiosqlite
 import discord
-from discord.ext import commands
-from discord.ext.commands.core import before_invoke
+from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
 from bot.cogs.utils import errors
@@ -48,22 +45,34 @@ class Client(commands.Bot):
         print("------")
         self.load_extension('jishaku')
         print("Loaded `jishaku`")
+
+    @tasks.loop(seconds=15.0)
+    async def status_loop(self):
+        statuses = cycle(["New plethora of currency commands!", 
+            "Revamped ConchBot!", "cb help", f"Watching {len(set(self.get_all_members()))} "
+            f"users and {len(self.guilds)} servers.", "New memes and media commands!"])
+        while True:
+            await self.change_presence(activity=discord.Game(next(statuses)))
+            await asyncio.sleep(15)
+
+
             
-    def on_ready(self):
+    async def on_ready(self):
         print("ConchBot is online!")
-
-    
-
-        
+        await self.status_loop()
 
     def run(self):
         self.load_cogs()
-        self.on_ready()
+        print("Running bot...")
 
         TOKEN = os.getenv("TOKEN")
         
-        print("Running bot...")
         super().run(TOKEN, reconnect=True)
+
+
+        
+
+    
             
 
 

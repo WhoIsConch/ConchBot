@@ -1,9 +1,14 @@
 import discord
 from discord.ext import commands
-import os
-import aiosqlite
 import sqlite3
 import sys
+import os
+from discord.ext.commands.core import command
+from dotenv import load_dotenv
+from jishaku.codeblocks import codeblock_converter
+from launcher import main
+
+load_env = load_dotenv()
 
 class Owner(commands.Cog):
     def __init__(self, client):
@@ -83,7 +88,15 @@ class Owner(commands.Cog):
     @commands.is_owner()
     async def shutdown(self, ctx):
         await ctx.send("Ending Python process ConchBot... Goodbye")
-        sys.exit()
+        await self.client.logout()
+
+
+
+    @commands.command()
+    @commands.is_owner()
+    async def eval(self, ctx, *, code: codeblock_converter):
+        cog = self.client.get_cog("Jishaku")
+        await cog.jsk_python(ctx, argument=code)
 
 def setup(client):
     client.add_cog(Owner(client))

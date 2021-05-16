@@ -11,6 +11,8 @@ from cogs.utils import errors
 
 load_env = load_dotenv()
 
+
+
 def prefix(bot, message):
     prefixes = aiosqlite.connect('db/config.db')
     cursor = prefixes.cursor()
@@ -33,9 +35,10 @@ class Client(commands.Bot):
             messages=True,
             reactions=True,
         )
+	self.TOKEN = os.getenv("TOKEN")
         allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)
         super().__init__(command_prefix=prefix, intents=intents, allowed_mentions=allowed_mentions)
-
+	
 
     def load_cogs(self):
         extensions = [
@@ -70,7 +73,7 @@ class Client(commands.Bot):
         self.loop.create_task(self.status_loop)
 
     def run(self): 
-	    super().run(self.TOKEN, reconnect=True)
+	super().run(self.TOKEN, reconnect=True)
 
     def before_command(ctx):
         db = aiosqlite.connect("db/config.db")

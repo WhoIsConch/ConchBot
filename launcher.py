@@ -35,7 +35,7 @@ class Client(commands.Bot):
             messages=True,
             reactions=True,
         )
-	TOKEN = os.getenv("TOKEN")
+	self.TOKEN = os.getenv("TOKEN")
         allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)
         super().__init__(command_prefix=prefix, intents=intents, allowed_mentions=allowed_mentions)
 	

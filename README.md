@@ -7,4 +7,4 @@ Welcome to the fork GitHub repository of [Conchbot](https://github.com/ConchDev/
 ---
 ### I am not the owner - I am a admin for conchbot support server. I am just gonna add things i like.
 ---
-There isn't a LICENSE so idk what you want to do with it
+There isn't a LICENSE yet so idk what you want to do with it

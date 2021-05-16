@@ -25,7 +25,7 @@ class Support(commands.Cog):
             await ctx.send("Sorry, but you are blacklisteed from reporting bugs and adding suggestions.")
             return
         channel = self.client.get_channel(795711741606101024)
-        db = await aiosqlite.connect('config.db')
+        db = await aiosqlite.connect('db/config.db')
         cursor = await db.cursor()
         await cursor.execute('SELECT num FROM bugnum WHERE placeholder = 1')
         result = await cursor.fetchone()

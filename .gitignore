@@ -1,12 +1,9 @@
-*.env
-CogTemplate.txt
-pycache/
+# Config
+.env
+
+# Visual Studio Code
 .vscode/
+
+# Pycache from 
 __pycache__/
-Secret.py
-text.png
-/MemeTemplates
-ARIAL.ttf
-Meme.png
-ConchPixel32.png
-config.db-journal
+

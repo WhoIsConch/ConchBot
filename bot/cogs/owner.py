@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import asyncio
 import sqlite3
 import sys
 import os
@@ -92,7 +93,13 @@ class Owner(commands.Cog):
         await ctx.send("Ending Python process ConchBot... Goodbye")
         await self.client.logout()
 
-
+    @commands.command()
+    async def refresh(self, ctx):
+        cog = self.client.get_cog("Jishaku")
+        await cog.jsk_git(ctx, argument=codeblock_converter('pull'))
+        await asyncio.sleep(2)  # allow jsk git pull to finish
+        restart = self.client.get_command('restart')
+        await ctx.invoke(restart)
 
     @commands.command()
     @commands.is_owner()

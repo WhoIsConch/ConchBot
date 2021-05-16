@@ -73,7 +73,7 @@ class Client(commands.Bot):
         self.loop.create_task(self.status_loop)
 
     def run(self): 
-	super().run(self.TOKEN, reconnect=True)
+	    super().run(self.TOKEN, reconnect=True)
 
     def before_command(ctx):
         db = aiosqlite.connect("db/config.db")

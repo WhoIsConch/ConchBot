@@ -31,8 +31,6 @@ if not os.path.exists('.env'):
     env.close()
 
     print('All done, enjoy Conchbot.')
-    print("Press any key to close")
 
 else:
     print("You already done this before")
-    print("Press any key to close")

@@ -23,6 +23,8 @@ def prefix(bot, message):
     return base
 
 client = commands.Bot(command_prefix=prefix, intents=discord.Intents.all())
+
+
 client.remove_command('help')
 extensions = [
     "cogs.Help",

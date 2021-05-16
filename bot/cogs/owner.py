@@ -6,7 +6,9 @@ import os
 from discord.ext.commands.core import command
 from dotenv import load_dotenv
 from jishaku.codeblocks import codeblock_converter
-from launcher import main
+import logging
+import psutil
+
 
 load_env = load_dotenv()
 
@@ -97,6 +99,19 @@ class Owner(commands.Cog):
     async def eval(self, ctx, *, code: codeblock_converter):
         cog = self.client.get_cog("Jishaku")
         await cog.jsk_python(ctx, argument=code)
+
+    @commands.command()
+    async def restart(self, ctx):
+        if sys.stdin.isatty() or True:  # if the bot was run from the command line, updated to default true
+            try:
+                p = psutil.Process(os.getpid())
+                for handler in p.open_files() + p.connections():
+                    os.close(handler.fd)
+            except Exception as e:
+                logging.error(e)
+            python = sys.executable
+            os.execl(python, python, *sys.argv)
+        await self.bot.logout()
 
 def setup(client):
     client.add_cog(Owner(client))

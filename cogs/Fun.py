@@ -59,7 +59,7 @@ class Fun(commands.Cog):
                 aimsg = await rs.get_ai_response(message.content)
                 await message.reply(aimsg)
             except httpx.ReadTimeout:
-                await ctx.send("It seems my API has timed out. Please give me a few minutes, and if the problem "
+                await message.channel.send("It seems my API has timed out. Please give me a few minutes, and if the problem "
                 "continues, please contact UnsoughtConch via my `cb support` command.")
         else:
             pass

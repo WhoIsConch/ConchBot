@@ -34,6 +34,10 @@ extensions = [
     "cogs.nsfw"
 ]
 
+ConchRed = "<:ConchRed:842578572354519040>"
+ConchYellow = "<:ConchYellow:842578572303400970>"
+ConchGreen = "<:ConchGreen:842578572014256148>"
+
 for extension in extensions:
     client.load_extension(extension)
     print(f"{extension} has been loaded.")
@@ -67,8 +71,34 @@ async def before_command(ctx):
 
 @client.event
 async def on_command_error(ctx, error):
-    if isinstance(error, commands.CommandNotFound):
-        await ctx.send("Sorry, but that command does not exist.")
+    if isinstance(error, commands.MissingRequiredArgument):
+        embed = discord.Embed(title=f"{ConchRed} {error.param} is an argument that is missing.", color=discord.Color.red)
+        await ctx.send(embed = embed)
+
+    elif isinstance(error, commands.CommandNotFound):
+        pass
+
+    elif isinstance(error, commands.CommandOnCooldown):
+        m, s = divmod(error.retry_after, 60)
+        h, m = divmod(m, 60)
+        if int(h) == 0 and int(m) == 0:
+            em = discord.Embed(title=f"{ConchRed} You are on cooldown. Please wait {int(s)} seconds to use this command again.", colour=discord.Colour.red())
+            await ctx.send(embed=em)
+        elif int(h) == 0 and int(m) != 0:
+            em = discord.Embed(title=f"{ConchRed} You are on cooldown. Please wait {int(m)} minutes and {int(s)} seconds to use this command again.", colour=discord.Colour.red())
+            await ctx.send(embed=em)
+        else:
+            em = discord.Embed(title=f"{ConchRed} You are on cooldown. Please wait {int(h)} hours, {int(m)} minutes, and {int(s)} seconds to use this command again.", colour=discord.Colour.red())
+            await ctx.send(embed=em)
+    
+    elif isinstance(error, commands.NotOwner):
+        embed = discord.Embed(title=f"{ConchRed} This command is reserved for the bot owner.", color=discord.Color.red())
+        await ctx.send(embed=embed)
+    
+    elif isinstance(error, commands.NSFWChannelRequired):
+        embed = discord.Embed(title=f"{ConchRed} This command has to be used in an **NSFW Channel.**")
+        await ctx.send(embed=embed)
+
     else:
         ctx.command.reset_cooldown(ctx)
         channel = client.get_channel(833508151802069002)

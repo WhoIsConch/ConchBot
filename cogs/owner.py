@@ -1,7 +1,5 @@
 import discord
 from discord.ext import commands
-import os
-import aiosqlite
 import sqlite3
 import sys
 

@@ -375,8 +375,12 @@ class Help(commands.Cog):
     def __init__(self, client):
         self.client = client
     
-    async def getembed(self, type):
+    async def getembed(self, type, nsfw):
         if type == "help":
+            if nsfw is True:
+                cmds = "`Sauce, Rule34, Hentai, Porn, Boobs, Pussy, Boobdrop, Feet, Gay, Overwatch, SFM, Waifu, Lesbain, Futanari, BDSM`"
+            else:
+                cmds = "`[COMMANDS EXPUNGED]`"
             embed = discord.Embed(title="ConchBot Commands", colour=discord.Colour.green())
             embed.add_field(name="ConchBot Help", value="ConchBot is a small bot trying to grow, so your support would"
             " be amazing! Even as much as a vote on Top.gg or DBL can help greatly.\nMy command prefix is `cb `.\n"
@@ -390,8 +394,7 @@ class Help(commands.Cog):
             " information on page `4`.")
             embed.add_field(name="Support Commands", value="`Report, Suggest, Invite, Vote, Vote Claim`\nView more"
             " information on page `5`.")
-            embed.add_field(name="NSFW Commands", value="`Sauce, Rule34, Hentai, Porn, Boobs, Pussy, Boobdrop, Feet, Gay, "
-            "Overwatch, SFM, Waifu, Lesbain, Futanari, BDSM`\nView more information on page `6`.")
+            embed.add_field(name="NSFW Commands", value=cmds + "\nView more information on page `6`.")
             embed.add_field(name="Extra Links", value="[Invite Me!](https://top.gg/bot/733467297666170980/invite/)"
             " | [Support Server](https://discord.gg/PyAcRfukvc) | [Website](https://conch.glitch.me) "
             "| [Vote on Top.gg](https://top.gg/bot/733467297666170980/vote/)"
@@ -466,38 +469,41 @@ class Help(commands.Cog):
             embed.set_footer(text="For more information on a command, please use 'cb help command.'")
 
         elif type == "nsfw":
-            embed = discord.Embed(title="NSFW Commands", color=0xFFFAFA)
-            embed.add_field(name="Sauce", value="Search for source codes on nhentai.com, or don't provide a code for a "
-            "random nhentai.com image!")
-            embed.add_field(name="Rule34", value="Search for posts on Rule34.xxx, or don't provide a search term for "
-            "a random post!")
-            embed.add_field(name="Hentai", value="Get a random hentai image from r/hentai!")
-            embed.add_field(name="Porn", value="get a porn post from r/porn!")
-            embed.add_field(name="Boobs", value="Get a boob post from r/boobs!")
-            embed.add_field(name="Pussy", value="Get a pussy post from r/pussy!")
-            embed.add_field(name="Boobdrop", value="Get a boob drop post from r/tittydrop!")
-            embed.add_field(name="Feet", value="What type of cretin unironically has a foot fetish?")
-            embed.add_field(name="Gay", value="Get a porn post from r/gayporn!")
-            embed.add_field(name="Overwatch", value="Get a porn post from r/Overwatch_porn!")
-            embed.add_field(name="SFM", value="Get a post from r/SFMCompileClub!")
-            embed.add_field(name="Waifu", value="Get a post from r/WaifusGoneWild!")
-            embed.add_field(name="Lesbian", value="Get a post from r/lesbians!")
-            embed.add_field(name="Futanari", value="Get a post from r/futanari!")
-            embed.add_field(name="BDSM", value="Get a post from r/BSDM!")
-            embed.set_footer(text="For more information on a command, please use 'cb help command.'")
+            if nsfw is not True:
+                embed = discord.Embed(title="NSFW Commands", color=0xFFFAFA, description="You cannot view NSFW commands in non-NSFW marked channels.")
+            else:
+                embed = discord.Embed(title="NSFW Commands", color=0xFFFAFA)
+                embed.add_field(name="Sauce", value="Search for source codes on nhentai.com, or don't provide a code for a "
+                "random nhentai.com image!")
+                embed.add_field(name="Rule34", value="Search for posts on Rule34.xxx, or don't provide a search term for "
+                "a random post!")
+                embed.add_field(name="Hentai", value="Get a random hentai image from r/hentai!")
+                embed.add_field(name="Porn", value="get a porn post from r/porn!")
+                embed.add_field(name="Boobs", value="Get a boob post from r/boobs!")
+                embed.add_field(name="Pussy", value="Get a pussy post from r/pussy!")
+                embed.add_field(name="Boobdrop", value="Get a boob drop post from r/tittydrop!")
+                embed.add_field(name="Feet", value="What type of cretin unironically has a foot fetish?")
+                embed.add_field(name="Gay", value="Get a porn post from r/gayporn!")
+                embed.add_field(name="Overwatch", value="Get a porn post from r/Overwatch_porn!")
+                embed.add_field(name="SFM", value="Get a post from r/SFMCompileClub!")
+                embed.add_field(name="Waifu", value="Get a post from r/WaifusGoneWild!")
+                embed.add_field(name="Lesbian", value="Get a post from r/lesbians!")
+                embed.add_field(name="Futanari", value="Get a post from r/futanari!")
+                embed.add_field(name="BDSM", value="Get a post from r/BSDM!")
+                embed.set_footer(text="For more information on a command, please use 'cb help command.'")
             
         return embed
 
     @commands.group(invoke_without_command=True)
     async def help(self, ctx, command=None):
         if command is None:
-            embed0 = await self.getembed("help")
-            embed1 = await self.getembed("fun")
-            embed2 = await self.getembed("utility")
-            embed3 = await self.getembed("economy")
-            embed4 = await self.getembed("image")
-            embed5 = await self.getembed("support")
-            embed6 = await self.getembed("nsfw")
+            embed0 = await self.getembed("help", ctx.channel.is_nsfw())
+            embed1 = await self.getembed("fun", ctx.channel.is_nsfw())
+            embed2 = await self.getembed("utility", ctx.channel.is_nsfw())
+            embed3 = await self.getembed("economy", ctx.channel.is_nsfw())
+            embed4 = await self.getembed("image", ctx.channel.is_nsfw())
+            embed5 = await self.getembed("support", ctx.channel.is_nsfw())
+            embed6 = await self.getembed("nsfw", ctx.channel.is_nsfw())
 
             embeds = [embed0, embed1, embed2, embed3, embed4, embed5, embed6]
 
@@ -524,6 +530,8 @@ class Help(commands.Cog):
                 await ctx.send(embed=embed)
             except:
                 try:
+                    if command == 'nsfw' and not ctx.channel.is_nsfw():
+                        return await ctx.send("You have to be in an NSFW channel to see NSFW commands.")
                     embed = await self.getembed(command)
                     await ctx.send(embed=embed)
                 except:

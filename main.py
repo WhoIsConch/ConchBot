@@ -18,7 +18,7 @@ def prefix(bot, message):
     result = cursor.fetchone()
     prefix = str(result[0])
     user_id = bot.user.id
-    base = [f'<@!{user_id}> ', f'<@{user_id}> ', 'cb ', 'Cb ', 'CB ', 'cB ', 'cb!', 'Cb!', 'CB!', 'cB!']
+    base = [f'<@!{user_id}> ', f'<@{user_id}> ', 'cb ', 'Cb ', 'CB ', 'cB ']
     base.append(prefix)
     return base
 

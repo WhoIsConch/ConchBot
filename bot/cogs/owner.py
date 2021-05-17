@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from jishaku.codeblocks import codeblock_converter
 import logging
 import psutil
-
+import asyncio
 
 load_env = load_dotenv()
 
@@ -106,6 +106,15 @@ class Owner(commands.Cog):
     async def eval(self, ctx, *, code: codeblock_converter):
         cog = self.client.get_cog("Jishaku")
         await cog.jsk_python(ctx, argument=code)
+    
+
+    @commands.command()
+    async def refresh(self, ctx):
+        cog = self.client.get_cog("Jishaku")
+        await cog.jsk_git(ctx, argument=codeblock_converter('pull'))
+        await asyncio.sleep(2)  # allow jsk git pull to finish
+        restart = self.client.get_command('restart')
+        await ctx.invoke(restart)
 
     @commands.command()
     async def restart(self, ctx):
@@ -118,7 +127,8 @@ class Owner(commands.Cog):
                 logging.error(e)
             python = sys.executable
             os.execl(python, python, *sys.argv)
-        await self.bot.logout()
+        python = sys.executable
+        os.execl(python, python, *sys.argv)
 
 def setup(client):
     client.add_cog(Owner(client))

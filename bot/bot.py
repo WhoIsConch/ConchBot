@@ -10,8 +10,8 @@ from bot.cogs.utils import errors
 load_env = load_dotenv()
 
 
-def prefix(bot, message):
-    user_id = bot.user.id
+def prefix(client):
+    user_id = client.user.id
     base = [f'<@!{user_id}> ', f'<@{user_id}> ', 'cb ', 'Cb ', 'CB ', 'cB ']
     return base
 

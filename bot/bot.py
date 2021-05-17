@@ -70,9 +70,3 @@ class Client(commands.Bot):
         TOKEN = os.getenv("TOKEN")
         
         super().run(TOKEN, reconnect=True)
-
-
-        
-
-    
-            

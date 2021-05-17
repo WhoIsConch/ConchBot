@@ -108,16 +108,14 @@ class Owner(commands.Cog):
 
     @commands.command()
     async def restart(self, ctx):
-        if sys.stdin.isatty() or True:  # if the bot was run from the command line, updated to default true
-            try:
-                p = psutil.Process(os.getpid())
-                for handler in p.open_files() + p.connections():
-                    os.close(handler.fd)
-            except Exception as e:
-                logging.error(e)
+        def restart_program():
             python = sys.executable
-            os.execl(python, python, *sys.argv)
-        await self.bot.logout()
+            os.execl(python, python, * sys.argv)
+
+        embed = discord.Embed(title="Bot Restart...")
+        embed.add_field(name="I'll be back soon", value="Don't worry", inline=True)
+        await ctx.send(embed=embed)
+        restart_program()
 
 def setup(client):
     client.add_cog(Owner(client))

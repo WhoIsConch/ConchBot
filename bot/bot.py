@@ -11,8 +11,6 @@ load_env = load_dotenv()
 class Client(commands.Bot):
     def __init__(self):
         super().__init__(intents=discord.Intents.all(), command_prefix=['cb ', 'cB ', 'Cb ', 'CB '])
-    
-
 
 
     def load_cogs(self):
@@ -56,5 +54,3 @@ class Client(commands.Bot):
 
     
             
-
-

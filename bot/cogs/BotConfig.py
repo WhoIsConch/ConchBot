@@ -7,7 +7,7 @@ class Config(commands.Cog):
         self.client = client
 
     async def check_ff(self, guild):
-        db = await aiosqlite.connect('config.db')
+        db = await aiosqlite.connect('db/config.db')
         cursor = await db.cursor()
         await cursor.execute(f"SELECT familyfriendly FROM config WHERE guild_id = {guild.id}")
         check = await cursor.fetchone()
@@ -38,7 +38,7 @@ class Config(commands.Cog):
     
     @config.command(disabled=True)
     async def ff(self, ctx, mode):
-        db = await aiosqlite.connect('config.db')
+        db = await aiosqlite.connect('db/config.db')
         cursor = await db.cursor()
         status = await self.check_ff(ctx.guild)
         if mode == "activate":

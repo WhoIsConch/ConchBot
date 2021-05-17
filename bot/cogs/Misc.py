@@ -9,11 +9,10 @@ dbltoken = os.getenv('DBLTOKEN')
 class Misc(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.dbl = dbl.DBLClient(self.client, dbltoken)
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        db = await aiosqlite.connect('config.db')
+        db = await aiosqlite.connect('db/config.db')
         cursor = await db.cursor()
         for channel in guild.text_channels:
             if channel.permissions_for(guild.me).send_messages:
@@ -59,7 +58,7 @@ class Misc(commands.Cog):
     
     @blacklist.command()
     async def add(self, ctx, id):
-        db = await aiosqlite.connect("config.db")
+        db = await aiosqlite.connect("db/config.db")
         cursor = await db.cursor()
         await cursor.execute(f"SELECT id FROM blacklist WHERE id = {id}")
         result = await cursor.fetchone()
@@ -74,7 +73,7 @@ class Misc(commands.Cog):
 
     @blacklist.command()
     async def remove(self, ctx, id):
-        db = await aiosqlite.connect("config.db")
+        db = await aiosqlite.connect("db/config.db")
         cursor = await db.cursor()
         await cursor.execute(f"SELECT id FROM blacklist WHERE id = {id}")
         result = await cursor.fetchone()

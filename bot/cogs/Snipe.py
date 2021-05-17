@@ -8,10 +8,12 @@ class Snipe(commands.Cog):
         self.bot = bot
         self.delete_snipes = dict()
         self.edit_snipes = dict()
+        self.delete_snipes_attachments = dict()
         
     @commands.Cog.listener()
     async def on_message_delete(self, message):
         self.delete_snipes[message.channel] = message
+        self.delete_snipes_attachments[message.channel] = message.attachments
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
@@ -31,6 +33,10 @@ class Snipe(commands.Cog):
                     timestamp=sniped_message.created_at
                 )
                 result.set_author(name=sniped_message.author.display_name, icon_url=sniped_message.author.avatar_url)
+                try:
+                    result.set_image(url=self.delete_snipes_attachments[ctx.channel][0].url)
+                except:
+                    pass
                 await ctx.send(embed=result)
                 
     @snipe_group.command(name='edit')

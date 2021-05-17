@@ -340,7 +340,7 @@ class Currency(commands.Cog):
         
         people = ['Phil Swift', 'Hugh Jass', 'Mike Oxlong', 'UnsoughtConch', 'That bitch stacy',
                     'Your grumpy old neighbor', 'Jerk Mehoff', 'That one kid from school who only showers once a month', 'I',
-                    'Jeff Bezos', 'Bobby', 'Garret Bobby Ferguson', "Fay Gott", "Ree Todd", "Totally Not a Burglar"]
+                    'Jeff Bezos', 'Bobby', 'Garret Bobby Ferguson', "Fay Gott", "Ree Todd", "Totally Not a Burglar", "Bob", "Bill"]
 
         person = random.choice(people)
         chance = random.randint(0, 2)

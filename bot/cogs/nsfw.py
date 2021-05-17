@@ -253,5 +253,59 @@ class NSFW(commands.Cog):
             await msg.delete()
             await ctx.send(embed=embed)
 
+    @commands.command(aliases=["futa"])
+    async def futanari(self, ctx):
+        msg = await ctx.send("Getting your porn...")
+        subreddit = await reddit.subreddit('futanari')
+        top = subreddit.top(limit=50)
+        all_subs = []
+
+        async for submission in top:
+            all_subs.append(submission)
+        
+        ransub = random.choice(all_subs)
+
+        embed = discord.Embed(title=ransub.title, colour=ctx.author.colour, url=ransub.url)
+        embed.set_image(url=ransub.url)
+        embed.set_footer(text=f"Posted by {ransub.author} on Reddit. | ❤ {ransub.ups} | 💬 {ransub.num_comments}")
+        await msg.delete()
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=["lesbo"])
+    async def lesbian(self, ctx):
+        msg = await ctx.send("Getting your porn...")
+        subreddit = await reddit.subreddit('lesbians')
+        top = subreddit.top(limit=50)
+        all_subs = []
+
+        async for submission in top:
+            all_subs.append(submission)
+        
+        ransub = random.choice(all_subs)
+
+        embed = discord.Embed(title=ransub.title, colour=ctx.author.colour, url=ransub.url)
+        embed.set_image(url=ransub.url)
+        embed.set_footer(text=f"Posted by {ransub.author} on Reddit. | ❤ {ransub.ups} | 💬 {ransub.num_comments}")
+        await msg.delete()
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def bdsm(self, ctx):
+        msg = await ctx.send("Getting your porn...")
+        subreddit = await reddit.subreddit('bdsm')
+        top = subreddit.top(limit=50)
+        all_subs = []
+
+        async for submission in top:
+            all_subs.append(submission)
+        
+        ransub = random.choice(all_subs)
+
+        embed = discord.Embed(title=ransub.title, colour=ctx.author.colour, url=ransub.url)
+        embed.set_image(url=ransub.url)
+        embed.set_footer(text=f"Posted by {ransub.author} on Reddit. | ❤ {ransub.ups} | 💬 {ransub.num_comments}")
+        await msg.delete()
+        await ctx.send(embed=embed)
+
 def setup(client):
     client.add_cog(NSFW(client))

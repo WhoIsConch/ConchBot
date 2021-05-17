@@ -37,41 +37,41 @@ class Fun(commands.Cog):
     async def on_message(self, message):
         if message.author.bot:
             return
-        else:
-            if message.channel.name == "conchchat":
-                try:
-                    flag = False
-                    votes = await self.dbl.get_bot_upvotes()
-                    for item in votes:
-                        if int(item['id']) == int(message.author.id):
-                            flag = True
-                            break
-                    if flag is True:
-                        await message.channel.trigger_typing()
-                        aimsg = await rs.get_ai_response(message.content)
-                        await message.reply(aimsg)
-                    else:
-                        await message.channel.trigger_typing()
-                        aimsg = await rs.get_ai_response(message.content)
-                        await message.reply(f"{aimsg}\n\n*Consider voting for me on Top.gg! (<https://bit.ly/2PiLbwh>) "
-                        "It only takes a second of your time and you won't see this message anymore!*")
-                except AttributeError:
+        if message.channel.name == "conchchat":
+            try:
+                flag = False
+                votes = await self.dbl.get_bot_upvotes()
+                for item in votes:
+                    if int(item['id']) == int(message.author.id):
+                        flag = True
+                        break
+                if flag is True:
                     await message.channel.trigger_typing()
                     aimsg = await rs.get_ai_response(message.content)
                     await message.reply(aimsg)
-                except httpx.ReadTimeout:
-                    await ctx.send("It seems my API has timed out. Please give me a few minutes, and if the problem "
-                    "continues, please contact UnsoughtConch via my `cb support` command.")
-            else:
-                pass
+                else:
+                    await message.channel.trigger_typing()
+                    aimsg = await rs.get_ai_response(message.content)
+                    await message.reply(f"{aimsg}\n\n*Consider voting for me on Top.gg! (<https://bit.ly/2PiLbwh>) "
+                    "It only takes a second of your time and you won't see this message anymore!*")
+            except AttributeError:
+                await message.channel.trigger_typing()
+                aimsg = await rs.get_ai_response(message.content)
+                await message.reply(aimsg)
+            except httpx.ReadTimeout:
+                await message.channel.send("It seems my API has timed out. Please give me a few minutes, and if the problem "
+                "continues, please contact UnsoughtConch via my `cb support` command.")
+        else:
+            pass
         try:
             if message.guild.id == 724050498847506433:
                 if "retard" in message.content.lower():
                     await message.add_reaction("☹")
         except:
             pass
-            
-        
+
+        if message.content == "<@!786620946412863538>":
+            await message.channel.send("My prefix is `cb `")
 
     @commands.command(aliases=["chatbot"])
     @commands.has_permissions(manage_guild=True)
@@ -94,13 +94,6 @@ class Fun(commands.Cog):
             await ctx.send("Okay. Cancelling...")
         else:
             await ctx.send("That's not a valid option.")
-
-
-    # @commands.command()
-    # async def teste(self, ctx):
-    #     webhook = await ctx.channel.webhooks()
-        
-        
 
     @commands.command()
     async def meme(self, ctx):

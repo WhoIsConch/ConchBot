@@ -278,111 +278,234 @@ cmds = {
         "desc" : "Removes ConchBot from your server.",
         "htu" : "cb leave",
         "aliases" : "*No Aliases*"
+    },
+    "sauce" : {
+        "title" : "Sauce Command",
+        "desc" : "\"cb sauce\" grabs a random image from nhentai.com, while \"cb sauce {id}\" searches for a certain comic!",
+        "htu" : "cb sauce {[optional]: ID}",
+        "aliases" : "*No Aliases*"
+    },
+    "rule34" : {
+        "title" : "Rule34 Command",
+        "desc" : "\"cb rule34\" grabs a random image from rule34.xxx, while \"cb rule34 {tag}\" searches for posts with that tag!",
+        "htu" : "cb rule34 {[optional]: tag}",
+        "aliases" : "\"r34\""
+    },
+    "hentai" : {
+        "title" : "Hentai Command",
+        "desc" : "Grabs a random post from r/hentai!",
+        "htu" : "cb hentai",
+        "aliases" : "*No Aliases*"
+    },
+    "porn" : {
+        "title" : "Porn Command",
+        "desc" : "Grabs a random post from r/porn!",
+        "htu" : "cb porn",
+        "aliases" : "*No Aliases*"
+    },
+    "boobs" : {
+        "title" : "Boobs Command",
+        "desc" : "Grabs a random post from r/boobs!",
+        "htu" : "cb boobs",
+        "aliases" : "\"boob,\" \"tits,\" \"tit\""
+    },
+    "pussy" : {
+        "title" : "Pussy Command",
+        "desc" : "Grabs a random post from r/pussy!",
+        "htu" : "cb pussy",
+        "aliases" : "\"vagina\""
+    },
+    "boobdrop" : {
+        "title" : "Boob Drop Command",
+        "desc" : "Get a boob drop post from r/tittydrop!",
+        "htu" : "cb boobdrop",
+        "aliases" : "\"tittydrop,\" \"boobdrop\""
+    },
+    "feet" : {
+        "title" : "Feet Command",
+        "desc" : "What type of cretin unironically has a foot fetish?",
+        "htu" : "You don't.",
+        "aliases" : "*No Aliases*"
+    },
+    "gay" : {
+        "title" : "Gay Command",
+        "desc" : "Get a porn post from r/gayporn!",
+        "htu" : "cb gay",
+        "aliases" : "*No Aliases*"
+    },
+    "lesbian" : {
+        "title" : "Lesbian Command",
+        "desc" : "Get a post from r/lesbians!",
+        "htu" : "cb lesbian",
+        "aliases" : "\"lesbo\""
+    },
+    "overwatch" : {
+        "title" : "Overwatch Command",
+        "desc" : "Get a porn post from r/Overwatch_porn!",
+        "htu" : "cb overwatch",
+        "aliases" : "*No Aliases*"
+    },
+    "sfm" : {
+        "title" : "SFM Command",
+        "desc" : "Get a post from r/SFMCompileClub!",
+        "htu" : "cb sfm",
+        "aliases" : "*No Aliases*"
+    },
+    "waifu" : {
+        "title" : "Waifu Command",
+        "desc" : "Get a post from r/WaifusGoneWild!",
+        "htu" : "cb waifu",
+        "aliases" : "*No Aliases*"
+    },
+    "futa" : {
+        "title" : "Futa Command",
+        "desc" : "Get a post from r/futanari!",
+        "htu" : "cb futa",
+        "aliases" : "\"futanari\""
+    },
+    "bdsm" : {
+        "title" : "BDSM Command",
+        "desc" : "Get a post from r/BDSM!",
+        "htu" : "cb bdsm",
+        "aliases" : "*No Aliases*"
     }
 }
 
 class Help(commands.Cog):
     def __init__(self, client):
         self.client = client
+    
+    async def getembed(self, type, nsfw):
+        if type == "help":
+            if nsfw is True:
+                cmds = "`Sauce, Rule34, Hentai, Porn, Boobs, Pussy, Boobdrop, Feet, Gay, Overwatch, SFM, Waifu, Lesbain, Futanari, BDSM`"
+            else:
+                cmds = "`[COMMANDS EXPUNGED]`"
+            embed = discord.Embed(title="ConchBot Commands", colour=discord.Colour.green())
+            embed.add_field(name="ConchBot Help", value="ConchBot is a small bot trying to grow, so your support would"
+            " be amazing! Even as much as a vote on Top.gg or DBL can help greatly.\nMy command prefix is `cb `.\n"
+            "You can see my latest updates via \"cb updates\"", inline=False)
+            embed.add_field(name="Fun Commands", value="`AI, Echo, 8ball, Google, Chance, Pfp, Joke, Meme, Reddit`\n"
+            "View more information on page `1`.")
+            embed.add_field(name="Utility Commands", value="`Ping, Clear, Stats`\nView more information on page `2`.")
+            embed.add_field(name="Economy Commands", value="`Inventory, Deposit, Withdraw, Buy, Sell, Shop, Beg, "
+            "Steal, Give, Slots, Daily, Use`\nView more information on page `3`.")
+            embed.add_field(name="Image Commands", value="`Fuck, Brain, MentalIllness, idputmy, isthis`\nView more"
+            " information on page `4`.")
+            embed.add_field(name="Support Commands", value="`Report, Suggest, Invite, Vote, Vote Claim`\nView more"
+            " information on page `5`.")
+            embed.add_field(name="NSFW Commands", value=cmds + "\nView more information on page `6`.")
+            embed.add_field(name="Extra Links", value="[Invite Me!](https://top.gg/bot/733467297666170980/invite/)"
+            " | [Support Server](https://discord.gg/PyAcRfukvc) | [Website](https://conch.glitch.me) "
+            "| [Vote on Top.gg](https://top.gg/bot/733467297666170980/vote/)"
+            " | [Vote on Discord Bot List](https://discordbotlist.com/bots/conchbot/upvote)", inline=False)
+            embed.set_footer(text = "Discord ConchBot | Made by UnsoughtConch")
+
+        elif type == "fun":
+            embed = discord.Embed(title="ConchBot Fun Commands", colour=discord.Color.gold())
+            embed.add_field(name="AI", value="Tells you how to talk to ConchBot's AI!")
+            embed.add_field(name="Echo", value="Sends a message in a specified channel.")
+            embed.add_field(name="8ball", value="Ask the 8ball a question!")
+            embed.add_field(name="Google", value="Googles something for you!")
+            embed.add_field(name="Chance", value="Rates the chance of something happening")
+            embed.add_field(name="Pfp", value="Shows you or someone else's profile photo.")
+            embed.add_field(name="Joke", value="Get a joke from the r/jokes subreddit.")
+            embed.add_field(name="Meme", value="Get a nice little meme from the r/memes subreddit.")
+            embed.add_field(name="Reddit", value="Specify a subreddit and get a post from there!")
+            embed.add_field(name="Snipe", value="Snipe a previously deleted message, or an edited message with \"snipe edit!\"")
+            embed.add_field(name="FBI", value="Look through the FBI watchlist! \"fbi details\" gives you a more descriptive"
+            "version of the person you are looking at.")
+            embed.set_footer(text="For more information on a certain command, please use 'cb help command.'")
+
+        elif type == "utility":
+            embed = discord.Embed(title="ConchBot Utility Commands", colour=discord.Color.greyple())
+            embed.add_field(name="Ping", value="To see my ping. Maybe you're into knowing how long it'll take me"
+            " to respond.")
+            embed.add_field(name="Clear", value="Clear a certain amount of messages from a channel.")
+            embed.add_field(name="Stats", value="View ConchBot's stats, such as server count, bot version, "
+            "Python version and more.")
+            embed.add_field(name="Tag", value="Creates a custom command, or tag!")
+            embed.add_field(name="Updates", value="Shows ConchBot's latest updates!")
+            embed.add_field(name="Leave", value="Makes ConchBot leave your server.")
+            embed.set_footer(text="For more information on a certain command, please use 'cb help command'")
+        
+        elif type == "economy":
+            embed = discord.Embed(title="Economy Commands", colour=discord.Color.green())
+            embed.add_field(name="Inventory", value="Shows your bank and wallet balance, as well as what items you own.")
+            embed.add_field(name="Deposit", value="Deposit moners from your wallet to your bank.")
+            embed.add_field(name="Withdraw", value="Withdraws moners from your bank to your wallet.")
+            embed.add_field(name="Buy", value="Buy something from the shop.")
+            embed.add_field(name="Sell", value="Sell something you have in your inventory.")
+            embed.add_field(name="Shop", value="View the items in the shop available for purchase.")
+            embed.add_field(name="Beg", value="Beg for some moners.")
+            embed.add_field(name="Steal", value="Steal from other people!")
+            embed.add_field(name="Give", value="A highly interactive command to let you give people either"
+            " moners or items!")
+            embed.add_field(name="Slots", value="Bet your money, can get doubled, pentupled, or dectupled!")
+            embed.add_field(name="Daily", value="Collect your daily moners.")
+            embed.add_field(name="Use", value="Use an item in your inventory!")
+            embed.set_footer(text="For more information on a command, please use 'cb help command'")
+
+        elif type == "image":
+            embed = discord.Embed(title="Image Commands", colour=discord.Color.magenta())
+            embed.add_field(name="Fuck Command", value="Creates a meme in the 'all my homies hate' format!")
+            embed.add_field(name="Brain Command", value="Creates a meme in the 'are you going to sleep?' format!")
+            embed.add_field(name="Mentalillness", value="Creates a meme in the 'drawings made by people with mental "
+            "ilness' format!")
+            embed.add_field(name="idputmy", value="Creates a meme in the 'this is where I'd put my trophy, if I had one'"
+            " format!")
+            embed.add_field(name="isthis", value="Creates a meme in the 'is this a pigeon?' format!")
+            embed.add_field(name="tradeoffer", value="Creates a meme in the 'Trade Offer' format!")
+            embed.set_footer(text="For more information on a command, please use 'cb help command.'")
+
+        elif type == "support":
+            embed = discord.Embed(title="Support Commands", colour=discord.Color.red())
+            embed.add_field(name="Supportc", value="Kind of like a second support help command, but with more" 
+            " information.")
+            embed.add_field(name="Report", value="Report a ConchBot bug.")
+            embed.add_field(name="Suggest", value="Give a ConchBot suggestion!")
+            embed.add_field(name="Invite", value="Invite ConchBot to your server, and gain an invite to the Support server!", inline=False)
+            embed.add_field(name="Vote", value="Returns links where you can vote for ConchBot")
+            embed.set_footer(text="For more information on a command, please use 'cb help command.'")
+
+        elif type == "nsfw":
+            if nsfw is not True:
+                embed = discord.Embed(title="NSFW Commands", color=0xFFFAFA, description="You cannot view NSFW commands in non-NSFW marked channels.")
+            else:
+                embed = discord.Embed(title="NSFW Commands", color=0xFFFAFA)
+                embed.add_field(name="Sauce", value="Search for source codes on nhentai.com, or don't provide a code for a "
+                "random nhentai.com image!")
+                embed.add_field(name="Rule34", value="Search for posts on Rule34.xxx, or don't provide a search term for "
+                "a random post!")
+                embed.add_field(name="Hentai", value="Get a random hentai image from r/hentai!")
+                embed.add_field(name="Porn", value="get a porn post from r/porn!")
+                embed.add_field(name="Boobs", value="Get a boob post from r/boobs!")
+                embed.add_field(name="Pussy", value="Get a pussy post from r/pussy!")
+                embed.add_field(name="Boobdrop", value="Get a boob drop post from r/tittydrop!")
+                embed.add_field(name="Feet", value="What type of cretin unironically has a foot fetish?")
+                embed.add_field(name="Gay", value="Get a porn post from r/gayporn!")
+                embed.add_field(name="Overwatch", value="Get a porn post from r/Overwatch_porn!")
+                embed.add_field(name="SFM", value="Get a post from r/SFMCompileClub!")
+                embed.add_field(name="Waifu", value="Get a post from r/WaifusGoneWild!")
+                embed.add_field(name="Lesbian", value="Get a post from r/lesbians!")
+                embed.add_field(name="Futanari", value="Get a post from r/futanari!")
+                embed.add_field(name="BDSM", value="Get a post from r/BSDM!")
+                embed.set_footer(text="For more information on a command, please use 'cb help command.'")
+            
+        return embed
 
     @commands.group(invoke_without_command=True)
     async def help(self, ctx, command=None):
         if command is None:
-            embed0 = discord.Embed(
-                title="ConchBot Commands",
-                colour=ctx.author.colour
-            )
-            embed0.add_field(name="ConchBot Help", value="ConchBot is a small bot trying to grow, so your support would"
-            " be amazing! Even as much as a vote on Top.gg or DBL can help greatly.\nMy command prefix is `cb `.\n"
-            "You can see my latest updates via \"cb updates\"", inline=False)
-            embed0.add_field(name="Fun Commands", value="`AI, Echo, 8ball, Google, Chance, Pfp, Joke, Meme, Reddit`\n"
-            "View more information on page `1`.")
-            embed0.add_field(name="Utility Commands", value="`Ping, Clear, Stats`\nView more information on page `2`.")
-            embed0.add_field(name="Economy Commands", value="`Inventory, Deposit, Withdraw, Buy, Sell, Shop, Beg, "
-            "Steal, Give, Slots, Daily, Use`\nView more information on page `3`.")
-            embed0.add_field(name="Image Commands", value="`Fuck, Brain, MentalIllness, idputmy, isthis`\nView more"
-            " information on page `4`.")
-            embed0.add_field(name="Support Commands", value="`Report, Suggest, Invite, Vote, Vote Claim`\nView more"
-            " information on page `5`.")
-            embed0.add_field(name="Extra Links", value="[Invite Me!](https://top.gg/bot/733467297666170980/invite/)"
-            " | [Support Server](https://discord.gg/PyAcRfukvc) | [Website](https://conch.glitch.me) "
-            "| [Vote on Top.gg](https://top.gg/bot/733467297666170980/vote/)"
-            " | [Vote on Discord Bot List](https://discordbotlist.com/bots/conchbot/upvote)", inline=False)
-            embed0.set_footer(text = "Discord ConchBot | Made by UnsoughtConch")
-            
-            
-            embed1 = discord.Embed(
-                title="ConchBot Fun Commands",
-                colour = ctx.author.colour
-            )
-            embed1.add_field(name="AI", value="Tells you how to talk to ConchBot's AI!", inline=False)
-            embed1.add_field(name="Echo", value="Sends a message in a specified channel.", inline=False)
-            embed1.add_field(name="8ball", value="Ask the 8ball a question!", inline=False)
-            embed1.add_field(name="Google", value="Googles something for you!", inline=False)
-            embed1.add_field(name="Chance", value="Rates the chance of something happening", inline=False)
-            embed1.add_field(name="Pfp", value="Shows you or someone else's profile photo.", inline=False)
-            embed1.add_field(name="Joke", value="Get a joke from the r/jokes subreddit.", inline=False)
-            embed1.add_field(name="Meme", value="Get a nice little meme from the r/memes subreddit.", inline=False)
-            embed1.add_field(name="Reddit", value="Specify a subreddit and get a post from there!", inline=False)
-            embed1.add_field(name="Snipe", value="Snipe a previously deleted message, or an edited message with \"snipe edit!\"")
-            embed1.add_field(name="FBI", value="Look through the FBI watchlist! \"fbi details\" gives you a more descriptive"
-            "version of the person you are looking at.")
-            embed1.set_footer(text="For more information on a certain command, please use 'cb help command.'")
-            
-            embed2 = discord.Embed(
-                title="ConchBot Utility Commands",
-                colour = ctx.author.colour
-            )
-            embed2.add_field(name="Ping", value="To see my ping. Maybe you're into knowing how long it'll take me"
-            " to respond.", inline=False)
-            embed2.add_field(name="Clear", value="Clear a certain amount of messages from a channel.", inline=False)
-            embed2.add_field(name="Stats", value="View ConchBot's stats, such as server count, bot version, "
-            "Python version and more.", inline=False)
-            embed2.add_field(name="Tag", value="Creates a custom command, or tag!")
-            embed2.add_field(name="Updates", value="Shows ConchBot's latest updates!")
-            embed2.add_field(name="Leave", value="Makes ConchBot leave your server.")
-            embed2.set_footer(text="For more information on a certain command, please use 'cb help command'")
+            embed0 = await self.getembed("help", ctx.channel.is_nsfw())
+            embed1 = await self.getembed("fun", ctx.channel.is_nsfw())
+            embed2 = await self.getembed("utility", ctx.channel.is_nsfw())
+            embed3 = await self.getembed("economy", ctx.channel.is_nsfw())
+            embed4 = await self.getembed("image", ctx.channel.is_nsfw())
+            embed5 = await self.getembed("support", ctx.channel.is_nsfw())
+            embed6 = await self.getembed("nsfw", ctx.channel.is_nsfw())
 
-            embed3 = discord.Embed(
-                title="Currency Commands",
-                colour=ctx.author.colour
-                )
-            embed3.add_field(name="Inventory", value="Shows your bank and wallet balance, as well as what items you own.", inline=False)
-            embed3.add_field(name="Deposit", value="Deposit moners from your wallet to your bank.", inline=False)
-            embed3.add_field(name="Withdraw", value="Withdraws moners from your bank to your wallet.", inline=False)
-            embed3.add_field(name="Buy", value="Buy something from the shop.", inline=False)
-            embed3.add_field(name="Sell", value="Sell something you have in your inventory.", inline=False)
-            embed3.add_field(name="Shop", value="View the items in the shop available for purchase.", inline=False)
-            embed3.add_field(name="Beg", value="Beg for some moners.", inline=False)
-            embed3.add_field(name="Steal", value="Steal from other people!", inline=False)
-            embed3.add_field(name="Give", value="A highly interactive command to let you give people either"
-            " moners or items!", inline=False)
-            embed3.add_field(name="Slots", value="Bet your money, can get doubled, pentupled, or dectupled!", inline=False)
-            embed3.add_field(name="Daily", value="Collect your daily moners.", inline=False)
-            embed3.add_field(name="Use", value="Use an item in your inventory!", inline=False)
-            embed3.set_footer(text="For more information on a command, please use 'cb help command'")
-            
-            embed4 = discord.Embed(title="Image Commands", colour=ctx.author.colour)
-            embed4.add_field(name="Fuck Command", value="Creates a meme in the 'all my homies hate' format!", inline=False)
-            embed4.add_field(name="Brain Command", value="Creates a meme in the 'are you going to sleep?' format!", inline=False)
-            embed4.add_field(name="Mentalillness", value="Creates a meme in the 'drawings made by people with mental "
-            "ilness' format!", inline=False)
-            embed4.add_field(name="idputmy", value="Creates a meme in the 'this is where I'd put my trophy, if I had one'"
-            " format!", inline=False)
-            embed4.add_field(name="isthis", value="Creates a meme in the 'is this a pigeon?' format!", inline=False)
-            embed4.add_field(name="tradeoffer", value="Creates a meme in the 'Trade Offer' format!", inline=False)
-            embed4.set_footer(text="For more information on a command, please use 'cb help command.'")
-            
-            embed5 = discord.Embed(title="Support Commands", colour=ctx.author.colour)
-            embed5.add_field(name="Supportc", value="Kind of like a second support help command, but with more" 
-            " information.")
-            embed5.add_field(name="Report", value="Report a ConchBot bug.", inline=False)
-            embed5.add_field(name="Suggest", value="Give a ConchBot suggestion!", inline=False)
-            embed5.add_field(name="Invite", value="Invite ConchBot to your server, and gain an invite to the Support server!", inline=False)
-            embed5.add_field(name="Vote", value="Returns links where you can vote for ConchBot", inline=False)
-            embed5.set_footer(text="For more information on a command, please use 'cb help command.'")
-
-            embeds = [embed0, embed1, embed2, embed3, embed4, embed5]
+            embeds = [embed0, embed1, embed2, embed3, embed4, embed5, embed6]
 
             paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
             paginator.add_reaction('⏪', "back")
@@ -392,6 +515,7 @@ class Help(commands.Cog):
             paginator.add_reaction('3️⃣', "page 3")
             paginator.add_reaction('4️⃣', "page 4")
             paginator.add_reaction('5️⃣', "page 5")
+            paginator.add_reaction('6️⃣', "page 6")
             paginator.add_reaction('⏩', "next")
             
             await paginator.run(embeds)
@@ -405,7 +529,13 @@ class Help(commands.Cog):
                 embed.set_footer(text="For a list of command categories, use cb help.")
                 await ctx.send(embed=embed)
             except:
-                await ctx.send("Invalid Help Command")
+                try:
+                    if command == 'nsfw' and not ctx.channel.is_nsfw():
+                        return await ctx.send("You have to be in an NSFW channel to see NSFW commands.")
+                    embed = await self.getembed(command)
+                    await ctx.send(embed=embed)
+                except:
+                    await ctx.send("Invalid help value.")
 
 def setup(client):
     client.add_cog(Help(client))

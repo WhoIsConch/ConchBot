@@ -40,6 +40,28 @@ class Client(commands.Bot):
     async def on_ready(self):
         print("ConchBot is online!")
         await self.status_loop()
+    
+    async def shutdown(self):
+        print("------")
+        print("Conch Bot Closing connection to Discord...")
+        await super().close()
+
+    async def close(self):
+        print("------")
+        print("Conch Bot Closing on keyboard interrupt...")
+        await self.shutdown()
+
+    async def on_connect(self):
+        print("------")
+        print(f"Conch Bot Connected to Discord (latency: {self.latency*1000:,.0f} ms).")
+
+    async def on_resumed(self):
+        print("------")
+        print("Conch Bot resumed.")
+
+    async def on_disconnect(self):
+        print("------")
+        print("Conch Bot disconnected.")
 
     def run(self):
         self.load_cogs()

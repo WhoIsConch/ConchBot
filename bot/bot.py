@@ -40,6 +40,7 @@ class Client(commands.Bot):
     async def on_ready(self):
         print("ConchBot is online!")
         await self.status_loop()
+    
 
     def run(self):
         self.load_cogs()

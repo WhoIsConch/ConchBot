@@ -46,12 +46,12 @@ class Client(commands.Bot):
     async def shutdown(self):
         print("------")
         print("Conch Bot Closing connection to Discord...")
-        await super().close()
+        print("------")
 
     async def close(self):
         print("------")
-        print("Conch Bot Closing on keyboard interrupt...")
-        await self.shutdown()
+        print("Conch Bot Closing on keyboard interrupt...\n")
+        print("------")
 
     async def on_connect(self):
         print("------")

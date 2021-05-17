@@ -1,13 +1,9 @@
 import discord
 from discord.ext import commands
-<<<<<<< HEAD:cogs/owner.py
-=======
 import asyncio
->>>>>>> 2c3081bca539f25be4058fb10bc7f8a8f6945630:bot/cogs/owner.py
 import sqlite3
 import sys
 import os
-from discord.ext.commands.core import command
 from dotenv import load_dotenv
 from jishaku.codeblocks import codeblock_converter
 import logging
@@ -111,17 +107,22 @@ class Owner(commands.Cog):
         await cog.jsk_python(ctx, argument=code)
 
     @commands.command()
+    async def refresh(self, ctx):
+        cog = self.client.get_cog("Jishaku")
+        await cog.jsk_git(ctx, argument=codeblock_converter('pull'))
+        await asyncio.sleep(2)
+        restart = self.client.get_command('restart')
+        await ctx.invoke(restart)
+
+
+    @commands.command()
     async def restart(self, ctx):
-        if sys.stdin.isatty() or True:  # if the bot was run from the command line, updated to default true
-            try:
-                p = psutil.Process(os.getpid())
-                for handler in p.open_files() + p.connections():
-                    os.close(handler.fd)
-            except Exception as e:
-                logging.error(e)
+        def restart_program():
             python = sys.executable
-            os.execl(python, python, *sys.argv)
-        await self.bot.logout()
+            os.execl(python, python, * sys.argv)
+        
+        restart_program()
+
 
 def setup(client):
     client.add_cog(Owner(client))

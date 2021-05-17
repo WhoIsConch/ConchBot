@@ -39,6 +39,7 @@ class Client(commands.Bot):
 
             
     async def on_ready(self):
+        print("------")
         print("ConchBot is online!")
         await self.status_loop()
     

@@ -7,7 +7,6 @@ import asyncio
 import sqlite3
 import sys
 import os
-from discord.ext.commands.core import command
 from dotenv import load_dotenv
 from jishaku.codeblocks import codeblock_converter
 import logging

@@ -1,0 +1,139 @@
+import discord
+from discord.ext import commands
+
+class name(commands.Cog):
+    def __init__(self, client):
+        self.client = client
+
+def setup(client):
+    client.add_cog(name(client))
+
+    ---------------------------------------------------------------------------------
+
+    @client.event
+async def on_command_error(ctx,error):
+    if isinstance(error,commands.CommandOnCooldown):
+        m, s = divmod(error.retry_after, 60)
+        h, m = divmod(m, 60)
+        if int(h) == 0 and int(m) == 0:
+            em = discord.Embed(title="**Command on cooldown**", description=f'You must wait {int(s)} seconds to use this command!', colour=discord.Colour.red())
+            await ctx.send(embed=em)
+        elif int(h) == 0 and int(m) != 0:
+            em = discord.Embed(title="**Command on cooldown**", description=f' You must wait {int(m)} minutes and {int(s)} seconds to use this command!', colour=discord.Colour.red())
+            await ctx.send(embed=em)
+        else:
+            em = discord.Embed(title="**Command on cooldown**", description=f' You must wait {int(h)} hours, {int(m)} minutes and {int(s)} seconds to use this command!', colour=discord.Colour.red())
+            await ctx.send(embed=em)
+
+@commands.command(aliases=['chatbotchannel'])
+    async def aichannel(self, ctx, channel:discord.TextChannel, disabled=True):
+        db = await aiosqlite.connect('aichannels.db')
+        cursor = await db.cursor()
+        await cursor.execute(f'SELECT channel_id FROM main WHERE guild_id = {ctx.guild.id}')
+        result = await cursor.fetchone()
+        if result is None:
+            await cursor.execute(f'INSERT INTO main (guild_id, channel_id) VALUES ({ctx.guild.id}, {channel.id})')
+        else:
+            await cursor.execute(f'UPDATE main SET channel_id = {channel.id} WHERE guild_id = {ctx.guild.id}')
+        await ctx.send(f"AI bot channel set to {channel.mention}.")
+        await db.commit()
+        await cursor.close()
+        await db.close()
+
+# async def dblvote(self):
+    #     while True:
+    #         print("dblvote")
+    #         votes = await self.dbl.get_bot_upvotes()
+    #         db = await aiosqlite.connect('config.db')
+    #         cursor = await db.cursor()
+    #         await cursor.execute("SELECT userid FROM dblvote")
+    #         check = await cursor.fetchall()
+    #         for item in votes:
+    #             print(item)
+    #             print(votes)
+    #             if "id" in item.keys():
+    #                 print("thing in item keys")
+    #                 id = item["id"]
+    #                 for thing in check:
+    #                     flag = False
+    #                     await cursor.execute(f"SELECT time FROM dblvote WHERE userid = {id}")
+    #                     check0 = await cursor.fetchone()
+    #                     if check0 is None:
+    #                         if thing[0] == int(id):
+    #                             flag = True
+    #                             continue
+    #                     else:
+    #                         break
+    #                 if flag == True:
+    #                     await cursor.execute(f"INSERT INTO dblvote (userid) VALUES ({id})")
+    #         await cursor.execute("SELECT time FROM dblvote")
+    #         check1 = await cursor.fetchall()
+    #         now = datetime.datetime.now()
+    #         currenttime = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+    #         ntime = currenttime.replace(':', '')
+    #         for time in check1:
+    #             if time[0] == int(ntime):
+    #                 await cursor.execute(f"DELETE FROM dblvote WHERE time = {ntime}")
+    #         await db.commit()
+    #         await cursor.close()
+    #         await db.close()
+    #         await asyncio.sleep(60)
+
+@vote.command()
+    async def claim(self, ctx):
+        votes = await self.dbl.get_bot_upvotes()
+        flag = False
+        db = await aiosqlite.connect("config.db")
+        cursor = await db.cursor()
+        now = datetime.datetime.now()
+        await cursor.execute(f"SELECT time FROM dblvote WHERE userid = {ctx.author.id}")
+        timecheck = await cursor.fetchone()
+        await cursor.execute(f"SELECT userid FROM dblvote WHERE userid = {ctx.author.id}")
+        idcheck = await cursor.fetchone()
+        if idcheck is None:
+            embed = discord.Embed(title="Vote Not Found", colour=discord.Colour.red())
+            embed.add_field(name="Sorry, it looks like we have not found your vote yet.", value="It may take up "
+            "to two minutes for ConchBot to recognize your vote. Please be patient.")
+            embed.set_footer(text="If you are certain you voted and are not able to redeem your vote, please "
+            "join ConchBot's support server via 'cb support' and open a ticket.")
+            await ctx.send(embed=embed)
+        elif timecheck[0] is not None:
+            time = str(timecheck[0])
+            newtime = str(time[:2]) + ':' + str(time[2:])
+            embed = discord.Embed(title="Vote Already Claimed", colour=ctx.author.colour)
+            embed.add_field(name="It seems as you have already claimed your vote reward for today!",
+            value=f"You have claimed your reward at {newtime} EST, military time.")
+            embed.set_footer(text="If you think this is a mistake, please join ConchBot's support server via 'cb support'")
+            await ctx.send(embed=embed)
+        else:
+            currenttime = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+            time = currenttime.replace(':', '')
+            ntime = int(time) + 1200
+            if ntime > 2400:
+                ntime -= 2400
+            await Currency.item_func(self, ctx.author, "Bronze Conch", 1)
+            await cursor.execute(f"UPDATE dblvote SET time = '{ntime}' WHERE userid = {ctx.author.id}")
+            await ctx.send("You have claimed your vote and have been rewarded with one **Bronze Conch**! Please use it via \"cb use bronze.\"")
+        await db.commit()
+        await cursor.close()
+        await db.close()
+
+await ctx.send("You can set up a chatbot channel by naming any channel 'conchchat,' or I can do it for you! "
+        "would you like me to do it for you? `Yes` or `no`.")
+        msg = await self.client.wait_for('message', check=lambda message: message.author == ctx.author, timeout=30)
+        if "yes" in msg.content.lower():
+            await ctx.send("What category would you like this channel in? Channel categories ***must be the exact "
+            "name, capitalization and all.***")
+            msg0 = await self.client.wait_for('message', check=lambda message: message.author == ctx.author, timeout=30)
+            category = discord.utils.get(ctx.guild.categories, name=msg0.content)
+            try:
+                channel = await ctx.guild.create_text_channel('conchchat', category=category)
+            except:
+                await ctx.send("I'm sorry, but I do not have the `manage guild` requirement needed to create channels.")
+                return
+            await ctx.send(f"Done! The channel `conchchat` was created in the category `{msg0.content}`")
+        elif "no" in msg.content.lower():
+            await ctx.send("Okay. Cancelling...")
+        else:
+            await ctx.send("That's not a valid option.")
+

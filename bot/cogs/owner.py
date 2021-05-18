@@ -41,6 +41,7 @@ class Owner(commands.Cog):
         await self.client.logout()
 
     @commands.command()
+    @commands.is_owner()
     async def refresh(self, ctx):
         cog = self.client.get_cog("Jishaku")
         await cog.jsk_git(ctx, argument=codeblock_converter('pull'))
@@ -55,6 +56,7 @@ class Owner(commands.Cog):
         await cog.jsk_python(ctx, argument=code)
 
     @commands.command()
+    @commands.is_owner()
     async def restart(self, ctx):
         def restarter():
             python = sys.executable

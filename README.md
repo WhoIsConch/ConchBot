@@ -1,7 +1,7 @@
 # ConchBot
 The source code of the Discord bot ConchBot.
 
-Welcome to the GitHub repository of [Conchbot](https://github.com/ConchDev/ConchBot/)
+Welcome to the GitHub fork repository of [Conchbot](https://github.com/ConchDev/ConchBot/)
 ---
 
 ### License

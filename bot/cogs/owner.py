@@ -4,7 +4,6 @@ import asyncio
 import sqlite3
 import sys
 import os
-from discord.ext.commands.core import command
 from dotenv import load_dotenv
 from jishaku.codeblocks import codeblock_converter
 import logging
@@ -57,17 +56,14 @@ class Owner(commands.Cog):
 
     @commands.command()
     async def restart(self, ctx):
-        if sys.stdin.isatty() or True:  # if the bot was run from the command line, updated to default true
-            try:
-                p = psutil.Process(os.getpid())
-                for handler in p.open_files() + p.connections():
-                    os.close(handler.fd)
-            except Exception as e:
-                logging.error(e)
+        def restarter():
             python = sys.executable
-            os.execl(python, python, *sys.argv)
-        python = sys.executable
-        os.execl(python, python, *sys.argv)
+            os.execl(python, python, * sys.argv)
+
+        embed = discord.Embed(title="Bot Restarting...")
+        embed.add_field(name="I'll be back soon...", value="Don't worry", inline=True)
+        await ctx.send(embed=embed)
+        restarter()
 
 def setup(client):
     client.add_cog(Owner(client))

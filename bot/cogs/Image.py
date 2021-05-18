@@ -20,8 +20,8 @@ class Image(commands.Cog):
 
     @commands.command()
     async def text(self, ctx):
-        img = PIL.Image.open("MemeTemplates/IdPutMy.png")
-        font = ImageFont.truetype("arial.ttf", 22)
+        img = PIL.Image.open("bot/src/MemeTemplates/IdPutMy.png")
+        font = ImageFont.truetype("bot/src/arial.ttf", 22)
         draw = ImageDraw.Draw(img)
         fill_color = (255, 255, 255)
         stroke_color = (0, 0, 0)
@@ -37,8 +37,8 @@ class Image(commands.Cog):
         except ValueError:
             val1 = val
             val2 = None
-        img = PIL.Image.open("MemeTemplates/AllMyHomiesHateTemplate.jpg")
-        font = ImageFont.truetype("arial.ttf", 50)
+        img = PIL.Image.open("bot/src/MemeTemplates/AllMyHomiesHateTemplate.jpg")
+        font = ImageFont.truetype("bot/src/arial.ttf", 50)
         draw = ImageDraw.Draw(img)
         fill_color = (255, 255, 255)
         stroke_color = (0, 0, 0)
@@ -53,8 +53,8 @@ class Image(commands.Cog):
     @commands.command()
     async def brain(self, ctx, *, content):
         msg = await ctx.send("Creating your meme...")
-        img = PIL.Image.open("MemeTemplates/Brain.png")
-        font = ImageFont.truetype("arial.ttf", 10)
+        img = PIL.Image.open("bot/src/MemeTemplates/Brain.png")
+        font = ImageFont.truetype("bot/src/arial.ttf", 10)
         draw = ImageDraw.Draw(img)
         text = textwrap.fill(content, width=25)
         draw.text((17, 176), text, font=font, fill="Black")
@@ -75,7 +75,7 @@ class Image(commands.Cog):
         size = 128, 128
         img1 = PIL.Image.open(BytesIO(response.content))
         img1_w, img1_h = img1.size
-        img2 = PIL.Image.open("MemeTemplates/MentalIlness.png")
+        img2 = PIL.Image.open("bot/src/MemeTemplates/MentalIlness.png")
         img2_w, img2_h = img2.size
         # offset = ((img2_w - img1_w) // 2, (img2_h - img1_h) // 2)
         basewidth = 175
@@ -90,8 +90,8 @@ class Image(commands.Cog):
     @commands.command()
     async def idputmy(self, ctx, *, text):
         msg = await ctx.send("Creating your meme...")
-        img = PIL.Image.open("MemeTemplates/IdPutMy.png")
-        font = ImageFont.truetype("arial.ttf", 22)
+        img = PIL.Image.open("bot/src/MemeTemplates/IdPutMy.png")
+        font = ImageFont.truetype("bot/src/arial.ttf", 22)
         draw = ImageDraw.Draw(img)
         text = textwrap.fill(text, width=20)
         draw.text((45, 41), text, font=font, fill="White", stroke_width=2, stroke_fill="Black")
@@ -107,8 +107,8 @@ class Image(commands.Cog):
             await ctx.send("You must separate three values by commas.")
             return
         msg = await ctx.send("Creating your meme...")
-        img = PIL.Image.open("MemeTemplates/IsThis.jpg")
-        font = ImageFont.truetype("arial.ttf", 100)
+        img = PIL.Image.open("bot/src/MemeTemplates/IsThis.jpg")
+        font = ImageFont.truetype("bot/src/arial.ttf", 100)
         draw = ImageDraw.Draw(img)
         text_one = textwrap.fill(text_one, width=11)
         text_two = textwrap.fill(text_two, width=8)
@@ -127,8 +127,8 @@ class Image(commands.Cog):
             await ctx.send("You must separate three values by commas.")
             return
         msg = await ctx.send("Creating your meme...")
-        img = PIL.Image.open("MemeTemplates/TradeOffer.jpg")
-        font = ImageFont.truetype("arial.ttf", 50)
+        img = PIL.Image.open("bot/src/MemeTemplates/TradeOffer.jpg")
+        font = ImageFont.truetype("bot/src/arial.ttf", 50)
         draw = ImageDraw.Draw(img)
         text_one = textwrap.fill(text_one, width=15)
         text_two = textwrap.fill(text_two, width=13)

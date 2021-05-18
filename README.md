@@ -19,7 +19,19 @@ Also read liscense before doing. Please credit [UnsoughtConch](https://github.co
 ## How to Self-Host
 Follow the instructions to host your own ConchBot
 
-1. Install the required packages:
+1. Create a venv
+
+It is very simple to do this
+
+```
+# python -m venv [name of the venv: default - venv]
+
+python -m venv venv
+
+# [name of venv]\Scripts\activate.bat
+```
+
+2. Install the required packages:
 
 This is simple to do:
 
@@ -28,7 +40,7 @@ In your terminal, run this command
 pip install -r requirements.txt
 ```
 
-2. Configure the bot
+3. Configure the bot
 
 This is very simple since we set it up for you so this should be easy. Run the command in your terminal
 
@@ -37,7 +49,7 @@ python setup.py
 ```
 Answer the questions with a valid response
 
-3. Run the bot
+4. Run the bot
 
 Running the bot is as simple as you think since we set up everything. By doing
 

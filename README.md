@@ -19,7 +19,7 @@ Also read liscense before doing. Please credit [UnsoughtConch](https://github.co
 ## How to Self-Host
 Follow the instructions to host your own ConchBot
 
-1. Create a venv
+1. Create&Activate a/the venv
 
 It is very simple to do this
 
@@ -31,23 +31,26 @@ python -m venv venv
 
 Activating a/the venv:
 
+Windows (CMD):
+
+
 ```
-# Windows (CMD):
 # [name of venv]/Scripts/activate.bat
 
 venv/Scripts/activate.bat
 ```
 
+Windows (PowerShell):
+
 ```
-# Windows (PowerShell):
 # [name of venv]/Scripts/activate.bat
 
 venv/Scripts/activate.ps1
 ```
 
+Mac&Linux:
 
 ```
-# Mac&Linux:
 # source [name of venv]/bin/activate
 
 source venv/bin/activate

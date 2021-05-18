@@ -1,0 +1,9 @@
+python-dotenv
+rule34
+asyncpraw
+pillow
+discord
+aiosqlite
+uuid
+jishaku
+dbl

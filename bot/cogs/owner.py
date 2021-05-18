@@ -1,9 +1,6 @@
 import discord
 from discord.ext import commands
-<<<<<<< HEAD:cogs/owner.py
-=======
 import asyncio
->>>>>>> 2c3081bca539f25be4058fb10bc7f8a8f6945630:bot/cogs/owner.py
 import sqlite3
 import sys
 import os
@@ -19,58 +16,6 @@ load_env = load_dotenv()
 class Owner(commands.Cog):
     def __init__(self, client):
         self.client = client
-
-    @commands.command()
-    @commands.is_owner()
-    async def load(self, ctx, cog=None):
-        if cog is None:
-            await ctx.send("Available cogs:\nBotConfig\nCurrency\nFun\nHelp\nImage\nMisc\nOwner\nSecret\n"
-            "Snipe\nSupport\nUtility")
-        else:
-            try:
-                await self.client.load_extension(f"cogs.{cog}")
-                await ctx.send(f"{cog} loaded.")
-            except discord.ext.commands.ExtensionNotFound:
-                await ctx.send("Invalid extension.")
-            except discord.ext.commands.ExtensionAlreadyLoaded:
-                await ctx.send("Extension already loaded.")
-            except:
-                await ctx.send("Okay")
-
-    @commands.command()
-    @commands.is_owner()
-    async def unload(self, ctx, cog=None):
-        if cog is None:
-            await ctx.send("Available cogs:\nBotConfig\nCurrency\nFun\nHelp\nImage\nMisc\nOwner\nSecret\n"
-            "Snipe\nSupport\nUtility")
-        else:
-            try:
-                await self.client.unload_extension("cogs." + cog)
-                await ctx.send(f"{cog} unloaded.")
-            except discord.ext.commands.ExtensionNotFound:
-                await ctx.send("Invalid extension.")
-            except discord.ext.commands.ExtensionNotLoaded:
-                await ctx.send("Extension not loaded.")
-            except:
-                await ctx.send("Okay")
-
-    @commands.command()
-    @commands.is_owner()
-    async def reload(self, ctx, cog=None):
-        if cog is None:
-            await ctx.send("Available cogs:\nBotConfig\nCurrency\nFun\nHelp\nImage\nMisc\nOwner\nSecret\n"
-            "Snipe\nSupport\nUtility")
-        else:
-            try:
-                await self.client.unload_extension("cogs." + cog)
-                await self.client.load_extension("cogs." + cog)
-                await ctx.send(f"{cog} reloaded.")
-            except discord.ext.commands.ExtensionNotFound:
-                await ctx.send("Invalid extension.")
-            except discord.ext.commands.ExtensionNotLoaded:
-                await ctx.send("Extension not loaded.")
-            except:
-                await ctx.send("Okay")
 
     @commands.command()
     @commands.is_owner()
@@ -121,7 +66,8 @@ class Owner(commands.Cog):
                 logging.error(e)
             python = sys.executable
             os.execl(python, python, *sys.argv)
-        await self.bot.logout()
+        python = sys.executable
+        os.execl(python, python, *sys.argv)
 
 def setup(client):
     client.add_cog(Owner(client))

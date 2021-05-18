@@ -10,26 +10,17 @@ from bot.cogs.utils import errors
 load_env = load_dotenv()
 
 
-def prefix(bot, message):
-    user_id = bot.user.id
+def prefix(client):
+    user_id = client.user.id
     base = [f'<@!{user_id}> ', f'<@{user_id}> ', 'cb ', 'Cb ', 'CB ', 'cB ']
-    base.append(prefix)
     return base
 
 
 class Client(commands.Bot):
     def __init__(self):
-        intents = discord.Intents(
-            guilds=True,
-            members=True,
-            bans=True,
-            emojis=True,
-            voice_states=True,
-            messages=True,
-            reactions=True,
-        )
+        intents = discord.Intents.all()
         allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)
-        super().__init__(command_prefix=prefix, intents=intents, allowed_mentions=allowed_mentions)
+        super().__init__(command_prefix=prefix(), intents=intents, allowed_mentions=allowed_mentions, case_insensitive=True)
     
 
 

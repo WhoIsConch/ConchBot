@@ -32,16 +32,27 @@ python -m venv venv
 Activating a/the venv:
 
 ```
-# Windows:
+# Windows (CMD):
 # [name of venv]/Scripts/activate.bat
 
 venv/Scripts/activate.bat
+```
 
-# Mac and Unix:
+```
+# Windows (PowerShell):
+# [name of venv]/Scripts/activate.bat
+
+venv/Scripts/activate.ps1
+```
+
+
+```
+# Mac&Linux:
 # source [name of venv]/bin/activate
 
 source venv/bin/activate
 ```
+
 
 2. Install the required packages:
 

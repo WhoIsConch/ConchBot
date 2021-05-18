@@ -27,6 +27,11 @@ if not os.path.exists('.env'):
     pgamerx_api_key = input("Your PGamerx API id application key: ")
     env.write(f"aiapikey={pgamerx_api_key}\n")
 
+    # Github Repo Link
+    print("To get the github repository go to https://github.com and create a repository. This is for refresh command. Note: Private repository might not work")
+    github_repo_link = input("Your Github Repository Link: ")
+    env.write(f"GITHUB_REPO_LINK={github_repo_link}")
+
     # Close File
     env.close()
 

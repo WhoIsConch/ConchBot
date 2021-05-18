@@ -6,3 +6,4 @@ discord
 aiosqlite
 uuid
 jishaku
+dblpy

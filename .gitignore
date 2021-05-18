@@ -7,3 +7,5 @@
 # Pycache from 
 __pycache__/
 
+# Venv
+venv

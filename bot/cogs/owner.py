@@ -111,14 +111,14 @@ class Owner(commands.Cog):
 
     @commands.command()
     async def restart(self, ctx):
-        def restart_program():
+        def restarter():
             python = sys.executable
             os.execl(python, python, * sys.argv)
 
-        embed = discord.Embed(title="Bot Restart...")
-        embed.add_field(name="I'll be back soon", value="Don't worry", inline=True)
+        embed = discord.Embed(title="Bot Restarting...")
+        embed.add_field(name="I'll be back soon...", value="Don't worry", inline=True)
         await ctx.send(embed=embed)
-        restart_program()
+        restarter()
 
 def setup(client):
     client.add_cog(Owner(client))

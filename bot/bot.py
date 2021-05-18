@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
+
 load_env = load_dotenv()
 
 
@@ -38,18 +39,19 @@ class Client(commands.Bot):
 
             
     async def on_ready(self):
+        print("------")
         print("ConchBot is online!")
         await self.status_loop()
     
     async def shutdown(self):
         print("------")
         print("Conch Bot Closing connection to Discord...")
-        await super().close()
+        print("------")
 
     async def close(self):
         print("------")
-        print("Conch Bot Closing on keyboard interrupt...")
-        await self.shutdown()
+        print("Conch Bot Closing on keyboard interrupt...\n")
+        print("------")
 
     async def on_connect(self):
         print("------")
@@ -70,9 +72,3 @@ class Client(commands.Bot):
         TOKEN = os.getenv("TOKEN")
         
         super().run(TOKEN, reconnect=True)
-
-
-        
-
-    
-            

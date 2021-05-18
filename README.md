@@ -57,7 +57,7 @@ Steps:
 
 3. Create a PR (Pull Request)
 
-We'll look into the the PR and we ethier approve or disaprrove.
+We'll look into the the PR and we ethier approve or disapprove.
 
 ---
 

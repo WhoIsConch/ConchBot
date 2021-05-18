@@ -6,4 +6,3 @@ discord
 aiosqlite
 uuid
 jishaku
-dbl

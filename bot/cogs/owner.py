@@ -44,8 +44,8 @@ class Owner(commands.Cog):
     @commands.is_owner()
     async def refresh(self, ctx):
         cog = self.client.get_cog("Jishaku")
-        await cog.jsk_git(ctx, argument=codeblock_converter('pull'))
-        await asyncio.sleep(2)  # allow jsk git pull to finish
+        await cog.jsk_git(ctx, argument=codeblock_converter('pull https://github.com/ConchDev/ConchBot.git master'))
+        await asyncio.sleep(2)
         restart = self.client.get_command('restart')
         await ctx.invoke(restart)
 

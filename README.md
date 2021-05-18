@@ -31,6 +31,8 @@ python -m venv venv
 
 Activating a/the venv:
 
+---
+
 Windows (CMD):
 
 

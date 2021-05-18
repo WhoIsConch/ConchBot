@@ -27,8 +27,20 @@ It is very simple to do this
 # python -m venv [name of the venv: default - venv]
 
 python -m venv venv
+```
 
-# [name of venv]\Scripts\activate.bat
+Activating a/the venv:
+
+```
+# Windows:
+# [name of venv]/Scripts/activate.bat
+
+venv/Scripts/activate.bat
+
+# Mac and Unix:
+# source [name of venv]/bin/activate
+
+source venv/bin/activate
 ```
 
 2. Install the required packages:

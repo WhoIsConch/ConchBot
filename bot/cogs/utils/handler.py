@@ -2,6 +2,10 @@ import discord
 from discord.ext import commands
 import sys
 import traceback
+from dotenv import load_dotenv
+import os
+
+env = load_dotenv()
 
 class CommandErrorHandler(commands.Cog):
     def __init__(self, client):
@@ -40,7 +44,7 @@ class CommandErrorHandler(commands.Cog):
                 await ctx.send('I could not find that member. Please try again.')
 
         else:
-            error_channel = self.client.get_channel(833508151802069002)
+            error_channel = self.client.get_channel(os.getenv("ERROR_CHANNEL"))
             error_traceback = traceback.print_exc()
             await error_channel.send(f'Error Occured at {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator}: ```py {error_traceback} ```')                
 

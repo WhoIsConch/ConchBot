@@ -1,3 +1,4 @@
+from logging import error
 import os
 
 
@@ -37,7 +38,11 @@ if not os.path.exists('.env'):
     print("To get the github repository branch go to https://github.com and create or use existing a repository. This is for refresh command. Note: Private repository might not work")
     print("To get branch is where it says branch and a number if you don't see it create file or upload the code to the repo and it should appear and click on it. The default should be `main`")
     github_repo_branch = input("Your Github Repository Name: ")
-    env.write(f"GITHUB_REPO_BRANCH={github_repo_branch}")
+    env.write(f"GITHUB_REPO_BRANCH={github_repo_branch}\n")
+
+    print("We need error reporting channel so that means you need to get the id of the channel")
+    error_reporting_channel = input("Your error channel id: ")
+    env.write(f"ERROR_CHANNEL={error_reporting_channel}")
 
 
     # Close File

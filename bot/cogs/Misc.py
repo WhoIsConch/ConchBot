@@ -59,19 +59,17 @@ class Misc(commands.Cog):
     async def add(self, ctx, id):
         if id is None:
             await ctx.send("You need the id of that user")
-        if id == discord.Member:
-            id = id.id
         else:
             await ctx.send("Thats not a valid choice")
         db = await aiosqlite.connect("./bot/db/config.db")
         cursor = await db.cursor()
-        await cursor.execute(f"SELECT id FROM blacklist WHERE id = {id}")
+        await cursor.execute(f"SELECT id FROM blacklist WHERE guild_id = {ctx.guild.id}")
         result = await cursor.fetchone()
         if result is None:
-            await cursor.execute(f"INSERT INTO blacklist (id) VALUES ({id})")
-            await ctx.send("ID blacklisted.")
+            await cursor.execute(f"INSERT INTO blacklist (id) VALUES ({ctx.guild.id}, {id})")
+            await ctx.send("Member blacklisted.")
         else:
-            await ctx.send("That ID is already blacklisted.")
+            await ctx.send("That Member is already blacklisted.")
         await db.commit()
         await cursor.close()
         await db.close()
@@ -80,15 +78,14 @@ class Misc(commands.Cog):
     async def remove(self, ctx, id):
         if id is None:
             await ctx.send("You need the id of that user")
-        if id == discord.Member:
-            id = id.id
         else:
             await ctx.send("Thats not a valid choice")
         db = await aiosqlite.connect("./bot/db/config.db")
         cursor = await db.cursor()
-        await cursor.execute(f"SELECT id FROM blacklist WHERE id = {id}")
+        await cursor.execute(f"SELECT id FROM blacklist WHERE guild_id = {ctx.guild.id}")
         result = await cursor.fetchone()
-        if result is None:
+        blacklisted = result[0]
+        if id not in blacklisted:
             await ctx.send("That ID is not blacklisted.")
         else:
             await cursor.execute(f"DELETE FROM blacklist WHERE id = {id}")

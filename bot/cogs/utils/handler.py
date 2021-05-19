@@ -19,6 +19,9 @@ class CommandErrorHandler(commands.Cog):
 
         ignored = (commands.CommandNotFound, )
         error = getattr(error, 'original', error)
+        
+        if isinstance(error, commands.commandnotfound):
+            await ctx.send("Command doesn't exist")
 
         if isinstance(error, ignored):
             return

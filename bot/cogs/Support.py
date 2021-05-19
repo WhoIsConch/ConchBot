@@ -20,12 +20,9 @@ class Support(commands.Cog):
         await ctx.send(embed=embed)
     
     @commands.command()
-    async def report(self, ctx, *, bug):
-        if ctx.author.id in blacklist:
-            await ctx.send("Sorry, but you are blacklisteed from reporting bugs and adding suggestions.")
-            return
+    async def report(self, ctx, bug):
         channel = self.client.get_channel(795711741606101024)
-        db = await aiosqlite.connect('db/config.db')
+        db = await aiosqlite.connect('.bot/db/config.db')
         cursor = await db.cursor()
         await cursor.execute('SELECT num FROM bugnum WHERE placeholder = 1')
         result = await cursor.fetchone()
@@ -62,10 +59,7 @@ class Support(commands.Cog):
             await ctx.send("Your suggestion has been submitted!")
             await channel.send(embed=embed)
     
-    @report.error
-    async def report_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You must add a description of the bug to report.")
+
 
     @suggest.error
     async def suggest_error(self, ctx, error):

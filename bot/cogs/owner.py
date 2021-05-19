@@ -6,8 +6,7 @@ import sys
 import os
 from dotenv import load_dotenv
 from jishaku.codeblocks import codeblock_converter
-import logging
-import psutil
+
 
 
 load_env = load_dotenv()
@@ -20,7 +19,7 @@ class Owner(commands.Cog):
     @commands.is_owner()
     async def commit(self, ctx, db=None):
         if db is None:
-            await ctx.send("db/currency.db, db/config.db, db/tasks.db, db/tags.db")
+            await ctx.send("Pick one of these db `.bot/db/currency.db`, `.bot/db/config.db`, `.bot/db/tasks.db`, `.bot/db/tags.db`")
         db = sqlite3.connect(db)
         cursor = db.cursor()
         await ctx.send("Committing database...")
@@ -33,6 +32,7 @@ class Owner(commands.Cog):
         await ctx.send("Database successfully committed.")
         cursor.close()
         db.close()
+        await ctx.send("OK")
 
     @commands.command()
     @commands.is_owner()
@@ -54,6 +54,8 @@ class Owner(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def eval(self, ctx, *, code: codeblock_converter):
+        if code is None:
+            await ctx.send("You need to put code for me to eval")
         cog = self.client.get_cog("Jishaku")
         await cog.jsk_python(ctx, argument=code)
 

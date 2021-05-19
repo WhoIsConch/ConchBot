@@ -7,7 +7,7 @@ class Config(commands.Cog):
         self.client = client
 
     async def check_ff(self, guild):
-        db = await aiosqlite.connect('db/config.db')
+        db = await aiosqlite.connect('.bot/db/config.db')
         cursor = await db.cursor()
         await cursor.execute(f"SELECT familyfriendly FROM config WHERE guild_id = {guild.id}")
         check = await cursor.fetchone()
@@ -38,10 +38,10 @@ class Config(commands.Cog):
     
     @config.command(disabled=True)
     async def ff(self, ctx, mode):
-        db = await aiosqlite.connect('db/config.db')
+        db = await aiosqlite.connect('.bot/db/config.db')
         cursor = await db.cursor()
         status = await self.check_ff(ctx.guild)
-        if mode == "activate":
+        if mode == "activate" or "on":
             if status == "Active":
                 await ctx.send("Family friendly mode is already active!")
             else:
@@ -53,7 +53,7 @@ class Config(commands.Cog):
             else:
                 await cursor.execute(f"UPDATE config SET familyfriendly = 0 WHERE guild_id = {ctx.guild.id}")
                 await ctx.send("Family friendly mode deactivated.")
-        elif mode == "fuf":
+        elif mode == "fuf" or "off" or "deactivate":
             if status == "fuf":
                 await ctx.send("Your forgetfull ass forgot that family unfriendly mode was already on.")
             else:
@@ -77,7 +77,7 @@ class Config(commands.Cog):
                 else:
                     await ctx.send("Invalid answer.")
         else:
-            await ctx.send("Invalid argument. Your argument should either be `activate`,`deactivate`, or `fuf`.")
+            await ctx.send("Invalid argument. Your argument should either be `activate`,`deactivate`, or `fuf`, or `off`, `on`.")
         await db.commit()
         await cursor.close()
         await db.close()

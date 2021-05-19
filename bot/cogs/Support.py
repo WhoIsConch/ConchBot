@@ -22,7 +22,7 @@ class Support(commands.Cog):
     @commands.command()
     async def report(self, ctx, bug):
         channel = self.client.get_channel(795711741606101024)
-        db = await aiosqlite.connect('.bot/db/config.db')
+        db = await aiosqlite.connect('./bot/db/config.db')
         cursor = await db.cursor()
         await cursor.execute('SELECT num FROM bugnum WHERE placeholder = 1')
         result = await cursor.fetchone()

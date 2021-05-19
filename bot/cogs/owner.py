@@ -19,7 +19,7 @@ class Owner(commands.Cog):
     @commands.is_owner()
     async def commit(self, ctx, db=None):
         if db is None:
-            await ctx.send("Pick one of these db `.bot/db/currency.db`, `.bot/db/config.db`, `.bot/db/tasks.db`, `.bot/db/tags.db`")
+            await ctx.send("Pick one of these db `./bot/db/currency.db`, `./bot/db/config.db`, `./bot/db/tasks.db`, `./bot/db/tags.db`")
         db = sqlite3.connect(db)
         cursor = db.cursor()
         await ctx.send("Committing database...")

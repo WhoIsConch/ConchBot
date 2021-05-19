@@ -69,7 +69,7 @@ class Currency(commands.Cog):
         self.client = client
 
     async def open_account(self, user):
-        db = await aiosqlite.connect('.bot/db/currency.db')
+        db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
         
         await cursor.execute(f'SELECT user_id FROM main WHERE user_id = {user.id}')
@@ -85,7 +85,7 @@ class Currency(commands.Cog):
         await db.close()
 
     async def update_bank(self, user, amt):
-        db = await aiosqlite.connect('.bot/db/currency.db')
+        db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
 
         
@@ -98,7 +98,7 @@ class Currency(commands.Cog):
         await db.close()
     
     async def get_amt(self, user):
-        db = await aiosqlite.connect('.bot/db/currency.db')
+        db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
 
         await cursor.execute(f'SELECT wallet FROM main WHERE user_id = {user.id}')
@@ -110,7 +110,7 @@ class Currency(commands.Cog):
         return walamt, bankamt
 
     async def item_func(self, user, item, amount=None):
-        db = await aiosqlite.connect(".bot/db/currency.db")
+        db = await aiosqlite.connect("./bot/db/currency.db")
         cursor = await db.cursor()
         await cursor.execute(f"SELECT amount FROM u{user.id} WHERE item = '{item}'")
         oldamount = await cursor.fetchone()
@@ -131,7 +131,7 @@ class Currency(commands.Cog):
     @commands.command(aliases=['inv', 'bag', 'bal', 'balance'])
     async def inventory(self, ctx, user:discord.Member=None):
         # ff = await Config.check_ff(self, ctx.guild)
-        db = await aiosqlite.connect('.bot/db/currency.db')
+        db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
         if user is None:
             await self.open_account(ctx.author)
@@ -173,7 +173,7 @@ class Currency(commands.Cog):
     @commands.command(aliases=['dep'])
     async def deposit(self, ctx, amt):
         # ff = await Config.check_ff(self, ctx.guild)
-        db = await aiosqlite.connect('.bot/db/currency.db')
+        db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
         walamt, bankamt = await self.get_amt(ctx.author)
         await self.open_account(ctx.author)
@@ -208,7 +208,7 @@ class Currency(commands.Cog):
     @commands.command(aliases=["with"])
     async def withdraw(self, ctx, amt):
         # ff = await Config.check_ff(self, ctx.guild)
-        db = await aiosqlite.connect('.bot/db/currency.db')
+        db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
         walamt, bankamt = await self.get_amt(ctx.author)
         await self.open_account(ctx.author)
@@ -241,7 +241,7 @@ class Currency(commands.Cog):
     @commands.command()
     async def buy(self, ctx, item, quantity=1):
         ff = await Config.check_ff(self, ctx.guild)
-        db = await aiosqlite.connect('.bot/db/currency.db')
+        db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
         check = shop.get(item)
         # if ff == "fuf":
@@ -286,7 +286,7 @@ class Currency(commands.Cog):
     @commands.command()
     async def sell(self, ctx, item, quantity=1):
         await self.open_account(ctx.author)
-        db = await aiosqlite.connect('.bot/db/currency.db')
+        db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
         check0 = shop.get(item)
         if check0 is None:
@@ -425,7 +425,7 @@ class Currency(commands.Cog):
         await self.open_account(ctx.author)
         await self.open_account(user)
         # ff = await Config.check_ff(self, ctx.guild)
-        db = await aiosqlite.connect('.bot/db/currency.db')
+        db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
         # if ff == "fuf":
         #     selfmsg = "What the fuck would be the point of being able to give shit to yourself?"
@@ -665,7 +665,7 @@ class Currency(commands.Cog):
 
     @commands.group(aliases=["tasks"], invoke_without_command=True)
     async def task(self, ctx):
-        db = await aiosqlite.connect('.bot/db/tasks.db')
+        db = await aiosqlite.connect('./bot/db/tasks.db')
         cursor = await db.cursor()
         await cursor.execute(f"SELECT task FROM u{ctx.author.id}")
         result = await cursor.fetchall()
@@ -685,7 +685,7 @@ class Currency(commands.Cog):
     @task.command()
     async def start(self, ctx, task):
         await self.open_account(ctx.author)
-        db = await aiosqlite.connect('.bot/db/tasks.db')
+        db = await aiosqlite.connect('./bot/db/tasks.db')
         cursor = await db.cursor()
         await cursor.execute(f"CREATE TABLE IF NOT EXISTS u{ctx.author.id} (task, status)")
         await cursor.execute(f"SELECT task FROM u{ctx.author.id} WHERE task = '{task}'")

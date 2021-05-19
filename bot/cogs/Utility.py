@@ -11,7 +11,7 @@ class Utility(commands.Cog):
         self.client = client
     
     async def get_update_info(self, version=None):
-        db = await aiosqlite.connect(".bot/db/updates.db")
+        db = await aiosqlite.connect("./bot/db/updates.db")
         cursor = await db.cursor()
 
         if version is None:
@@ -103,7 +103,7 @@ class Utility(commands.Cog):
 
     @commands.group(invoke_without_command=True, aliases=["update"])
     async def updates(self, ctx):
-        db = await aiosqlite.connect(".bot/db/updates.db")
+        db = await aiosqlite.connect("./bot/db/updates.db")
         cursor = await db.cursor()
 
         version, name, desc, updates, published = await self.get_update_info()
@@ -118,7 +118,7 @@ class Utility(commands.Cog):
     @updates.command()
     @commands.is_owner()
     async def publish(self, ctx, version, *, content):
-        db = await aiosqlite.connect(".bot/db/updates.db")
+        db = await aiosqlite.connect("./bot/db/updates.db")
         cursor = await db.cursor()
         now = datetime.datetime.now()
         td = datetime.datetime.today()
@@ -149,7 +149,7 @@ class Utility(commands.Cog):
 
     @updates.command()
     async def list(self, ctx):
-        db = await aiosqlite.connect(".bot/db/updates.db")
+        db = await aiosqlite.connect("./bot/db/updates.db")
         cursor = await db.cursor()
 
         await cursor.execute("SELECT version FROM updates")
@@ -166,7 +166,7 @@ class Utility(commands.Cog):
 
     @updates.command()
     async def info(self, ctx, version: int):
-        db = await aiosqlite.connect(".bot/db/updates.db")
+        db = await aiosqlite.connect("./bot/db/updates.db")
         cursor = await db.cursor()
 
         version, name, desc, updates, published = await self.get_update_info(version)

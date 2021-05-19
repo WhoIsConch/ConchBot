@@ -11,7 +11,7 @@ class Misc(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        db = await aiosqlite.connect('.bot/db/config.db')
+        db = await aiosqlite.connect('./bot/db/config.db')
         cursor = await db.cursor()
         for channel in guild.text_channels:
             if channel.permissions_for(guild.me).send_messages:
@@ -63,7 +63,7 @@ class Misc(commands.Cog):
             id = id.id
         else:
             await ctx.send("Thats not a valid choice")
-        db = await aiosqlite.connect(".bot/db/config.db")
+        db = await aiosqlite.connect("./bot/db/config.db")
         cursor = await db.cursor()
         await cursor.execute(f"SELECT id FROM blacklist WHERE id = {id}")
         result = await cursor.fetchone()
@@ -84,7 +84,7 @@ class Misc(commands.Cog):
             id = id.id
         else:
             await ctx.send("Thats not a valid choice")
-        db = await aiosqlite.connect(".bot/db/config.db")
+        db = await aiosqlite.connect("./bot/db/config.db")
         cursor = await db.cursor()
         await cursor.execute(f"SELECT id FROM blacklist WHERE id = {id}")
         result = await cursor.fetchone()

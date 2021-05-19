@@ -45,7 +45,8 @@ class Owner(commands.Cog):
     async def refresh(self, ctx):
         cog = self.client.get_cog("Jishaku")
         github_repo = os.getenv("GITHUB_REPO_LINK")
-        await cog.jsk_git(ctx, argument=codeblock_converter(f'pull {github_repo} master'))
+        github_repo_branch = os.getenv("GITHUB_REPO_BRANCH")
+        await cog.jsk_git(ctx, argument=codeblock_converter(f'pull {github_repo} {github_repo_branch}'))
         await asyncio.sleep(2)
         restart = self.client.get_command('restart')
         await ctx.invoke(restart)

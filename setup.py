@@ -28,9 +28,16 @@ if not os.path.exists('.env'):
     env.write(f"aiapikey={pgamerx_api_key}\n")
 
     # Github Repo Link
-    print("To get the github repository go to https://github.com and create a repository. This is for refresh command. Note: Private repository might not work")
+    print("To get the github repository go to https://github.com and use a existing or create a repository. This is for refresh command. Note: Private repository might not work")
     github_repo_link = input("Your Github Repository Link: ")
-    env.write(f"GITHUB_REPO_LINK={github_repo_link}")
+    env.write(f"GITHUB_REPO_LINK={github_repo_link}\n")
+
+    # Github Repo Branch
+    print("To get the github repository branch go to https://github.com and create or use existing a repository. This is for refresh command. Note: Private repository might not work")
+    print("To get branch is where it says branch and a number if you don't see it create file or upload the code to the repo and it should appear and click on it. The default should be `main`")
+    github_repo_branch = input("Your Github Repository Name: ")
+    env.write(f"GITHUB_REPO_BRANCH={github_repo_branch}")
+
 
     # Close File
     env.close()

@@ -2,7 +2,6 @@
 
 [![](https://img.shields.io/badge/Discord-ConchBot%20Support-blue)](https://discord.gg/3vzm7gt9Jy) [![](https://img.shields.io/badge/Vote-ConchBot-blue)](https://top.gg/bot/733467297666170980)
 
----
 
 Welcome to the Offical GitHub repository of [Conchbot](https://github.com/ConchDev/ConchBot/)
 

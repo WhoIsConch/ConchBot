@@ -8,13 +8,13 @@ Welcome to the Offical GitHub repository of [Conchbot](https://github.com/ConchD
 The source code of the Discord bot ConchBot.
 
 
----
+
 
 ## License
 
 Also read liscense before doing. Please credit [UnsoughtConch](https://github.com/ConchDev) or [Jerry.py](https://github.com/Jerry-py) if you use this
 
----
+
 ## How to Self-Host
 Follow the instructions to host your own ConchBot
 
@@ -83,7 +83,7 @@ Running the bot is as simple as you think since we set up everything. By doing
 ```
 python launcher.py
 ```
----
+
 
 ## Contribute
 
@@ -98,7 +98,7 @@ Steps:
 
 We'll look into the the PR and we ethier approve or disapprove.
 
----
+
 
 ## Support 
 

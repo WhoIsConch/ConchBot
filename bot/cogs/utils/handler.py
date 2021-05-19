@@ -4,7 +4,6 @@ import sys
 import traceback
 
 class CommandErrorHandler(commands.Cog):
-
     def __init__(self, client):
         self.client = client
 
@@ -39,13 +38,13 @@ class CommandErrorHandler(commands.Cog):
 
         else:
             error_channel = self.client.get_channel(833508151802069002)
-            error_traceback = traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+            error_traceback = traceback.print_exc()
             await error_channel.send('''Error Occured at {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator}: 
-            ```
+            ```py
             Ignoring exception in command {}:')
             ```'''.format(ctx.command), file=sys.stderr)                
             await error_traceback.send(f'''Traceback:
-            ```
+            ```py
             {error_traceback}
             ```''')
 

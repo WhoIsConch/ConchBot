@@ -219,12 +219,6 @@ cmds = {
         "htu" : "cb vote",
         "aliases" : "*No Aliases*"
     },
-    "vote claim" : {
-        "title" : "Vote Claim Command",
-        "desc" : "claim your ConchBot vote!",
-        "htu" : "cb vote claim",
-        "aliases" : "*No Aliases*"
-    },
     "fuck" : {
         "title" : "Fuck Command",
         "desc" : "Creates a meme in the \"All My Homies Hate\" meme format!",
@@ -392,7 +386,7 @@ class Help(commands.Cog):
             "Steal, Give, Slots, Daily, Use`\nView more information on page `3`.")
             embed.add_field(name="Image Commands", value="`Fuck, Brain, MentalIllness, idputmy, isthis`\nView more"
             " information on page `4`.")
-            embed.add_field(name="Support Commands", value="`Report, Suggest, Invite, Vote, Vote Claim`\nView more"
+            embed.add_field(name="Support Commands", value="`Report, Suggest, Invite, Vote\nView more"
             " information on page `5`.")
             embed.add_field(name="NSFW Commands", value=cmds + "\nView more information on page `6`.")
             embed.add_field(name="Extra Links", value="[Invite Me!](https://top.gg/bot/733467297666170980/invite/)"

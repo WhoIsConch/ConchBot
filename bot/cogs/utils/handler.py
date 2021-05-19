@@ -44,9 +44,10 @@ class CommandErrorHandler(commands.Cog):
                 await ctx.send('I could not find that member. Please try again.')
 
         else:
-            error_channel = self.client.get_channel(os.getenv("ERROR_CHANNEL"))
-            error_traceback = traceback.print_exc()
-            await error_channel.send(f'Error Occured at {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator}: ```py {error_traceback} ```')                
+            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            error_traceback = error or traceback.print_exception(*sys.exc_info())
+            await error_channel.send(f'Error Occured at {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command {ctx.command.name}: ``` {error_traceback} ```')
+            
 
 def setup(client):
     client.add_cog(CommandErrorHandler(client))

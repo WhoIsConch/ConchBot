@@ -1,5 +1,6 @@
 import os
 
+
 if not os.path.exists('.env'):
     env = open(".env", "w")
 

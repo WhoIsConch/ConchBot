@@ -32,6 +32,10 @@ class Fun(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.dbl = dbl.DBLClient(self.client, dbltoken)
+        
+    @commands.command()
+    async def test(self, ctx):
+        await ctx.send("Test")
 
     @commands.Cog.listener()
     async def on_message(self, message):

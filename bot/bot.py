@@ -5,7 +5,6 @@ import discord
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
-
 load_env = load_dotenv()
 
 class Client(commands.Bot):

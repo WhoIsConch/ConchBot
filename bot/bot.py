@@ -38,8 +38,6 @@ class Client(commands.Bot):
         while True:
             await self.change_presence(activity=discord.Game(next(statuses)))
             await asyncio.sleep(15)
-
-
             
     async def on_ready(self):
         print("------")

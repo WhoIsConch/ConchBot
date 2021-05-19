@@ -46,6 +46,8 @@ class Owner(commands.Cog):
         cog = self.client.get_cog("Jishaku")
         github_repo = os.getenv("GITHUB_REPO_LINK")
         github_repo_branch = os.getenv("GITHUB_REPO_BRANCH")
+        await cog.jsk_git(ctx, argument=codeblock_converter(f'stash'))
+        await asyncio.sleep(2)
         await cog.jsk_git(ctx, argument=codeblock_converter(f'pull --ff-only {github_repo} {github_repo_branch}'))
         await asyncio.sleep(2)
         restart = self.client.get_command('restart')

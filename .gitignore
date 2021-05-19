@@ -9,3 +9,6 @@ __pycache__/
 
 # Venv
 venv
+
+# Read The Docs
+docs

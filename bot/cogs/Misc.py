@@ -60,39 +60,37 @@ class Misc(commands.Cog):
         if id is None:
             await ctx.send("You need the id of that user")
         else:
-            await ctx.send("Thats not a valid choice")
-        db = await aiosqlite.connect("./bot/db/config.db")
-        cursor = await db.cursor()
-        await cursor.execute(f"SELECT id FROM blacklist WHERE guild_id = {ctx.guild.id}")
-        result = await cursor.fetchone()
-        if result is None:
-            await cursor.execute(f"INSERT INTO blacklist (id) VALUES ({ctx.guild.id}, {id})")
-            await ctx.send("Member blacklisted.")
-        else:
-            await ctx.send("That Member is already blacklisted.")
-        await db.commit()
-        await cursor.close()
-        await db.close()
+            db = await aiosqlite.connect("./bot/db/config.db")
+            cursor = await db.cursor()
+            await cursor.execute(f"SELECT id FROM blacklist WHERE guild_id = {ctx.guild.id}")
+            result = await cursor.fetchone()
+            if result is None:
+                await cursor.execute(f"INSERT INTO blacklist (guild_id, id) VALUES ({ctx.guild.id}, {id})")
+                await ctx.send("Member blacklisted.")
+            else:
+                await ctx.send("That Member is already blacklisted.")
+            await db.commit()
+            await cursor.close()
+            await db.close()
 
     @blacklist.command()
     async def remove(self, ctx, id):
         if id is None:
             await ctx.send("You need the id of that user")
         else:
-            await ctx.send("Thats not a valid choice")
-        db = await aiosqlite.connect("./bot/db/config.db")
-        cursor = await db.cursor()
-        await cursor.execute(f"SELECT id FROM blacklist WHERE guild_id = {ctx.guild.id}")
-        result = await cursor.fetchone()
-        blacklisted = result[0]
-        if id not in blacklisted:
-            await ctx.send("That ID is not blacklisted.")
-        else:
-            await cursor.execute(f"DELETE FROM blacklist WHERE id = {id}")
-            await ctx.send("ID removed from blacklist.")
-        await db.commit()
-        await cursor.close()
-        await db.close()
+            db = await aiosqlite.connect("./bot/db/config.db")
+            cursor = await db.cursor()
+            await cursor.execute(f"SELECT id FROM blacklist WHERE guild_id = {ctx.guild.id}")
+            result = await cursor.fetchone()
+            blacklisted = result[0]
+            if id not in blacklisted:
+                await ctx.send("That ID is not blacklisted.")
+            else:
+                await cursor.execute(f"DELETE FROM blacklist WHERE guild_id = {ctx.guild.id}")
+                await ctx.send("ID removed from blacklist.")
+            await db.commit()
+            await cursor.close()
+            await db.close()
 
 
 def setup(client):

@@ -20,7 +20,7 @@ class CommandErrorHandler(commands.Cog):
         ignored = (commands.CommandNotFound, )
         error = getattr(error, 'original', error)
         
-        if isinstance(error, commands.commandnotfound):
+        if isinstance(error, commands.CommandNotFound):
             await ctx.send("Command doesn't exist")
 
         if isinstance(error, ignored):
@@ -42,14 +42,7 @@ class CommandErrorHandler(commands.Cog):
         else:
             error_channel = self.client.get_channel(833508151802069002)
             error_traceback = traceback.print_exc()
-            await error_channel.send('''Error Occured at {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator}: 
-            ```py
-            Ignoring exception in command {}:')
-            ```'''.format(ctx.command), file=sys.stderr)                
-            await error_traceback.send(f'''Traceback:
-            ```py
-            {error_traceback}
-            ```''')
+            await error_channel.send(f'Error Occured at {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator}: ```py {error_traceback} ```')                
 
 def setup(client):
     client.add_cog(CommandErrorHandler(client))

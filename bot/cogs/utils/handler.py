@@ -29,6 +29,9 @@ class CommandErrorHandler(commands.Cog):
         if isinstance(error, commands.DisabledCommand):
             await ctx.send(f'{ctx.command} has been disabled.')
         
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(f"You are cooldown for the command `{ctx.command.name}`. Please try again in {error.retry_after:.2f}s")
+        
         if isinstance(error, discord.ext.commands.errors.NotOwner):
             await ctx.send("You are not the owner of this bot so you can't use this command")
 
@@ -46,6 +49,7 @@ class CommandErrorHandler(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             if ctx.command.qualified_name == 'tag list':
                 await ctx.send('I could not find that member. Please try again.')
+        
 
 
         else:

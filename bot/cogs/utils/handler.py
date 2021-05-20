@@ -19,7 +19,6 @@ class CommandErrorHandler(commands.Cog):
             await ctx.send(f"Command doesn't exist")
             return
 
-
         if isinstance(error, discord.errors.HTTPException):
             await ctx.send("Something went wrong. Note: The bot might be ratelimited")
             return
@@ -31,6 +30,7 @@ class CommandErrorHandler(commands.Cog):
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(f"You are cooldown. Please try again in **{error.retry_after:.2f}s**")
             return
+
         
         if isinstance(error, discord.ext.commands.errors.NotOwner):
             await ctx.send("You are not the owner of this bot so you can't use this command")
@@ -43,6 +43,9 @@ class CommandErrorHandler(commands.Cog):
         if isinstance(error, ValueError):
             await ctx.send("You need to tell me what I need to do, ig this is a image, separate text on the top and bottom with a comma.")
             return
+
+        if isinstance(error, discord.ext.commands.ChannelNotFound):
+            await ctx.send("Channel doesn't exist")
 
 
         if isinstance(error, commands.MissingPermissions):

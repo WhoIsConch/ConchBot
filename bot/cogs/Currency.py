@@ -141,7 +141,7 @@ class Currency(commands.Cog):
             user = ctx.author
         else:
             await self.open_account(user)
-        walamt, bankamt = await self.get_amt(ctx.author)
+        walamt, bankamt = await self.get_amt(user)
         # if ff == "fuf":
         #     embed = discord.Embed(
         #     title=f"{user.name}'s Ballsack",

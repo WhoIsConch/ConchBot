@@ -42,6 +42,7 @@ class Client(commands.Bot):
     async def on_ready(self):
         print("------")
         print("ConchBot is online!")
+        print("Note: The fact that in owner.py cog in bot/cogs folder. We used @commands.has_role(). You could replacing whats inside () with your owner role id/name or use @commands.is_owner() for only the owner can use.")
         await self.status_loop()
     
     async def shutdown(self):

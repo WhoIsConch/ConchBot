@@ -100,6 +100,7 @@ class Fun(commands.Cog):
             await ctx.send("That's not a valid option.")
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def meme(self, ctx):
         msg = await ctx.send("Getting your meme...")
         subreddit = await reddit.subreddit('memes')
@@ -118,6 +119,7 @@ class Fun(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def reddit(self, ctx, subreddit):
         message = await ctx.send("This may take a hot minute... Sit tight!")
         try:
@@ -150,6 +152,7 @@ class Fun(commands.Cog):
             await ctx.send("Something went wrong. This may be the fact that the subreddit does not exist or is locked.")
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def itft(self, ctx):
         async with aiohttp.ClientSession() as session:
             async with session.get('http://itsthisforthat.com/api.php?json') as thing:
@@ -165,6 +168,7 @@ class Fun(commands.Cog):
                     await ctx.send("Woops! Something went wrong.")
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def lyrics(self, ctx, *, values):
         band, song = values.split(",")
         async with aiohttp.ClientSession() as session:
@@ -218,6 +222,7 @@ class Fun(commands.Cog):
                 await paginator.run(embeds)
 
     @fbi.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def details(self, ctx, uid, value=None):
         async with aiohttp.ClientSession() as session:
             async with session.get(f"https://api.fbi.gov/@wanted-person/{uid}") as response:
@@ -275,6 +280,7 @@ class Fun(commands.Cog):
                 await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def covid(self, ctx, country):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://covid-api.mmediagroup.fr/v1/cases") as response:
@@ -292,6 +298,7 @@ class Fun(commands.Cog):
                     await ctx.send("Country not found. Country names ***are case-sensitive***.")
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def joke(self, ctx):
         msg = await ctx.send("Grabbing your joke...")
         subreddit = await reddit.subreddit("jokes")
@@ -310,6 +317,7 @@ class Fun(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['repeat'])
+    @commands.cooldown(1, 3, commands.BucketType.user) 
     async def echo(self, ctx, channel:discord.TextChannel=None, *, msg):
         if channel is None:
             await ctx.send(msg)
@@ -317,6 +325,7 @@ class Fun(commands.Cog):
             await channel.send(msg)
 
     @commands.command(name='8ball')
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def _8ball(self, ctx, *, msg):
         responses = ['As I see it, yes.',
                         'Ask again later.',
@@ -347,11 +356,13 @@ class Fun(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["LMGTFY"])
+    @commands.cooldown(1, 3, commands.BucketType.user) 
     async def google(self, ctx, *, query):
         nquery = query.replace(' ', '+').lower()
         await ctx.send(f"https://www.google.com/search?q={nquery}")
 
     @commands.command(aliases=['chances', 'odds', 'odd'])
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def chance(self, ctx, *, msg):
         chancenum = random.randint(0, 10)
         embed = discord.Embed(
@@ -363,6 +374,7 @@ class Fun(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['avatar'])
+    @commands.cooldown(1, 3, commands.BucketType.user) 
     async def pfp(self, ctx, member: discord.Member=None):
         if member is None:
             embed = discord.Embed(

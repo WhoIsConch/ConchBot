@@ -40,6 +40,7 @@ class NSFW(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def sauce(self, ctx, id=None):
         await ctx.send("Getting your porn...")
         if id is None:
@@ -72,6 +73,7 @@ class NSFW(commands.Cog):
             await paginator.run(embeds)
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def porn(self, ctx):
         msg = await ctx.send("Getting your porn...")
         subreddit = await reddit.subreddit('porn')
@@ -90,6 +92,7 @@ class NSFW(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["tits", "boob", "tit"])
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def boobs(self, ctx):
         msg = await ctx.send("Getting your porn...")
         subreddit = await reddit.subreddit('boobs')
@@ -108,6 +111,7 @@ class NSFW(commands.Cog):
         await ctx.send(embed=embed)
     
     @commands.command(aliases=["tittydrop", "titdrop"])
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def boobdrop(self, ctx):
         msg = await ctx.send("Getting your porn...")
         subreddit = await reddit.subreddit('tittydrop')
@@ -126,10 +130,12 @@ class NSFW(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def feet(self, ctx):
         await ctx.send("What the fuck is wrong with you? Fucking toe gobbling fuck.")
         
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def gay(self, ctx):
         msg = await ctx.send("Getting your porn...")
         subreddit = await reddit.subreddit('gayporn')
@@ -148,6 +154,7 @@ class NSFW(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def overwatch(self, ctx):
         msg = await ctx.send("Getting your porn...")
         subreddit = await reddit.subreddit('overwatch_porn')
@@ -166,6 +173,7 @@ class NSFW(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def sfm(self, ctx):
         msg = await ctx.send("Getting your porn...")
         subreddit = await reddit.subreddit('sfmcompileclub')
@@ -184,6 +192,7 @@ class NSFW(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["vagina"])
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def pussy(self, ctx):
         msg = await ctx.send("Getting your porn...")
         subreddit = await reddit.subreddit('pussy')
@@ -202,6 +211,7 @@ class NSFW(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def waifu(self, ctx):
         msg = await ctx.send("Getting your porn...")
         subreddit = await reddit.subreddit('waifusgonewild')
@@ -220,6 +230,7 @@ class NSFW(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["r34"])
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def rule34(self, ctx, *, query=None):
         if query is None:
             msg = await ctx.send("Getting your porn...")
@@ -254,6 +265,7 @@ class NSFW(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command(aliases=["futa"])
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def futanari(self, ctx):
         msg = await ctx.send("Getting your porn...")
         subreddit = await reddit.subreddit('futanari')
@@ -272,6 +284,7 @@ class NSFW(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["lesbo"])
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def lesbian(self, ctx):
         msg = await ctx.send("Getting your porn...")
         subreddit = await reddit.subreddit('lesbians')
@@ -290,6 +303,7 @@ class NSFW(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def bdsm(self, ctx):
         msg = await ctx.send("Getting your porn...")
         subreddit = await reddit.subreddit('bdsm')

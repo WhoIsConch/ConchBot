@@ -26,6 +26,7 @@ class Support(commands.Cog):
         await ctx.send(embed=embed)
     
     @commands.command()
+    @commands.cooldown(1, 86400, commands.BucketType.user)
     async def report(self, ctx, bug):
         channel = self.client.get_channel(795711741606101024)
         db = await aiosqlite.connect('./bot/db/config.db')

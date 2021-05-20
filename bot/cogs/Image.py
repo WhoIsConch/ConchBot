@@ -20,6 +20,7 @@ class Image(commands.Cog):
         self.client = client
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def text(self, ctx):
         img = PIL.Image.open("bot/src/MemeTemplates/IdPutMy.png")
         font = ImageFont.truetype("bot/src/arial.ttf", 22)
@@ -39,6 +40,7 @@ class Image(commands.Cog):
 
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def fuck(self, ctx, *, val):
         try:
             val1, val2 = val.split(',')
@@ -63,6 +65,7 @@ class Image(commands.Cog):
         os.remove(path)
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def brain(self, ctx, *, content):
         msg = await ctx.send("Creating your meme...")
         img = PIL.Image.open("bot/src/MemeTemplates/Brain.png")
@@ -79,6 +82,7 @@ class Image(commands.Cog):
         os.remove(path)
     
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def mentalillness(self, ctx, url=None):
         msg = await ctx.send("Creating your meme...")
         if url is None:
@@ -108,6 +112,7 @@ class Image(commands.Cog):
         os.remove(path)
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def idputmy(self, ctx, *, text):
         msg = await ctx.send("Creating your meme...")
         img = PIL.Image.open("bot/src/MemeTemplates/IdPutMy.png")
@@ -124,6 +129,7 @@ class Image(commands.Cog):
         os.remove(path)
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def isthis(self, ctx, *, text):
         try:
             text_one, text_two, text_three = text.split(',')
@@ -148,6 +154,7 @@ class Image(commands.Cog):
         os.remove(path)
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def tradeoffer(self, ctx, *, text):
         try:
             text_one, text_two = text.split(',')

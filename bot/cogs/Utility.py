@@ -60,6 +60,7 @@ class Utility(commands.Cog):
         await ctx.send({len(self.client.guilds)})
 
     @commands.command(aliases=["purge"])
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, amount:int):
         if amount < 1:
@@ -73,6 +74,7 @@ class Utility(commands.Cog):
         await ctx.send(embed=embed, delete_after=5)
     
     @commands.command(aliases=["statistics", "info", "information"])
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def stats(self, ctx):
         embed = discord.Embed(
             colour=ctx.author.colour,

@@ -27,7 +27,7 @@ class Support(commands.Cog):
     
     @commands.command()
     @commands.cooldown(1, 86400, commands.BucketType.user)
-    async def report(self, ctx, content):
+    async def report(self, ctx, *, content):
         channel = self.client.get_channel(795711741606101024)
         db = await aiosqlite.connect('./bot/db/config.db')
         cursor = await db.cursor()

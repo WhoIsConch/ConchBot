@@ -1,10 +1,12 @@
-import asyncio
+import os
 import platform
 import datetime
 import discord
 from discord.ext import commands
 import aiosqlite
+from dotenv import load_dotenv
 
+env = load_dotenv()
 
 class Utility(commands.Cog):
     def __init__(self, client):
@@ -58,6 +60,7 @@ class Utility(commands.Cog):
         await ctx.send({len(self.client.guilds)})
 
     @commands.command(aliases=["purge"])
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, amount:int):
         if amount < 1:
@@ -71,6 +74,7 @@ class Utility(commands.Cog):
         await ctx.send(embed=embed, delete_after=5)
     
     @commands.command(aliases=["statistics", "info", "information"])
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def stats(self, ctx):
         embed = discord.Embed(
             colour=ctx.author.colour,
@@ -182,11 +186,14 @@ class Utility(commands.Cog):
     async def clear_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must specify an amount of messages to clear.")
+            return
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You do not have the permissions required to purge messages.")
+            return
         if isinstance(error, commands.errors.BadArgument):
             await ctx.send("Your amount must be an integer greater than one.")
             return
-
+        
+        
 def setup(client):
     client.add_cog(Utility(client))

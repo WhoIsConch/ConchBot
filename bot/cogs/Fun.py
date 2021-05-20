@@ -3,7 +3,7 @@ import json
 import multiprocessing
 import os
 import random
-import sqlite3
+import datetime
 import threading
 import dbl
 import aiohttp
@@ -15,7 +15,7 @@ import httpx
 from discord.ext import commands
 from dotenv import load_dotenv
 from prsaw import RandomStuff
-from discord import Webhook, AsyncWebhookAdapter
+from dotenv import load_dotenv
 
 load_dotenv('.env')
 
@@ -100,6 +100,7 @@ class Fun(commands.Cog):
             await ctx.send("That's not a valid option.")
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def meme(self, ctx):
         msg = await ctx.send("Getting your meme...")
         subreddit = await reddit.subreddit('memes')
@@ -118,6 +119,7 @@ class Fun(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def reddit(self, ctx, subreddit):
         message = await ctx.send("This may take a hot minute... Sit tight!")
         try:
@@ -150,6 +152,7 @@ class Fun(commands.Cog):
             await ctx.send("Something went wrong. This may be the fact that the subreddit does not exist or is locked.")
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def itft(self, ctx):
         async with aiohttp.ClientSession() as session:
             async with session.get('http://itsthisforthat.com/api.php?json') as thing:
@@ -165,6 +168,7 @@ class Fun(commands.Cog):
                     await ctx.send("Woops! Something went wrong.")
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def lyrics(self, ctx, *, values):
         band, song = values.split(",")
         async with aiohttp.ClientSession() as session:
@@ -218,6 +222,7 @@ class Fun(commands.Cog):
                 await paginator.run(embeds)
 
     @fbi.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def details(self, ctx, uid, value=None):
         async with aiohttp.ClientSession() as session:
             async with session.get(f"https://api.fbi.gov/@wanted-person/{uid}") as response:
@@ -275,6 +280,7 @@ class Fun(commands.Cog):
                 await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def covid(self, ctx, country):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://covid-api.mmediagroup.fr/v1/cases") as response:
@@ -292,6 +298,7 @@ class Fun(commands.Cog):
                     await ctx.send("Country not found. Country names ***are case-sensitive***.")
 
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user) 
     async def joke(self, ctx):
         msg = await ctx.send("Grabbing your joke...")
         subreddit = await reddit.subreddit("jokes")
@@ -310,6 +317,7 @@ class Fun(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['repeat'])
+    @commands.cooldown(1, 3, commands.BucketType.user) 
     async def echo(self, ctx, channel:discord.TextChannel=None, *, msg):
         if channel is None:
             await ctx.send(msg)
@@ -317,6 +325,7 @@ class Fun(commands.Cog):
             await channel.send(msg)
 
     @commands.command(name='8ball')
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def _8ball(self, ctx, *, msg):
         responses = ['As I see it, yes.',
                         'Ask again later.',
@@ -347,11 +356,13 @@ class Fun(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["LMGTFY"])
+    @commands.cooldown(1, 3, commands.BucketType.user) 
     async def google(self, ctx, *, query):
         nquery = query.replace(' ', '+').lower()
         await ctx.send(f"https://www.google.com/search?q={nquery}")
 
     @commands.command(aliases=['chances', 'odds', 'odd'])
+    @commands.cooldown(1, 5, commands.BucketType.user) 
     async def chance(self, ctx, *, msg):
         chancenum = random.randint(0, 10)
         embed = discord.Embed(
@@ -363,6 +374,7 @@ class Fun(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['avatar'])
+    @commands.cooldown(1, 3, commands.BucketType.user) 
     async def pfp(self, ctx, member: discord.Member=None):
         if member is None:
             embed = discord.Embed(
@@ -383,57 +395,68 @@ class Fun(commands.Cog):
     async def ai_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You don't have the permissions to do that! Please contact a server admin to do that for you.")
+            return
+        
 
     @echo.error
     async def echo_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must specify a message to send!")
+            return
         if isinstance(error, commands.ChannelNotFound):
             await ctx.send("Channel not found.")
+            return
+        
 
     @lyrics.error
     async def lyrics_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You didn't seem to tell me a song or a band.")
-        else:
+            return
+        if ValueError:
             await ctx.send("You need to tell me what person and song, separated by a comma.")
-
+            return
+        
     @fbi.error
     async def fbi_error(self, ctx, error):
-        if isinstance(error, asyncio.TimeoutError):
-            await ctx.send("You waited too long :(")
         if isinstance(error, ValueError):
             await ctx.send("That isn't a valid number.")
-        await ctx.send("Sorry, something went wrong. We're not sure what it is. Try again later.")
-    
+            return
+        
     @details.error
     async def details_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to provide a valid **UID.** These can be found via the `cb fbi` command.")
-        else:
-            await ctx.send("We can't seem to get the details of that person.")
+            return
+        
 
     @_8ball.error
     async def _8ball_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to give me a question for the magic 8 ball to answer.")
+            return
 
     @google.error
     async def google_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must include a query for me to Google.")
-
+            return
+       
     @chance.error
     async def chance_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must specify what I am rating the chances of.")
-
+            return
+        
     @pfp.error
     async def pfp_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("How the fuck are you getting this error? Please contact UnsoughtConch via `cb support`.")
+            return
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("I could not find that member. Please make sure your ID is correct and you are mentioning an existing user.")
+            return
+        
 
 def setup(client):
     client.add_cog(Fun(client))

@@ -1,12 +1,15 @@
 import asyncio
 import random
-
+import os
+import datetime
 import aiosqlite
 import discord
 from discord.ext import commands
 from discord.ext.commands.cooldowns import BucketType
-
+from dotenv import load_dotenv
 from .BotConfig import Config
+
+env = load_dotenv()
 
 shop = {
     "watch" : {
@@ -138,7 +141,7 @@ class Currency(commands.Cog):
             user = ctx.author
         else:
             await self.open_account(user)
-        walamt, bankamt = await self.get_amt(ctx.author)
+        walamt, bankamt = await self.get_amt(user)
         # if ff == "fuf":
         #     embed = discord.Embed(
         #     title=f"{user.name}'s Ballsack",
@@ -368,7 +371,7 @@ class Currency(commands.Cog):
             await ctx.send(f"{person} gave you {amt} moners!")
     
     @commands.command(aliases=['rob', 'yoink'])
-    @commands.cooldown(1, 1, BucketType.user)
+    @commands.cooldown(1, 60, BucketType.user)
     async def steal(self, ctx, victim:discord.Member):
         await self.open_account(ctx.author)
         await self.open_account(victim)
@@ -500,7 +503,7 @@ class Currency(commands.Cog):
         await db.close()
 
     @commands.command()
-    @commands.cooldown(1, 15, BucketType.user)
+    @commands.cooldown(1, 20, BucketType.user)
     async def slots(self, ctx, amt):
         # TEMP: 4% chance of getting the mega jackpot!
         await self.open_account(ctx.author)
@@ -603,7 +606,7 @@ class Currency(commands.Cog):
                 await self.update_bank(ctx.author, tip)
 
     @use.command()
-    @commands.cooldown(1, 15, BucketType.user)
+    @commands.cooldown(1, 30, BucketType.user)
     async def computer(self, ctx):
         await self.open_account(ctx.author)
         amount = await self.item_func(ctx.author, "computer")
@@ -664,6 +667,7 @@ class Currency(commands.Cog):
             await self.item_func(ctx.author, "Bronze Conch", -1)
 
     @commands.group(aliases=["tasks"], invoke_without_command=True)
+    @commands.cooldown(1, 3600, commands.BucketType.user) 
     async def task(self, ctx):
         db = await aiosqlite.connect('./bot/db/tasks.db')
         cursor = await db.cursor()
@@ -726,97 +730,38 @@ class Currency(commands.Cog):
         await self.item_func(user, item, amount)
         await ctx.send(f"Successfully given {user.name} {amount} {item}s.")
 
-    @deposit.error
-    async def deposit_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You must specify an amount you want to deposit.")
-
-    @withdraw.error
-    async def withdraw_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to specify an amount you would like to withdraw.")
+    
+    
 
     @buy.error
     async def buy_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             await ctx.send("Your amount must be an integer!")
+            return
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify an item to buy.")
-        else:
-            print(error)
+            return
 
-    @beg.error
-    async def beg_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f"Woah there pal! You gotta wait **{int(error.retry_after)}** seconds.")
 
     @steal.error
     async def steal_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You have to specify a user to rob from.")
+
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("That's not a valid member.")
+            return
+            
 
     @give.error
     async def give_error(self, ctx, error):
         if isinstance(error, asyncio.TimeoutError):
             await ctx.send("You took too long and I got bored.")
+            return
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("That member doesn't exist.")
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You must use the give command as follows: `cb give @user {mode: moners or items}")
+            return
 
-    @slots.error
-    async def slots_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You must specify an amount of moners to bet.")
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f"Woah there pal! You gotta wait **{int(error.retry_after)}** seconds.")
 
-    @daily.error
-    async def daily_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            m, s = divmod(error.retry_after, 60)
-            h, m = divmod(m, 60)
-            if int(h) == 0 and int(m) == 0:
-                em = discord.Embed(title="**Woah there pal!**", description=f'Come back in {int(s)} seconds to collect more daily moners!', colour=discord.Colour.red())
-                await ctx.send(embed=em)
-            elif int(h) == 0 and int(m) != 0:
-                em = discord.Embed(title="**Woah there pal!**", description=f'Come back in {int(m)} minutes and {int(s)} seconds to collect more daily moners!', colour=discord.Colour.red())
-                await ctx.send(embed=em)
-            else:
-                em = discord.Embed(title="**Woah there pal!**", description=f'Come back in {int(h)} hours, {int(m)} minutes and {int(s)} seconds to collect more daily moners!', colour=discord.Colour.red())
-                await ctx.send(embed=em)
-
-    @watch.error
-    async def watch_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f"You have to wait {int(error.retry_after)} seconds before using something else!")
-    
-    @computer.error
-    async def computer_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f"You have to wait {int(error.retry_after)} seconds before using something else!")
-    
-    @apple.error
-    async def apple_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f"You have to wait {int(error.retry_after)} seconds before using something else!")
-
-    @start.error
-    async def start_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("What task do you want to start?")
-        else:
-            raise error
-
-    @editmoners.error
-    async def editmoners_error(self, ctx, error):
-        await ctx.send(f"User first, amount second.\n{error}")
-
-    @edititems.error
-    async def edititems_error(self, ctx, error):
-        await ctx.send(f"User first, Item second, Amount third.\n{error}")
-
+        
+     
 def setup(client):
     client.add_cog(Currency(client))

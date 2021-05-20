@@ -35,13 +35,13 @@ class Owner(commands.Cog):
         await ctx.send("OK")
 
     @commands.command()
-    @commands.is_owner()
+    @commands.has_role(794015347018956821)
     async def shutdown(self, ctx):
         await ctx.send("Ending Python process ConchBot... Goodbye")
         await self.client.logout()
 
     @commands.command()
-    @commands.is_owner()
+    @commands.has_role(794015347018956821)
     async def refresh(self, ctx):
         cog = self.client.get_cog("Jishaku")
         github_repo = os.getenv("GITHUB_REPO_LINK")
@@ -54,15 +54,7 @@ class Owner(commands.Cog):
         await ctx.invoke(restart)
 
     @commands.command()
-    @commands.is_owner()
-    async def eval(self, ctx, *, code: codeblock_converter):
-        if code is None:
-            await ctx.send("You need to put code for me to eval")
-        cog = self.client.get_cog("Jishaku")
-        await cog.jsk_python(ctx, argument=code)
-
-    @commands.command()
-    @commands.is_owner()
+    @commands.has_role(794015347018956821)
     async def restart(self, ctx):
         def restarter():
             python = sys.executable

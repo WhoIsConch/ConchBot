@@ -2,6 +2,12 @@ import aiosqlite
 import discord
 from discord.ext import commands
 from discord.ext.commands.cooldowns import BucketType
+from dotenv import load_dotenv
+import os
+import datetime
+
+env = load_dotenv()
+
 
 class Support(commands.Cog):
     def __init__(self, client):
@@ -67,6 +73,12 @@ class Support(commands.Cog):
             await ctx.send("You must input a suggestion for ConchBot.")
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send("You have already submitted a suggestion in the last 24 hours.")
+        else:
+            await ctx.send("Reporting this error...")
+            now = datetime.datetime.now()
+            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
 
 def setup(client):
     client.add_cog(Support(client))

@@ -3,7 +3,7 @@ import json
 import multiprocessing
 import os
 import random
-import sqlite3
+import datetime
 import threading
 import dbl
 import aiohttp
@@ -15,7 +15,7 @@ import httpx
 from discord.ext import commands
 from dotenv import load_dotenv
 from prsaw import RandomStuff
-from discord import Webhook, AsyncWebhookAdapter
+from dotenv import load_dotenv
 
 load_dotenv('.env')
 
@@ -383,6 +383,12 @@ class Fun(commands.Cog):
     async def ai_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You don't have the permissions to do that! Please contact a server admin to do that for you.")
+        else:
+            await ctx.send("Reporting this error...")
+            now = datetime.datetime.now()
+            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
 
     @echo.error
     async def echo_error(self, ctx, error):
@@ -390,6 +396,12 @@ class Fun(commands.Cog):
             await ctx.send("You must specify a message to send!")
         if isinstance(error, commands.ChannelNotFound):
             await ctx.send("Channel not found.")
+        else:
+            await ctx.send("Reporting this error...")
+            now = datetime.datetime.now()
+            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
 
     @lyrics.error
     async def lyrics_error(self, ctx, error):
@@ -397,34 +409,67 @@ class Fun(commands.Cog):
             await ctx.send("You didn't seem to tell me a song or a band.")
         if ValueError:
             await ctx.send("You need to tell me what person and song, separated by a comma.")
+        else:
+            await ctx.send("Reporting this error...")
+            now = datetime.datetime.now()
+            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
 
     @fbi.error
     async def fbi_error(self, ctx, error):
-        
         if isinstance(error, ValueError):
             await ctx.send("That isn't a valid number.")
+        else:
+            await ctx.send("Reporting this error...")
+            now = datetime.datetime.now()
+            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
     
     @details.error
     async def details_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to provide a valid **UID.** These can be found via the `cb fbi` command.")
         else:
-            await ctx.send("We can't seem to get the details of that person.")
+            await ctx.send("Reporting this error...")
+            now = datetime.datetime.now()
+            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
 
     @_8ball.error
     async def _8ball_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to give me a question for the magic 8 ball to answer.")
+        else:
+            await ctx.send("Reporting this error...")
+            now = datetime.datetime.now()
+            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
 
     @google.error
     async def google_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must include a query for me to Google.")
+        else:
+            await ctx.send("Reporting this error...")
+            now = datetime.datetime.now()
+            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
 
     @chance.error
     async def chance_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must specify what I am rating the chances of.")
+        else:
+            await ctx.send("Reporting this error...")
+            now = datetime.datetime.now()
+            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
 
     @pfp.error
     async def pfp_error(self, ctx, error):
@@ -432,6 +477,12 @@ class Fun(commands.Cog):
             await ctx.send("How the fuck are you getting this error? Please contact UnsoughtConch via `cb support`.")
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("I could not find that member. Please make sure your ID is correct and you are mentioning an existing user.")
+        else:
+            await ctx.send("Reporting this error...")
+            now = datetime.datetime.now()
+            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
 
 def setup(client):
     client.add_cog(Fun(client))

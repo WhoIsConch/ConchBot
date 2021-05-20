@@ -1,14 +1,15 @@
-import random
 import textwrap
 from io import BytesIO
-
-import asyncpraw
+import datetime
 import discord
 import PIL.Image
 from aiohttp_requests import requests
 import os
 from discord.ext import commands
 from PIL import ImageDraw, ImageFont
+from dotenv import load_dotenv
+
+env = load_dotenv()
 
 eupvote = '<:Upvote:822667264406192198>'
 edownvote = '<:Downvote:822667263571525664>'
@@ -173,26 +174,56 @@ class Image(commands.Cog):
     async def fuck_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need at least one value, maximum two, separated by a comma.")
+        else:
+            await ctx.send("Reporting this error...")
+            now = datetime.datetime.now()
+            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
     
     @brain.error
     async def brain_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to provide one value, something that the brain says.")
+        else:
+            await ctx.send("Reporting this error...")
+            now = datetime.datetime.now()
+            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
         
     @mentalillness.error
     async def mentalillness_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must provide an image URL or attach an image to your message.")
+        else:
+            await ctx.send("Reporting this error...")
+            now = datetime.datetime.now()
+            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
         
     @idputmy.error
     async def idputmy_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must specify something to put in the meme.")
+        else:
+            await ctx.send("Reporting this error...")
+            now = datetime.datetime.now()
+            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
         
     @isthis.error
     async def isthis_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must provide a few things to put in your meme.")
+        else:
+            await ctx.send("Reporting this error...")
+            now = datetime.datetime.now()
+            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
 
 def setup(client):
     client.add_cog(Image(client))

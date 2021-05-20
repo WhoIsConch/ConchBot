@@ -35,8 +35,28 @@ class CommandErrorHandler(commands.Cog):
         if isinstance(error, discord.ext.commands.errors.NotOwner):
             await ctx.send("You are not the owner of this bot so you can't use this command")
 
-        if isinstance(error, IndexError):
+        if IndexError:
             await ctx.send("Thats not a valid number choice")
+
+        if ValueError:
+            await ctx.send("You need to tell me what I need to do, ig this is a image, separate text on the top and bottom with a comma.")
+
+        if isinstance(error, ValueError):
+            await ctx.send("That isn't a valid number or text.")
+
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("You don't have the permissions to do that! Please contact a server admin to do that for you.")
+
+        if isinstance(error, commands.ChannelNotFound):
+            await ctx.send("Channel not found.")
+
+        
+        
+        if isinstance(error, commands.MemberNotFound):
+            await ctx.send("That member doesn't exist.")
+
+        if isinstance(error, discord.NotFound):
+            await ctx.send("Couldn't find that sorry")
 
         if isinstance(error, asyncio.TimeoutError):
             await ctx.send("You waited too long :(")
@@ -59,6 +79,8 @@ class CommandErrorHandler(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             if ctx.command.qualified_name == 'tag list':
                 await ctx.send('I could not find that member. Please try again.')
+            else:
+                await ctx.send("You were supposed to type that but you ended typing that")
         
 
 

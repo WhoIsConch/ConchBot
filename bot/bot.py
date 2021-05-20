@@ -22,10 +22,10 @@ class Client(commands.Bot):
             if filename.endswith(f".py"):
                 self.load_extension(f"bot.cogs.{filename[:-3]}")
                 print(f"Loaded `{filename[:20]}` Cog")
-        print("------")
+        print("------")   
         self.load_extension('bot.cogs.utils.handler')
         print("Loaded Error Handler")
-        print("------")        
+        print("------")
         self.load_extension('jishaku')
         print("Loaded `jishaku`")
         print("------")

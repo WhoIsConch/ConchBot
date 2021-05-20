@@ -1,9 +1,11 @@
+from inspect import istraceback
 import discord
 from discord.ext import commands
 import sys
 import traceback
 from dotenv import load_dotenv
 import os
+import datetime
 
 env = load_dotenv()
 
@@ -13,40 +15,44 @@ class CommandErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        if hasattr(ctx.command, 'on_error'):
-            return
-
-        cog = ctx.cog
-        if cog:
-            if cog._get_overridden_method(cog.cog_command_error) is not None:
-                return
-
-        ignored = (commands.CommandNotFound, )
-        error = getattr(error, 'original', error)
-        
         if isinstance(error, commands.CommandNotFound):
             await ctx.send("Command doesn't exist")
 
-        if isinstance(error, ignored):
-            return
+
+        if isinstance(error, discord.errors.HTTPException):
+            await ctx.send("Something went wrong. We'll report it. Note: The bot might be ratelimited")
+            now = datetime.datetime.now()
+            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
 
         if isinstance(error, commands.DisabledCommand):
             await ctx.send(f'{ctx.command} has been disabled.')
+        
+        if isinstance(error, discord.ext.commands.errors.NotOwner):
+            await ctx.send("You are not the owner of this bot so you can't use this command")
 
         elif isinstance(error, commands.NoPrivateMessage):
             try:
                 await ctx.author.send(f'{ctx.command} can not be used in Private Messages.')
             except discord.HTTPException:
-                pass
+                await ctx.send("Something went wrong. We'll report it. Note: The bot might be ratelimited")
+                now = datetime.datetime.now()
+                time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
+                error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+                await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
+        
 
         elif isinstance(error, commands.BadArgument):
             if ctx.command.qualified_name == 'tag list':
                 await ctx.send('I could not find that member. Please try again.')
 
+
         else:
+            now = datetime.datetime.now()
+            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
             error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
-            error_traceback = error or traceback.print_exception(*sys.exc_info())
-            await error_channel.send(f'Error Occured at {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command {ctx.command.name}: ``` {error_traceback} ```')
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
             
 
 def setup(client):

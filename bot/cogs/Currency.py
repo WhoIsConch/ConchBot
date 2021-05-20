@@ -730,18 +730,7 @@ class Currency(commands.Cog):
         await self.item_func(user, item, amount)
         await ctx.send(f"Successfully given {user.name} {amount} {item}s.")
 
-    @deposit.error
-    async def deposit_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You must specify an amount you want to deposit.")
-            return
     
-
-    @withdraw.error
-    async def withdraw_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to specify an amount you would like to withdraw.")
-            return
     
 
     @buy.error
@@ -756,9 +745,7 @@ class Currency(commands.Cog):
 
     @steal.error
     async def steal_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You have to specify a user to rob from.")
-            return
+
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("That's not a valid member.")
             return
@@ -772,23 +759,9 @@ class Currency(commands.Cog):
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("That member doesn't exist.")
             return
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You must use the give command as follows: `cb give @user {mode: moners or items}")
-            return
 
 
-    @slots.error
-    async def slots_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You must specify an amount of moners to bet.")
-            return
         
-
-    @start.error
-    async def start_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("What task do you want to start?")
-            return
      
 def setup(client):
     client.add_cog(Currency(client))

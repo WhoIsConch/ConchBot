@@ -16,7 +16,7 @@ class CommandErrorHandler(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
-            await ctx.send(f"Command: `{ctx.command}` doesn't exist")
+            await ctx.send(f"Command doesn't exist")
             return
 
 
@@ -72,15 +72,10 @@ class CommandErrorHandler(commands.Cog):
 
         elif isinstance(error, commands.NoPrivateMessage):
             try:
-                await ctx.author.send(f'{ctx.command} can not be used in Private Messages.')
+                await ctx.author.send(f'Command can not be used in Private Messages.')
                 return
             except discord.HTTPException:
                 await ctx.send("Something went wrong. We'll report it. Note: The bot might be ratelimited")
-                now = datetime.datetime.now()
-                time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
-                error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
-                await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
-                return
         
 
         elif isinstance(error, commands.BadArgument):
@@ -90,8 +85,6 @@ class CommandErrorHandler(commands.Cog):
             else:
                 await ctx.send("You were supposed to type that but you ended typing that")
                 return
-        
-
 
         else:
             now = datetime.datetime.now()

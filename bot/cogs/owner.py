@@ -34,13 +34,13 @@ class Owner(commands.Cog):
         db.close()
         await ctx.send("OK")
 
-    @commands.command()
+    @commands.command(aliases="close")
     @commands.has_role(794015347018956821)
     async def shutdown(self, ctx):
         await ctx.send("Ending Python process ConchBot... Goodbye")
         await self.client.logout()
 
-    @commands.command()
+    @commands.command(aliases=["pull"])
     @commands.has_role(794015347018956821)
     async def refresh(self, ctx):
         cog = self.client.get_cog("Jishaku")

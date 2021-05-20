@@ -2,7 +2,7 @@ from inspect import istraceback
 import discord
 from discord.ext import commands
 import sys
-import traceback
+import asyncio
 from dotenv import load_dotenv
 import os
 import datetime
@@ -37,6 +37,9 @@ class CommandErrorHandler(commands.Cog):
 
         if isinstance(error, IndexError):
             await ctx.send("Thats not a valid number choice")
+
+        if isinstance(error, asyncio.TimeoutError):
+            await ctx.send("You waited too long :(")
         
         if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
             await ctx.send("There are required arguements/parameters you need to input")

@@ -395,16 +395,14 @@ class Fun(commands.Cog):
     async def lyrics_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You didn't seem to tell me a song or a band.")
-        else:
+        if ValueError:
             await ctx.send("You need to tell me what person and song, separated by a comma.")
 
     @fbi.error
     async def fbi_error(self, ctx, error):
-        if isinstance(error, asyncio.TimeoutError):
-            await ctx.send("You waited too long :(")
+        
         if isinstance(error, ValueError):
             await ctx.send("That isn't a valid number.")
-        await ctx.send("Sorry, something went wrong. We're not sure what it is. Try again later.")
     
     @details.error
     async def details_error(self, ctx, error):

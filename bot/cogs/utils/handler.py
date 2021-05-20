@@ -16,7 +16,7 @@ class CommandErrorHandler(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
-            await ctx.send("Command doesn't exist")
+            await ctx.send(f"Command: `{ctx.command.name}` doesn't exist")
 
 
         if isinstance(error, discord.errors.HTTPException):

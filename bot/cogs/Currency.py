@@ -765,16 +765,6 @@ class Currency(commands.Cog):
             error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
             await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
 
-    @beg.error
-    async def beg_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f"Woah there pal! You gotta wait **{int(error.retry_after)}** seconds.")
-        else:
-            await ctx.send("Reporting this error...")
-            now = datetime.datetime.now()
-            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
-            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
-            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
 
     @steal.error
     async def steal_error(self, ctx, error):
@@ -808,8 +798,6 @@ class Currency(commands.Cog):
     async def slots_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must specify an amount of moners to bet.")
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f"Woah there pal! You gotta wait **{int(error.retry_after)}** seconds.")
         else:
             await ctx.send("Reporting this error...")
             now = datetime.datetime.now()
@@ -817,60 +805,6 @@ class Currency(commands.Cog):
             error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
             await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
 
-    @daily.error
-    async def daily_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            m, s = divmod(error.retry_after, 60)
-            h, m = divmod(m, 60)
-            if int(h) == 0 and int(m) == 0:
-                em = discord.Embed(title="**Woah there pal!**", description=f'Come back in {int(s)} seconds to collect more daily moners!', colour=discord.Colour.red())
-                await ctx.send(embed=em)
-            elif int(h) == 0 and int(m) != 0:
-                em = discord.Embed(title="**Woah there pal!**", description=f'Come back in {int(m)} minutes and {int(s)} seconds to collect more daily moners!', colour=discord.Colour.red())
-                await ctx.send(embed=em)
-            else:
-                em = discord.Embed(title="**Woah there pal!**", description=f'Come back in {int(h)} hours, {int(m)} minutes and {int(s)} seconds to collect more daily moners!', colour=discord.Colour.red())
-                await ctx.send(embed=em)
-        else:
-            await ctx.send("Reporting this error...")
-            now = datetime.datetime.now()
-            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
-            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
-            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
-
-    @watch.error
-    async def watch_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f"You have to wait {int(error.retry_after)} seconds before using something else!")
-        else:
-            await ctx.send("Reporting this error...")
-            now = datetime.datetime.now()
-            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
-            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
-            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
-    
-    @computer.error
-    async def computer_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f"You have to wait {int(error.retry_after)} seconds before using something else!")
-        else:
-            await ctx.send("Reporting this error...")
-            now = datetime.datetime.now()
-            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
-            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
-            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
-            
-    
-    @apple.error
-    async def apple_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f"You have to wait {int(error.retry_after)} seconds before using something else!")
-        else:
-            await ctx.send("Reporting this error...")
-            now = datetime.datetime.now()
-            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
-            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
-            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
             
 
     @start.error

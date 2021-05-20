@@ -51,13 +51,16 @@ class Support(commands.Cog):
     @commands.cooldown(1, 86400, BucketType.user)
     async def suggest(self, ctx, *, suggestion):
         channel = self.client.get_channel(819029394534039604)
+        if channel is None:
+            await ctx.guild.create_text_channel('suggestions')
+            channel = discord.utils.get(ctx.guild.channels, name="suggestions")
         if len(suggestion)>100:
             await ctx.send("Please keep your suggestion under 100 characters as to not flood the suggestions channel.")
         elif len(suggestion)<10:
             await ctx.send("That suggestion is too short. Your suggestion must be more than 10 characters long.")
         else:
             embed = discord.Embed(
-                title="Someone has a suggestion!",
+                title=f"{ctx.author.name}#{ctx.author.discriminator} has a suggestion!",
                 colour=ctx.author.colour
             )
             embed.add_field(name="Submitted by:", value=ctx.author.name)

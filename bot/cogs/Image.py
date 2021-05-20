@@ -6,7 +6,7 @@ import asyncpraw
 import discord
 import PIL.Image
 from aiohttp_requests import requests
-import urllib3
+import os
 from discord.ext import commands
 from PIL import ImageDraw, ImageFont
 
@@ -29,6 +29,13 @@ class Image(commands.Cog):
         draw.text((71, 387), "IF I HAD ONE", font = font, fill=fill_color, stroke_width=2, stroke_fill=stroke_color)
         img.save("text.png")
         await ctx.send(file = discord.File("text.png"))
+        file = 'text.png'
+        location = "./"
+        path = os.path.join(location, file)
+        os.remove(path)
+
+
+
 
     @commands.command()
     async def fuck(self, ctx, *, val):
@@ -49,6 +56,10 @@ class Image(commands.Cog):
             draw.text((153, 535), val1, font = font, fill=fill_color, stroke_width=2, stroke_fill=stroke_color)
         img.save("text.png")
         await ctx.send(file = discord.File("text.png"))
+        file = 'text.png'
+        location = "./"
+        path = os.path.join(location, file)
+        os.remove(path)
 
     @commands.command()
     async def brain(self, ctx, *, content):
@@ -61,6 +72,10 @@ class Image(commands.Cog):
         img.save("Meme.png")
         await msg.delete()
         await ctx.send(file=discord.File("Meme.png"))
+        file = 'Meme.png'
+        location = "./"
+        path = os.path.join(location, file)
+        os.remove(path)
     
     @commands.command()
     async def mentalillness(self, ctx, url=None):
@@ -86,6 +101,10 @@ class Image(commands.Cog):
         img2.save("Meme.png")
         await msg.delete()
         await ctx.send(file=discord.File("Meme.png"))
+        file = 'Meme.png'
+        location = "./"
+        path = os.path.join(location, file)
+        os.remove(path)
 
     @commands.command()
     async def idputmy(self, ctx, *, text):
@@ -98,6 +117,10 @@ class Image(commands.Cog):
         img.save("Meme.png")
         await msg.delete()
         await ctx.send(file=discord.File("Meme.png"))
+        file = 'Meme.png'
+        location = "./"
+        path = os.path.join(location, file)
+        os.remove(path)
 
     @commands.command()
     async def isthis(self, ctx, *, text):
@@ -118,6 +141,10 @@ class Image(commands.Cog):
         img.save("Meme.png")
         await msg.delete()
         await ctx.send(file=discord.File("Meme.png"))        
+        file = 'Meme.png'
+        location = "./"
+        path = os.path.join(location, file)
+        os.remove(path)
 
     @commands.command()
     async def tradeoffer(self, ctx, *, text):
@@ -137,6 +164,10 @@ class Image(commands.Cog):
         img.save("Meme.png")
         await msg.delete()
         await ctx.send(file=discord.File("Meme.png"))       
+        file = 'Meme.png'
+        location = "./"
+        path = os.path.join(location, file)
+        os.remove(path)
 
     @fuck.error
     async def fuck_error(self, ctx, error):

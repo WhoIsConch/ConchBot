@@ -35,8 +35,6 @@ class Image(commands.Cog):
         os.remove(path)
 
 
-
-
     @commands.command()
     async def fuck(self, ctx, *, val):
         try:
@@ -164,6 +162,22 @@ class Image(commands.Cog):
         img.save("Meme.png")
         await msg.delete()
         await ctx.send(file=discord.File("Meme.png"))       
+        file = 'Meme.png'
+        location = "./"
+        path = os.path.join(location, file)
+        os.remove(path)
+
+    @commands.command()
+    async def getout(self, ctx, *, text):
+        msg = await ctx.send("Creating your meme...")
+        img = PIL.Image.open("bot/src/MemeTemplates/stayout.jpg")
+        font = ImageFont.truetype("bot/src/arial.ttf", 40)
+        draw = ImageDraw.Draw(img)
+        text = textwrap.fill(text, width=20)
+        draw.text((26, 45), text, font=font, fill="Black", stroke_width=2, stroke_fill="whitre")
+        img.save("Meme.png")
+        await msg.delete()
+        await ctx.send(file=discord.File("Meme.png"))
         file = 'Meme.png'
         location = "./"
         path = os.path.join(location, file)

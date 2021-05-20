@@ -27,7 +27,7 @@ class Support(commands.Cog):
     
     @commands.command()
     @commands.cooldown(1, 86400, commands.BucketType.user)
-    async def report(self, ctx, bug):
+    async def report(self, ctx, content):
         channel = self.client.get_channel(795711741606101024)
         db = await aiosqlite.connect('./bot/db/config.db')
         cursor = await db.cursor()
@@ -39,7 +39,7 @@ class Support(commands.Cog):
             colour=discord.Colour.red()
         )
         embed.add_field(name="Submitted By:", value=ctx.author)
-        embed.add_field(name="Bug Description:", value=bug)
+        embed.add_field(name="Bug Description:", value=content)
         await cursor.execute(f'UPDATE bugnum SET num = {num} WHERE placeholder = 1')
         await channel.send(embed=embed)
         await ctx.send("Thank you for the bug report! Our team will identify and fix the problem as soon as possible!")

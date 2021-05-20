@@ -818,15 +818,6 @@ class Currency(commands.Cog):
             error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
             await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
             
-
-    @editmoners.error
-    async def editmoners_error(self, ctx, error):
-        await ctx.send(f"User first, amount second.\n{error}")
         
-
-    @edititems.error
-    async def edititems_error(self, ctx, error):
-        await ctx.send(f"User first, Item second, Amount third.\n{error}")
-
 def setup(client):
     client.add_cog(Currency(client))

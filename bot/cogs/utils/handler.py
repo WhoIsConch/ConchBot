@@ -58,6 +58,9 @@ class CommandErrorHandler(commands.Cog):
             await ctx.send("That member doesn't exist.")
             return
 
+        if isinstance(error, commands.MissingRole):
+            await ctx.send("`You don't have have the role to use this")
+
         if isinstance(error, discord.NotFound):
             await ctx.send("Couldn't find that sorry")
             return

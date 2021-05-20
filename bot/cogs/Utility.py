@@ -193,13 +193,7 @@ class Utility(commands.Cog):
         if isinstance(error, commands.errors.BadArgument):
             await ctx.send("Your amount must be an integer greater than one.")
             return
-        else:
-            await ctx.send("Reporting this error...")
-            now = datetime.datetime.now()
-            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
-            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
-            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
-            return
-
+        
+        
 def setup(client):
     client.add_cog(Utility(client))

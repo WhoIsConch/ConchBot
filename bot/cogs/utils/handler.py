@@ -15,12 +15,12 @@ class CommandErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        if commands.CommandNotFound:
+        if isinstance(error, commands.CommandNotFound):
             await ctx.send(f"Command: `{ctx.command}` doesn't exist")
             return
 
 
-        if discord.errors.HTTPException:
+        if isinstance(error, discord.errors.HTTPException):
             await ctx.send("Something went wrong. Note: The bot might be ratelimited")
             return
 
@@ -36,11 +36,11 @@ class CommandErrorHandler(commands.Cog):
             await ctx.send("You are not the owner of this bot so you can't use this command")
             return
 
-        if IndexError:
+        if isinstance(error, IndexError):
             await ctx.send("Thats not a valid number choice")
             return
 
-        if ValueError:
+        if isinstance(error, ValueError):
             await ctx.send("You need to tell me what I need to do, ig this is a image, separate text on the top and bottom with a comma.")
             return
 

@@ -68,8 +68,8 @@ class Image(commands.Cog):
     @commands.cooldown(1, 10, commands.BucketType.user) 
     async def brain(self, ctx, *, content):
         msg = await ctx.send("Creating your meme...")
-        img = PIL.Image.open("bot/src/MemeTemplates/Brain.png")
-        font = ImageFont.truetype("bot/src/arial.ttf", 10)
+        img = PIL.Image.open("./bot/src/MemeTemplates/Brain.png")
+        font = ImageFont.truetype("./bot/src/arial.ttf", 10)
         draw = ImageDraw.Draw(img)
         text = textwrap.fill(content, width=25)
         draw.text((17, 176), text, font=font, fill="Black")

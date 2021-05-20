@@ -34,6 +34,9 @@ class CommandErrorHandler(commands.Cog):
         
         if isinstance(error, discord.ext.commands.errors.NotOwner):
             await ctx.send("You are not the owner of this bot so you can't use this command")
+        
+        if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+            await ctx.send("There are required arguements/parameters you need to input")
 
         elif isinstance(error, commands.NoPrivateMessage):
             try:

@@ -734,89 +734,105 @@ class Currency(commands.Cog):
     async def deposit_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must specify an amount you want to deposit.")
+            return
         else:
             await ctx.send("Reporting this error...")
             now = datetime.datetime.now()
             time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
             error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
             await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
+            return
 
     @withdraw.error
     async def withdraw_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify an amount you would like to withdraw.")
+            return
         else:
             await ctx.send("Reporting this error...")
             now = datetime.datetime.now()
             time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
             error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
             await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
+            return
 
     @buy.error
     async def buy_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             await ctx.send("Your amount must be an integer!")
+            return
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify an item to buy.")
+            return
         else:
             await ctx.send("Reporting this error...")
             now = datetime.datetime.now()
             time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
             error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
             await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
-
+            return
 
     @steal.error
     async def steal_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You have to specify a user to rob from.")
+            return
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("That's not a valid member.")
+            return
         else:
             await ctx.send("Reporting this error...")
             now = datetime.datetime.now()
             time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
             error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
             await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
+            return
 
     @give.error
     async def give_error(self, ctx, error):
         if isinstance(error, asyncio.TimeoutError):
             await ctx.send("You took too long and I got bored.")
+            return
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("That member doesn't exist.")
+            return
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must use the give command as follows: `cb give @user {mode: moners or items}")
+            return
         else:
             await ctx.send("Reporting this error...")
             now = datetime.datetime.now()
             time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
             error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
             await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
+            return
 
     @slots.error
     async def slots_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must specify an amount of moners to bet.")
+            return
         else:
             await ctx.send("Reporting this error...")
             now = datetime.datetime.now()
             time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
             error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
             await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
-
+            return
             
 
     @start.error
     async def start_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("What task do you want to start?")
+            return
         else:
             await ctx.send("Reporting this error...")
             now = datetime.datetime.now()
             time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
             error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
             await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
+            return
             
         
 def setup(client):

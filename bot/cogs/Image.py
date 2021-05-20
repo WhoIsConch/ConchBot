@@ -181,56 +181,66 @@ class Image(commands.Cog):
     async def fuck_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need at least one value, maximum two, separated by a comma.")
+            return
         else:
             await ctx.send("Reporting this error...")
             now = datetime.datetime.now()
             time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
             error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
             await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
+            return
     
     @brain.error
     async def brain_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to provide one value, something that the brain says.")
+            return
         else:
             await ctx.send("Reporting this error...")
             now = datetime.datetime.now()
             time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
             error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
             await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
+            return
         
     @mentalillness.error
     async def mentalillness_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must provide an image URL or attach an image to your message.")
+            return
         else:
             await ctx.send("Reporting this error...")
             now = datetime.datetime.now()
             time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
             error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
             await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
+            return
         
     @idputmy.error
     async def idputmy_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must specify something to put in the meme.")
+            return
         else:
             await ctx.send("Reporting this error...")
             now = datetime.datetime.now()
             time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
             error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
             await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
+            return
         
     @isthis.error
     async def isthis_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You must provide a few things to put in your meme.")
+            return
         else:
             await ctx.send("Reporting this error...")
             now = datetime.datetime.now()
             time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
             error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
             await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
+            return
 
 def setup(client):
     client.add_cog(Image(client))

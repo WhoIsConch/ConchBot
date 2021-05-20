@@ -29,7 +29,7 @@ class CommandErrorHandler(commands.Cog):
             return
         
         if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f"You are cooldown. Please try again in {error.retry_after:.2f}s")
+            await ctx.send(f"You are cooldown. Please try again in **{error.retry_after:.2f}s**")
             return
         
         if isinstance(error, discord.ext.commands.errors.NotOwner):

@@ -59,6 +59,10 @@ class Image(commands.Cog):
             draw.text((153, 535), val1, font = font, fill=fill_color, stroke_width=2, stroke_fill=stroke_color)
         img.save("text.png")
         await ctx.send(file = discord.File("text.png"))
+        file = 'text.png'
+        location = "./"
+        path = os.path.join(location, file)
+        os.remove(path)
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.user) 
@@ -72,7 +76,10 @@ class Image(commands.Cog):
         img.save("Meme.png")
         await msg.delete()
         await ctx.send(file=discord.File("Meme.png"))
-    
+        file = 'Meme.png'
+        location = "./"
+        path = os.path.join(location, file)
+        os.remove(path)
     
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.user) 

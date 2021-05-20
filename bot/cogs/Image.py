@@ -76,10 +76,7 @@ class Image(commands.Cog):
         img.save("Meme.png")
         await msg.delete()
         await ctx.send(file=discord.File("Meme.png"))
-        if os.path.exists("./Meme.png"):
-            os.remove("./Meme.png")
-        else:
-            return
+    
     
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.user) 

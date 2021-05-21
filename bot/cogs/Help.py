@@ -1,6 +1,9 @@
 import discord
+from discord import embeds
 from discord.ext import commands
 import DiscordUtils
+import inspect
+import os
 
 cmds = {
     "joke" : {
@@ -530,6 +533,34 @@ class Help(commands.Cog):
                     await ctx.send(embed=embed)
                 except:
                     await ctx.send("Invalid help value.")
+
+    @commands.command(aliases=["github", "code"])
+    @commands.cooldown(1, 5, commands.BucketType.channel)
+    async def _source(self, ctx, *, command_name=None):
+        conchbot_source_code_url = 'https://github.com/ConchDev/ConchBot'
+        branch = 'master'
+        embed = discord.Embed(title="ConchBot Source Code")
+        if command_name is None:
+            embed.add_field(name="Source:", value=conchbot_source_code_url, inline=False)
+            await ctx.send(embed=embed)
+        else:
+            obj = self.client.get_command(command_name.replace('.', ' '))
+            if obj is None:
+                await ctx.send('Could not find command in my github sorce.')
+            src = obj.callback.__code__
+            module = obj.callback.__module__
+            filename = src.co_filename
+            if not module.startswith('discord'):
+                location = os.path.relpath(filename).replace('\\', '/')
+            else:
+                location = module.replace('.', '/') + '.py'
+            lines, firstlineno = inspect.getsourcelines(src)
+            final_url = (f'{conchbot_source_code_url}/blob/{branch}/{location}#L{firstlineno}-L'
+                     f'{firstlineno + len(lines) - 1}')
+
+            embed.add_field(name="Command Source:", value=final_url, inline=False)
+            await ctx.send(embed=embed)
+
 
 def setup(client):
     client.add_cog(Help(client))

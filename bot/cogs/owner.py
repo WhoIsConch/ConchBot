@@ -65,9 +65,6 @@ class Owner(commands.Cog):
         embed.add_field(name="I'll be back soon...", value="Don't worry", inline=True)
         await ctx.send(embed=embed)
         restarter()
-
-    @commands.command()
-    async def webhook(self, ctx, code):
         
 
 def setup(client):

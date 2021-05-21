@@ -546,7 +546,7 @@ class Help(commands.Cog):
         else:
             obj = self.client.get_command(command_name.replace('.', ' '))
             if obj is None:
-                await ctx.send('Could not find command in my github sorce.')
+                await ctx.send('Could not find command in my github source code.')
             src = obj.callback.__code__
             module = obj.callback.__module__
             filename = src.co_filename

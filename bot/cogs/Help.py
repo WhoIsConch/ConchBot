@@ -542,6 +542,7 @@ class Help(commands.Cog):
         embed = discord.Embed(title="ConchBot Source Code")
         if command_name is None:
             embed.add_field(name="Source:", value=conchbot_source_code_url, inline=False)
+            embed.set_footer(icon_url=ctx.author.avatar_url, text=f"Requested {ctx.author.name}#{ctx.author.discriminator}")
             await ctx.send(embed=embed)
         else:
             obj = self.client.get_command(command_name.replace('.', ' '))
@@ -559,6 +560,7 @@ class Help(commands.Cog):
                      f'{firstlineno + len(lines) - 1}')
 
             embed.add_field(name="Command Source:", value=final_url, inline=False)
+            embed.set_footer(icon_url=ctx.author.avatar_url, text=f"Requested {ctx.author.name}#{ctx.author.discriminator}")
             await ctx.send(embed=embed)
 
 

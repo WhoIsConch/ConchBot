@@ -1,7 +1,6 @@
 import asyncio
 import json
-import multiprocessing
-import os
+from aiohttp import request
 import random
 import datetime
 import threading
@@ -16,6 +15,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from prsaw import RandomStuff
 from dotenv import load_dotenv
+import os
 
 load_dotenv('.env')
 
@@ -390,6 +390,43 @@ class Fun(commands.Cog):
             )
             embed.set_image(url=member.avatar_url)
             await ctx.send(embed=embed)
+    
+
+    @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    async def animal(self, ctx, animal=None):
+        animal_options = ["dog", "cat", "panda", "fox", "bird", "koala"]
+        if animal is None:
+            animal = random.choice(animal_options)
+        if (animal := animal.lower()) in animal_options:
+            animal_fact_url = f"https://some-random-api.ml/facts/{animal}"
+            animal_image_url = f"https://some-random-api.ml/img/{'birb' if animal == 'bird' else animal}"
+            
+            async with request("GET", animal_image_url, headers={}) as response:
+                if response.status == 200:
+                    animal_api = await response.json()
+                    image_link = animal_api["link"]
+
+                else:
+                    image_link = None
+
+            async with request("GET", animal_fact_url, headers={}) as response:
+                if response.status == 200:
+                    animal_api = await response.json()
+
+                    embed = discord.Embed(title=f"{animal.title()} fact")
+                    embed.add_field(name="Fact", value=animal_api["fact"])
+                    if image_link is not None:
+                        embed.set_image(url=image_link)
+                    await ctx.send(embed=embed)
+
+                else:
+                    await ctx.send(f"API returned a {response.status} status.")
+        else:
+            await ctx.send(f"Sorry but {animal} isn't in my api")
+
+
+
 
     @ai.error
     async def ai_error(self, ctx, error):

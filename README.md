@@ -7,14 +7,16 @@
 
 Welcome to the Offical GitHub repository of [Conchbot](https://github.com/ConchDev/ConchBot/)
 
-The source code of the Discord bot ConchBot.
+The source code of the Discord bot ConchBot. The bot is **entirely** open source.
 
 
 
 
 ## License
 
-Also read liscense before doing. Please credit [UnsoughtConch](https://github.com/ConchDev) or [Jerry.py](https://github.com/Jerry-py) if you use this
+Also read liscense before doing. Please credit [UnsoughtConch](https://github.com/ConchDev) or [Jerry.py](https://github.com/Jerry-py) if you want use this/self hosting
+
+**Not crediting us will get you a copyright strike**
 
 
 ## How to Self-Host

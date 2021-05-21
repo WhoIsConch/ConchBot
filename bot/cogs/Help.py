@@ -536,7 +536,7 @@ class Help(commands.Cog):
 
     @commands.command(aliases=["github", "code"])
     @commands.cooldown(1, 5, commands.BucketType.channel)
-    async def _source(self, ctx, *, command_name=None):
+    async def source(self, ctx, *, command_name=None):
         conchbot_source_code_url = 'https://github.com/ConchDev/ConchBot'
         branch = 'master'
         embed = discord.Embed(title="ConchBot Source Code")

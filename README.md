@@ -1,18 +1,22 @@
 ## ConchBot
 
-[![](https://img.shields.io/badge/Discord-ConchBot%20Support-blue)](https://discord.gg/3vzm7gt9Jy) [![](https://img.shields.io/badge/Vote-ConchBot-blue)](https://top.gg/bot/733467297666170980)
+[![](https://img.shields.io/badge/Discord-ConchBot%20Support-blue)](https://discord.gg/3vzm7gt9Jy) [![](https://img.shields.io/badge/Discord-ConchBot%20Development%20Server-blue)](https://discord.gg/FxBVy86nnG) [![](https://img.shields.io/badge/Vote-ConchBot-blue)](https://top.gg/bot/733467297666170980)
+
+
 
 
 Welcome to the Offical GitHub repository of [Conchbot](https://github.com/ConchDev/ConchBot/)
 
-The source code of the Discord bot ConchBot.
+The source code of the Discord bot ConchBot. The bot is **entirely** open source.
 
 
 
 
 ## License
 
-Also read liscense before doing. Please credit [UnsoughtConch](https://github.com/ConchDev) or [Jerry.py](https://github.com/Jerry-py) if you use this
+Also read liscense before doing. Please credit [UnsoughtConch](https://github.com/ConchDev) or [Jerry.py](https://github.com/Jerry-py) if you want use this/self hosting
+
+**Not crediting us will get you a copyright strike**
 
 
 ## How to Self-Host
@@ -27,10 +31,10 @@ It is very simple to do this
 
 python -m venv venv
 ```
+<br>
 
 Activating a/the venv:
 
----
 
 Windows (CMD):
 
@@ -57,6 +61,7 @@ Mac&Linux:
 source venv/bin/activate
 ```
 
+<br>
 
 2. Install the required packages:
 
@@ -108,7 +113,7 @@ If you need help with a big issue you can join our discord support server below 
 
 [![](https://img.shields.io/badge/Discord-ConchBot%20Support-blue)]() 
 
----
+
 
 ## ReadTheDocs (Docs)
 

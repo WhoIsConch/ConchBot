@@ -27,10 +27,10 @@ It is very simple to do this
 
 python -m venv venv
 ```
+<br>
 
 Activating a/the venv:
 
----
 
 Windows (CMD):
 
@@ -57,6 +57,7 @@ Mac&Linux:
 source venv/bin/activate
 ```
 
+<br>
 
 2. Install the required packages:
 
@@ -108,7 +109,7 @@ If you need help with a big issue you can join our discord support server below 
 
 [![](https://img.shields.io/badge/Discord-ConchBot%20Support-blue)]() 
 
----
+
 
 ## ReadTheDocs (Docs)
 

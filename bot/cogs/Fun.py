@@ -167,35 +167,6 @@ class Fun(commands.Cog):
                 except:
                     await ctx.send("Woops! Something went wrong.")
 
-    @commands.command()
-    @commands.cooldown(1, 10, commands.BucketType.user) 
-    async def lyrics(self, ctx, *, values):
-        band, song = values.split(",")
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://api.lyrics.ovh/v1/{band}/{song}") as lyrics:
-                load = await lyrics.read()
-                lyricdata = json.loads(load)
-                lyricsraw = lyricdata["lyrics"]
-                print(len(lyricsraw))
-                try:
-                    embeds = []
-                    num1 = 0
-                    lyrc = lyricsraw.split('\n\n\n\n')
-                    for section in lyrc:
-                        num1 += 1
-                        num = discord.Embed().add_field(name=f"{song} Lyrics Part {num1}", value=section)
-                        embeds.append(num)
-                    paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
-                    paginator.add_reaction('⏪', "back")
-                    paginator.add_reaction('⏩', "next")
-                    
-                    await paginator.run(embeds)
-            
-                except KeyError:
-                    await ctx.send("Invalid song or band name.")
-                
-                except:
-                    await ctx.send("Sorry, something went wrong.")
 
     @commands.group(invoke_without_command=True)
     async def fbi(self, ctx):
@@ -446,16 +417,7 @@ class Fun(commands.Cog):
         if isinstance(error, commands.ChannelNotFound):
             await ctx.send("Channel not found.")
             return
-        
-
-    @lyrics.error
-    async def lyrics_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You didn't seem to tell me a song or a band.")
-            return
-        if ValueError:
-            await ctx.send("You need to tell me what person and song, separated by a comma.")
-            return
+    
         
     @fbi.error
     async def fbi_error(self, ctx, error):

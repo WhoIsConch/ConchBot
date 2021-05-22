@@ -576,11 +576,11 @@ class Help(commands.Cog):
                 location = module.replace('.', '/') + '.py'
 
             # Get the line of code for the command
-            lines, firstlineno = inspect.getsourcelines(src)
+            end_line, start_line = inspect.getsourcelines(src)
 
             # Go to the command url. Note: It is a permalink
-            final_url = (f'{conchbot_source_code_url}/blob/{branch}/{location}#L{firstlineno}-L'
-                     f'{firstlineno + len(lines) - 1}')
+            final_url = (f'{conchbot_source_code_url}/blob/{branch}/{location}#L{start_line}-L'
+                     f'{start_line + len(end_line) - 1}')
 
             embed.add_field(name="Command Source:", value=final_url, inline=False)
             embed.set_footer(icon_url=ctx.author.avatar_url, text=f"Requested {ctx.author.name}#{ctx.author.discriminator}")

@@ -393,7 +393,7 @@ class Fun(commands.Cog):
     
 
     @commands.command()
-    @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def animal(self, ctx, animal=None):
         animal_options = ["dog", "cat", "panda", "fox", "bird", "koala"]
         if animal is None:

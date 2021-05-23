@@ -400,6 +400,23 @@ class Fun(commands.Cog):
             await ctx.send(f"Sorry but {animal} isn't in my api")
 
 
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def token(self, ctx, animal=None):
+        token_web = f"https://some-random-api.ml/bottoken"
+
+        async with ctx.typing():
+            async with request("GET", token_web, headers={}) as response:
+                if response.status == 200:
+                    api = await response.json()
+                    bottoken = api["token"]
+                else:
+                    await ctx.send(f"API returned a {response.status} status.")
+
+            await ctx.send(bottoken)
+
+
+
 
 
     @ai.error

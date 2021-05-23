@@ -105,7 +105,7 @@ class Utility(commands.Cog):
         embed.add_field(name="Total Spaced Used:", value=obj_Disk.used / (1024.0 ** 3))
         embed.add_field(name="Total Space Left:", value=obj_Disk.free / (1024.0 ** 3))
         embed.add_field(name="Bot Developers:", value="UnsoughtConch & Jerry.py")
-        embed.add_field(name="Bot Developers Ids:", value="UnsoughtConch - 579041484796461076\n Jerry.py - 789535039406473276")
+        embed.add_field(name="Bot Developers Ids:", value="UnsoughtConch - 579041484796461076\n\n Jerry.py - 789535039406473276")
         await ctx.send(embed=embed)
 
 

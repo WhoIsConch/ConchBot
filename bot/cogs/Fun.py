@@ -16,6 +16,8 @@ from dotenv import load_dotenv
 from prsaw import RandomStuff
 from dotenv import load_dotenv
 import os
+from io import BytesIO
+
 
 load_dotenv('.env')
 
@@ -429,6 +431,8 @@ class Fun(commands.Cog):
                     await ctx.send(f"API returned a {response.status} status.")
 
             await ctx.send(image)
+
+
 
 
     @commands.command()

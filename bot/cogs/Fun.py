@@ -366,7 +366,7 @@ class Fun(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def animal(self, ctx, animal=None):
-        animal_options = ["dog", "cat", "panda", "fox", "bird", "koala"]
+        animal_options = ["dog", "cat", "panda", "fox", "bird", "koala", "red_panda"]
         if animal is None:
             animal = random.choice(animal_options)
         if (animal := animal.lower()) in animal_options:
@@ -415,8 +415,67 @@ class Fun(commands.Cog):
 
             await ctx.send(bottoken)
 
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def pat(self, ctx):
+        pat_image = f"https://some-random-api.ml/animu/pat"
+
+        async with ctx.typing():
+            async with request("GET", pat_image, headers={}) as response:
+                if response.status == 200:
+                    api = await response.json()
+                    image = api["link"]
+                else:
+                    await ctx.send(f"API returned a {response.status} status.")
+
+            await ctx.send(image)
 
 
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def wink(self, ctx):
+        wink_image = f"https://some-random-api.ml/animu/wink"
+
+        async with ctx.typing():
+            async with request("GET", wink_image, headers={}) as response:
+                if response.status == 200:
+                    api = await response.json()
+                    image = api["link"]
+                else:
+                    await ctx.send(f"API returned a {response.status} status.")
+
+            await ctx.send(image)
+
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def hug(self, ctx):
+        hug_image = f"https://some-random-api.ml/animu/hug"
+
+        async with ctx.typing():
+            async with request("GET", hug_image, headers={}) as response:
+                if response.status == 200:
+                    api = await response.json()
+                    image = api["link"]
+                else:
+                    await ctx.send(f"API returned a {response.status} status.")
+
+            await ctx.send(image)
+
+
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def pikachu(self, ctx):
+        pikachu_image = f"https://some-random-api.ml/img/pikachu"
+
+        async with ctx.typing():
+            async with request("GET", pikachu_image, headers={}) as response:
+                if response.status == 200:
+                    api = await response.json()
+                    image = api["link"]
+                else:
+                    await ctx.send(f"API returned a {response.status} status.")
+
+            await ctx.send(image)
 
 
     @ai.error

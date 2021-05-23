@@ -84,6 +84,7 @@ class Utility(commands.Cog):
     @commands.command(aliases=["statistics", "info", "information"])
     @commands.cooldown(1, 5, commands.BucketType.user) 
     async def stats(self, ctx):
+        uname = platform.uname()
         embed = discord.Embed(title=f'{self.client.user.name} Stats', colour=ctx.author.colour)
         embed.add_field(name="Bot Name:", value=self.client.user.name)
         embed.add_field(name="Bot Id:", value=self.client.user.id)
@@ -94,6 +95,10 @@ class Utility(commands.Cog):
         embed.add_field(name="Total Users:", value=len(set(self.client.get_all_members())))
         embed.add_field(name="Total Commands:", value=len(set(self.client.commands)))
         embed.add_field(name="Total Cogs:", value=len(set(self.client.cogs)))
+        embed.add_field(name="System:", value=uname.system)
+        embed.add_field(name="System Version", value=uname.version)
+        embed.add_field(name="Machine:", value=uname.machine)
+        embed.add_field(name="Processor:", value=uname.processor)
         embed.add_field(name="Total CPU Usage:", value=psutil.cpu_percent())
         embed.add_field(name="Total RAM:", value=psutil.virtual_memory()[2])
         embed.add_field(name="Total Space:", value=obj_Disk.total / (1024.0 ** 3))

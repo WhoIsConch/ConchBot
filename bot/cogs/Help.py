@@ -1,9 +1,10 @@
 import discord
 from discord import embeds
+from discord import colour
 from discord.ext import commands
 import DiscordUtils
-import inspect
-import os
+import psutil
+
 
 cmds = {
     "joke" : {
@@ -533,58 +534,6 @@ class Help(commands.Cog):
                     await ctx.send(embed=embed)
                 except:
                     await ctx.send("Invalid help value.")
-
-    @commands.command(aliases=["github", "code"])
-    @commands.cooldown(1, 5, commands.BucketType.channel)
-    async def source(self, ctx, *, command_name=None):
-        # Source code of ConchBot github page
-        conchbot_source_code_url = os.getenv("GITHUB_REPO_LINK")
-
-        # Branch of ConchBot github page
-        branch = os.getenv("GITHUB_REPO_BRANCH")
-
-        embed = discord.Embed(title="ConchBot Source Code")
-
-        # If Command Parameter is None
-        if command_name is None:
-            embed.add_field(name="Source:", value=conchbot_source_code_url, inline=False)
-            embed.set_footer(icon_url=ctx.author.avatar_url, text=f"Requested {ctx.author.name}#{ctx.author.discriminator}")
-            await ctx.send(embed=embed)
-
-        # Anything else
-        else:
-            # Get the command
-            obj = self.client.get_command(command_name.replace('.', ' '))
-
-            # If command cannot be found
-            if obj is None:
-                await ctx.send('Could not find command in my github source code.')
-            
-            # Get the source of the code
-            src = obj.callback.__code__
-
-            # Check if its a module
-            module = obj.callback.__module__
-
-            # Get the file name
-            filename = src.co_filename
-
-            # Check if module doesn't start with discord
-            if not module.startswith('discord'):
-                location = os.path.relpath(filename).replace('\\', '/')
-            else:
-                location = module.replace('.', '/') + '.py'
-
-            # Get the line of code for the command
-            end_line, start_line = inspect.getsourcelines(src)
-
-            # Go to the command url. Note: It is a permalink
-            final_url = (f'{conchbot_source_code_url}/blob/{branch}/{location}#L{start_line}-L'
-                     f'{start_line + len(end_line) - 1}')
-
-            embed.add_field(name="Command Source:", value=final_url, inline=False)
-            embed.set_footer(icon_url=ctx.author.avatar_url, text=f"Requested {ctx.author.name}#{ctx.author.discriminator}")
-            await ctx.send(embed=embed)
 
 
 def setup(client):

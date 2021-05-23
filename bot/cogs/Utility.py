@@ -4,7 +4,15 @@ import datetime
 import discord
 from discord.ext import commands
 import aiosqlite
+import inspect
+import os
 from dotenv import load_dotenv
+import psutil
+
+obj_Disk = psutil.disk_usage('/')
+
+
+
 
 env = load_dotenv()
 
@@ -76,17 +84,80 @@ class Utility(commands.Cog):
     @commands.command(aliases=["statistics", "info", "information"])
     @commands.cooldown(1, 5, commands.BucketType.user) 
     async def stats(self, ctx):
-        embed = discord.Embed(
-            colour=ctx.author.colour,
-            title=f'{self.client.user.name} Stats'
-        )
-        embed.add_field(name="Bot Version:", value="1.0")
+        embed = discord.Embed(title=f'{self.client.user.name} Stats', colour=ctx.author.colour)
+        embed.add_field(name="Bot Name:", value=self.client.user.name)
+        embed.add_field(name="Bot Id:", value=self.client.user.id)
+        embed.add_field(name="Bot Version:", value="1.3.4")
         embed.add_field(name="Python Version:", value=platform.python_version())
         embed.add_field(name="Discord.py Version:", value=discord.__version__)
         embed.add_field(name="Total Guilds:", value=len(self.client.guilds))
         embed.add_field(name="Total Users:", value=len(set(self.client.get_all_members())))
-        embed.add_field(name="Bot Developers:", value="UnsoughtConch")
+        embed.add_field(name="Total Commands:", value=len(set(self.client.commands)))
+        embed.add_field(name="Total Cogs:", value=len(set(self.client.cogs)))
+        embed.add_field(name="Total CPU Usage:", value=psutil.cpu_percent())
+        embed.add_field(name="Total RAM:", value=psutil.virtual_memory()[2])
+        embed.add_field(name="Total Space:", value=obj_Disk.total / (1024.0 ** 3))
+        embed.add_field(name="Total Spaced Used:", value=obj_Disk.used / (1024.0 ** 3))
+        embed.add_field(name="Total Space Left:", value=obj_Disk.free / (1024.0 ** 3))
+        embed.add_field(name="Bot Developers:", value="UnsoughtConch & Jerry.py")
+        embed.add_field(name="Bot Developers Ids:", value="UnsoughtConch - 579041484796461076\n Jerry.py - 789535039406473276")
+        embed.add_field(name="Owner:", value=discord.AppInfo.owner)
         await ctx.send(embed=embed)
+
+
+    @commands.command(aliases=["github", "code"])
+    @commands.cooldown(1, 5, commands.BucketType.channel)
+    async def source(self, ctx, *, command_name=None):
+        # Source code of ConchBot github page
+        conchbot_source_code_url = os.getenv("GITHUB_REPO_LINK")
+
+        # Branch of ConchBot github page
+        branch = os.getenv("GITHUB_REPO_BRANCH")
+
+        embed = discord.Embed(title="ConchBot Source Code")
+
+        # If Command Parameter is None
+        if command_name is None:
+            embed.add_field(name="Source:", value=conchbot_source_code_url, inline=False)
+            embed.set_footer(icon_url=ctx.author.avatar_url, text=f"Requested {ctx.author.name}#{ctx.author.discriminator}")
+            await ctx.send(embed=embed)
+
+        # Anything else
+        else:
+            # Get the command
+            obj = self.client.get_command(command_name.replace('.', ' '))
+
+            # If command cannot be found
+            if obj is None:
+                await ctx.send('Could not find command in my github source code.')
+            
+            # Get the source of the code
+            src = obj.callback.__code__
+
+            # Check if its a module
+            module = obj.callback.__module__
+
+            # Get the file name
+            filename = src.co_filename
+
+            # Check if module doesn't start with discord
+            if not module.startswith('discord'):
+                location = os.path.relpath(filename).replace('\\', '/')
+            else:
+                location = module.replace('.', '/') + '.py'
+
+            # Get the line of code for the command
+            end_line, start_line = inspect.getsourcelines(src)
+
+            # Go to the command url. Note: It is a permalink
+            final_url = (f'{conchbot_source_code_url}/blob/{branch}/{location}#L{start_line}-L'
+                     f'{start_line + len(end_line) - 1}')
+
+            embed.add_field(name="Command Source:", value=final_url, inline=False)
+            embed.set_footer(icon_url=ctx.author.avatar_url, text=f"Requested {ctx.author.name}#{ctx.author.discriminator}")
+            await ctx.send(embed=embed)
+
+
 
     @commands.command()
     async def leave(self, ctx):

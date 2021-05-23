@@ -2,11 +2,11 @@ import asyncio
 import json
 from aiohttp import request
 import random
-import datetime
-import threading
+import inspect
+import os
 import dbl
 import aiohttp
-import aiosqlite
+import io
 import asyncpraw
 import discord
 import DiscordUtils

@@ -596,6 +596,7 @@ class Currency(commands.Cog):
     @commands.group(aliases=["tasks"], invoke_without_command=True)
     @commands.cooldown(1, 3600, commands.BucketType.user) 
     async def task(self, ctx):
+        await self.open_account(ctx.author)
         db = await aiosqlite.connect('./bot/db/tasks.db')
         cursor = await db.cursor()
         await cursor.execute(f"SELECT task FROM u{ctx.author.id}")

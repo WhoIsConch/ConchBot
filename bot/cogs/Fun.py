@@ -387,7 +387,7 @@ class Fun(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def token(self, ctx):
-        token_web = f"https://some-random-api.ml/bottoken"
+        token_web = "https://some-random-api.ml/bottoken"
 
         async with ctx.typing():
             async with request("GET", token_web, headers={}) as response:
@@ -403,7 +403,7 @@ class Fun(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def meme(self, ctx):
-        meme_web = f"https://some-random-api.ml/meme"
+        meme_web = "https://some-random-api.ml/meme"
 
         async with ctx.typing():
             async with request("GET", meme_web, headers={}) as response:
@@ -420,7 +420,7 @@ class Fun(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def pat(self, ctx):
-        pat_image = f"https://some-random-api.ml/animu/pat"
+        pat_image = "https://some-random-api.ml/animu/pat"
 
         async with ctx.typing():
             async with request("GET", pat_image, headers={}) as response:
@@ -503,6 +503,7 @@ class Fun(commands.Cog):
                     title = api["title"]
                     author = api["author"]
                     lyrics = api["lyrics"]
+                    print(lyrics)
                     embed = discord.Embed(title=f"{title} By {author}", description=lyrics)
                 else:
                     await ctx.send(f"API returned a {response.status} status.")

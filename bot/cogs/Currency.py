@@ -74,6 +74,8 @@ class Currency(commands.Cog):
     async def open_account(self, user):
         db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
+        dbo = await aiosqlite.connect('./bot/db/tasks.db')
+        cursoro = await dbo.cursor()
         
         await cursor.execute(f'SELECT user_id FROM main WHERE user_id = {user.id}')
         result1 = await cursor.fetchone()
@@ -86,6 +88,10 @@ class Currency(commands.Cog):
         await db.commit()
         await cursor.close()
         await db.close()
+        await cursoro.execute(f"CREATE TABLE IF NOT EXISTS u{user.id} (task, status)")
+        await dbo.commit()
+        await cursoro.close()
+        await dbo.close()
 
     async def update_bank(self, user, amt):
         db = await aiosqlite.connect('./bot/db/currency.db')
@@ -133,7 +139,6 @@ class Currency(commands.Cog):
     
     @commands.command(aliases=['inv', 'bag', 'bal', 'balance'])
     async def inventory(self, ctx, user:discord.Member=None):
-        # ff = await Config.check_ff(self, ctx.guild)
         db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
         if user is None:
@@ -142,22 +147,6 @@ class Currency(commands.Cog):
         else:
             await self.open_account(user)
         walamt, bankamt = await self.get_amt(user)
-        # if ff == "fuf":
-        #     embed = discord.Embed(
-        #     title=f"{user.name}'s Ballsack",
-        #     colour=ctx.author.colour
-        #     )
-        #     embed.add_field(name="Wallet Amount:", value=f"{walamt[0]} motherfucking moners")
-        #     embed.add_field(name="Bank Amount:", value=f"{bankamt[0]} inflated-ass moners")
-        #     embed.add_field(name="Total:", value=f"{bankamt[0]+walamt[0]} retarded ass moners")
-        #     await cursor.execute(f'SELECT item FROM u{user.id}')
-        #     items = await cursor.fetchall()
-        #     for item in items:
-        #         await cursor.execute(f"SELECT amount FROM u{user.id} WHERE item = '{item[0]}'")
-        #         amount = await cursor.fetchone()
-        #         embed.add_field(name=f"Dumbass {item[0]}s:", value=amount[0])
-        #     await ctx.send(embed=embed)
-        # else:
         embed = discord.Embed(
             title=f"{user.name}'s Inventory",
             colour=ctx.author.colour
@@ -175,7 +164,6 @@ class Currency(commands.Cog):
         
     @commands.command(aliases=['dep'])
     async def deposit(self, ctx, amt):
-        # ff = await Config.check_ff(self, ctx.guild)
         db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
         walamt, bankamt = await self.get_amt(ctx.author)
@@ -183,26 +171,14 @@ class Currency(commands.Cog):
         if amt == "all":
             await cursor.execute(f'UPDATE main SET wallet = 0 WHERE user_id = {ctx.author.id}')
             await cursor.execute(f'UPDATE main SET bank = {walamt[0]+bankamt[0]} WHERE user_id = {ctx.author.id}')
-            # if ff == "fuf":
-            #     await ctx.send(f"{walamt[0]} moners have been put into your sad ass motherfucking bank.")
-            # else:
             await ctx.send(f"{walamt[0]} moners have been deposited to your bank.")
         elif int(amt)>walamt[0]:
-            # if ff == "fuf":
-            #     await ctx.send("Your dumb ass doesn't have that many moners in your wallet.")
-            # else:
             await ctx.send("You don't have enough moners in your wallet to deposit that much!")
         elif int(amt)<0:
-            # if ff == "fuf":
-            #     await ctx.send("It seems your smooth ass brain forgot that you can't deposit negative numbers.")
-            # else:
             await ctx.send("You cannot deposit negative numbers!")
         else:
             await cursor.execute(f'UPDATE main SET wallet = {walamt[0]-int(amt)} WHERE user_id = {ctx.author.id}')
             await cursor.execute(f'UPDATE main SET bank = {int(amt)+bankamt[0]} WHERE user_id = {ctx.author.id}')
-            # if ff == "fuf":
-            #     await ctx.send(f"I put {int(amt)} moners into your small ass bank account.")
-            # else:
             await ctx.send(f'{int(amt)} moners have been deposited to your bank.')
         await db.commit()
         await cursor.close()
@@ -210,17 +186,10 @@ class Currency(commands.Cog):
 
     @commands.command(aliases=["with"])
     async def withdraw(self, ctx, amt):
-        # ff = await Config.check_ff(self, ctx.guild)
         db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
         walamt, bankamt = await self.get_amt(ctx.author)
         await self.open_account(ctx.author)
-        # if ff == "fuf":
-        #     successallmsg = "Take your {} moners from your stupid ass bank."
-        #     notenoughmsg = "You don't have enough moners in your empty ass bank account to take that much form it."
-        #     negmsg = "Your stupid ass seems to have forgotten that we don't work with negative numbers here."
-        #     successmsg = "Take your {} moners from your stupid ass bank."
-        # else:
         successallmsg = "{} moners have been withdrawn your bank."
         notenoughmsg = "You don't have enough moners in your bank to withdraw that much!"
         negmsg = "You cannot withdraw negative numbers!"
@@ -247,12 +216,6 @@ class Currency(commands.Cog):
         db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
         check = shop.get(item)
-        # if ff == "fuf":
-        #     negmsg = "You have to be stupid as fuck to not realize that you can't buy a negative quantity of items."
-        #     notenough = "Your broke ass doesn't have enough moners to make that purchase."
-        #     notenough0 = "You and your dumbass self forgot to withdraw moners from the bank before buying shit."
-        #     success = "You and your apparent rich ass just bought {} {} for {} moners. You should know how to use it."
-        # else:
         negmsg = "You can't buy a negative quantity of items. Use `cb sell` for that!"
         notenough = "You don't have enough money to make that purchase."
         notenough0 = "You need to withdraw some bank money to make this purchase."
@@ -275,8 +238,6 @@ class Currency(commands.Cog):
                 if check1 is not None:
                     await cursor.execute(f"UPDATE u{ctx.author.id} SET amount = {check1[0] + quantity} WHERE item = '{item}'")
                 if check1 is None:
-                    # f"You just bought {quantity} {item} for {price*quantity}! To use one, please use "
-                # f"`cb use {item}`."
                     await cursor.execute(f"INSERT INTO u{ctx.author.id} (item, amount) VALUES ('{item}', {quantity})")
                 await cursor.execute(f'UPDATE main SET wallet = {walamt[0] - quantity*price} WHERE user_id = {ctx.author.id}')
                 await ctx.send(success.format(quantity, item, price*quantity, item))   
@@ -332,15 +293,6 @@ class Currency(commands.Cog):
     async def beg(self, ctx):
         await self.open_account(ctx.author)
         amt = random.randint(1, 100)
-        # checkff = await Config.check_ff(self, ctx.guild)
-        # if checkff == "Active":
-        #     people = ['Phil Swift', 'UnsoughtConch', 'Your grumpy old neighbor', 'That one kid from school who only showers once a month', 
-        #     'I', 'Jeff Bezos', 'Bobby', 'Garret Bobby Ferguson', "Totally Not a Burglar"]
-        # elif checkff == "fuf":
-        #     people = ['Hugh Jass', 'Mike Oxlong', 'UnsoughtConch', 'That bitch stacy', 'Jerk Mehoff',
-        #     'Jeff Bezos', "Fay Gott", "Nick Gur", "Ree Todd", "Totally Not a Burglar", "Ligma Balls", "Sugma Nuts", 
-        #     "I.P. Freely", "Amanda Huginkiss", "Anita Hanjaab", "Ben Dover"]
-        
         people = ['Phil Swift', 'Hugh Jass', 'Mike Oxlong', 'UnsoughtConch', 'That bitch stacy',
                     'Your grumpy old neighbor', 'Jerk Mehoff', 'That one kid from school who only showers once a month', 'I',
                     'Jeff Bezos', 'Bobby', 'Garret Bobby Ferguson', "Fay Gott", "Ree Todd", "Totally Not a Burglar", "Bob", "Bill"]
@@ -375,35 +327,17 @@ class Currency(commands.Cog):
     async def steal(self, ctx, victim:discord.Member):
         await self.open_account(ctx.author)
         await self.open_account(victim)
-        # ffcheck = await Config.check_ff(self, ctx.guild)
-        # if ffcheck == "Active":
         failmsg = "You failed and had to pay 100 moners. That's what you get."
-        # elif ffcheck == "Inactive":
-        #     failmsg = "You failed and had to pay 100 moners. That's what you get bitch."
-        # elif ffcheck == "fuf":
-        #     failmsg = "Why the fuck do you think you can get away with robbing people? Your sorry ass now has to"
-        #     " pay 100 fucking moners just because your bitchass couldn't keep yourself out of trouble. Fuck you."
         if victim == ctx.author:
             await ctx.send("You can't steal from yourself.")
             return
         walamt1, bankamt1 = await self.get_amt(ctx.author)
         walamt2, bankamt2 = await self.get_amt(victim)
         if walamt1[0] + bankamt1[0] < 100:
-            # if ffcheck == "fuf":
-            #     await ctx.send("Your broke ass doesn't have enough money to even attempt a robbery.")
-            # else:
             await ctx.send("You don't have enough moners to rob someone.")
         elif walamt1[0] < 100:
-            # if ffcheck == "fuf":
-            #     await ctx.send("you have to go get some fucking moners from your bank before robbing someone, dumbass.")
-            # else:
             await ctx.send("You gotta withdraw some moners from your bank first.")
         elif walamt2[0] < 100:
-            # if ffcheck == "fuf":
-            #     await ctx.send("They are literally too fucking broke to be robbed. Why the fuck do you think that "
-            #     "trying to rob broke asses is okay? They don't even have enough fucking dough to put food on the table, "
-            #     "let alone be robbed by your criminal ass.")
-            # else:
             await ctx.send("They don't have enough moners in their wallet to be robbed.")
         else:
             result = random.randint(1, 2)
@@ -414,9 +348,6 @@ class Currency(commands.Cog):
                 print(walamt1[0])
                 await self.update_bank(ctx.author, win)
                 await self.update_bank(victim, -win)
-                # if ffcheck == "fuf":
-                #     await ctx.send(f"You just robbed {victim}'s sorry ass and stole {win} moners.")
-                # else:
                 await ctx.send(f"You just robbed {victim} of {win} moners!")
             else:
                 await self.update_bank(ctx.author, -100)
@@ -427,12 +358,8 @@ class Currency(commands.Cog):
     async def give(self, ctx, user:discord.Member, mode):
         await self.open_account(ctx.author)
         await self.open_account(user)
-        # ff = await Config.check_ff(self, ctx.guild)
         db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
-        # if ff == "fuf":
-        #     selfmsg = "What the fuck would be the point of being able to give shit to yourself?"
-        # else:
         selfmsg = "You can't give items to yourself."
         if user == ctx.author:
             await ctx.send(selfmsg)

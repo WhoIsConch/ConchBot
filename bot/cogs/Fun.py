@@ -447,6 +447,19 @@ class Fun(commands.Cog):
                     await ctx.reply(file=discord.File(imageData, 'triggered.gif'))
 
     @commands.command()
+    async def rainbow(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as gaySession:
+                async with gaySession.get(f'https://some-random-api.ml/canvas/gay?avatar={member.avatar_url_as(format="png", size=1024)}') as gayImage:
+                    imageData = io.BytesIO(await gayImage.read())
+                    
+                    await gaySession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'gay.gif'))
+
+    @commands.command()
     async def wasted(self, ctx, member: discord.Member=None):
         if not member:
             member = ctx.author

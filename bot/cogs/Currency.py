@@ -601,6 +601,8 @@ class Currency(commands.Cog):
         cursor = await db.cursor()
         await cursor.execute(f"SELECT task FROM u{ctx.author.id}")
         result = await cursor.fetchall()
+        if result is None:
+            await cursor.execute(f"CREATE TABLE IF NOT EXISTS u{ctx.author.id} (task, status)")
         embed = discord.Embed(title="Available tasks", colour=ctx.author.colour)
         for entry in tasks:
             flag = False

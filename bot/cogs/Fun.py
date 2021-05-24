@@ -433,6 +433,33 @@ class Fun(commands.Cog):
             await ctx.send(image)
 
 
+    @commands.command()
+    async def triggered(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as wastedSession:
+                async with wastedSession.get(f'https://some-random-api.ml/canvas/triggered?avatar={member.avatar_url_as(format="png", size=1024)}') as wastedImage:
+                    imageData = io.BytesIO(await wastedImage.read())
+                    
+                    await wastedSession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'triggered.gif'))
+
+    @commands.command()
+    async def wasted(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as wastedSession:
+                async with wastedSession.get(f'https://some-random-api.ml/canvas/wasted?avatar={member.avatar_url_as(format="png", size=1024)}') as wastedImage:
+                    imageData = io.BytesIO(await wastedImage.read())
+                    
+                    await wastedSession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'wasted.gif'))
+
+
 
 
     @commands.command()

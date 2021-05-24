@@ -101,24 +101,6 @@ class Fun(commands.Cog):
         else:
             await ctx.send("That's not a valid option.")
 
-    @commands.command()
-    @commands.cooldown(1, 10, commands.BucketType.user) 
-    async def meme(self, ctx):
-        msg = await ctx.send("Getting your meme...")
-        subreddit = await reddit.subreddit('memes')
-        top = subreddit.top(limit=50)
-        all_subs = []
-
-        async for submission in top:
-            all_subs.append(submission)
-        
-        ransub = random.choice(all_subs)
-
-        embed = discord.Embed(title=ransub.title, colour=ctx.author.colour, url=ransub.url)
-        embed.set_image(url=ransub.url)
-        embed.set_footer(text=f"Posted by {ransub.author} on Reddit. | ❤ {ransub.ups} | 💬 {ransub.num_comments}")
-        await msg.delete()
-        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.user) 
@@ -404,7 +386,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def token(self, ctx, animal=None):
+    async def token(self, ctx):
         token_web = f"https://some-random-api.ml/bottoken"
 
         async with ctx.typing():
@@ -416,6 +398,24 @@ class Fun(commands.Cog):
                     await ctx.send(f"API returned a {response.status} status.")
 
             await ctx.send(bottoken)
+
+
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def meme(self, ctx):
+        meme_web = f"https://some-random-api.ml/meme"
+
+        async with ctx.typing():
+            async with request("GET", meme_web, headers={}) as response:
+                if response.status == 200:
+                    api = await response.json()
+                    image = api["image"]
+                    await ctx.send(image)
+                else:
+                    await ctx.send(f"API returned a {response.status} status.")
+
+
+
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)

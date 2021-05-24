@@ -503,13 +503,25 @@ class Fun(commands.Cog):
                     title = api["title"]
                     author = api["author"]
                     lyrics = api["lyrics"]
-                    print(lyrics)
-                    embed = discord.Embed(title=f"{title} By {author}", description=lyrics)
+                    try:
+                        for chunk in [lyrics[i:i+2000] for i in range(0, len(lyrics), 2000)]: # if the lyrics extend the discord character limit (2000): split the embed
+                            embed = discord.Embed(title=f'{title} by {author}', description=chunk, color=discord.Color.blurple())
+                            
+                            response.close() # closing the session
+                            
+                            await ctx.reply(embed=embed)
+                            
+                    except discord.HTTPException:
+                        embed = discord.Embed(title=f'{title} by {author}', description=chunk, color=discord.Color.blurple())
+                        
+                        response.close() # closing the session
+                        
+                        await ctx.reply(embed=embed)
                 else:
                     await ctx.send(f"API returned a {response.status} status.")
 
             await ctx.send(embed=embed)
-            print(embed)
+            
 
 
 

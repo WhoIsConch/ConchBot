@@ -1,4 +1,4 @@
-import asyncio
+import datetime
 import json
 from aiohttp import request
 import random
@@ -489,6 +489,29 @@ class Fun(commands.Cog):
                     await ctx.send(f"API returned a {response.status} status.")
 
             await ctx.send(image)
+
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def lyrics(self, ctx, search=None):
+        search = search.replace(' ', '%20')
+        search_web = f"https://some-random-api.ml/lyrics?title={search}"
+
+        async with ctx.typing():
+            async with request("GET", search_web, headers={}) as response:
+                if response.status == 200:
+                    api = await response.json()
+                    title = api["title"]
+                    author = api["author"]
+                    lyrics = api["lyrics"]
+                    embed = discord.Embed(title=f"{title} By {author}", description=lyrics)
+                else:
+                    await ctx.send(f"API returned a {response.status} status.")
+
+            await ctx.send(embed=embed)
+            print(embed)
+
+
+
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)

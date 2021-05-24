@@ -1,6 +1,10 @@
 import discord
+from discord import embeds
+from discord import colour
 from discord.ext import commands
 import DiscordUtils
+import psutil
+
 
 cmds = {
     "joke" : {
@@ -530,6 +534,7 @@ class Help(commands.Cog):
                     await ctx.send(embed=embed)
                 except:
                     await ctx.send("Invalid help value.")
+
 
 def setup(client):
     client.add_cog(Help(client))

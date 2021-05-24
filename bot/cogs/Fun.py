@@ -1,13 +1,12 @@
-import asyncio
-import json
-import multiprocessing
-import os
-import random
 import datetime
-import threading
+import json
+from aiohttp import request
+import random
+import inspect
+import os
 import dbl
 import aiohttp
-import aiosqlite
+import io
 import asyncpraw
 import discord
 import DiscordUtils
@@ -16,6 +15,9 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from prsaw import RandomStuff
 from dotenv import load_dotenv
+import os
+from io import BytesIO
+
 
 load_dotenv('.env')
 
@@ -99,24 +101,6 @@ class Fun(commands.Cog):
         else:
             await ctx.send("That's not a valid option.")
 
-    @commands.command()
-    @commands.cooldown(1, 10, commands.BucketType.user) 
-    async def meme(self, ctx):
-        msg = await ctx.send("Getting your meme...")
-        subreddit = await reddit.subreddit('memes')
-        top = subreddit.top(limit=50)
-        all_subs = []
-
-        async for submission in top:
-            all_subs.append(submission)
-        
-        ransub = random.choice(all_subs)
-
-        embed = discord.Embed(title=ransub.title, colour=ctx.author.colour, url=ransub.url)
-        embed.set_image(url=ransub.url)
-        embed.set_footer(text=f"Posted by {ransub.author} on Reddit. | ❤ {ransub.ups} | 💬 {ransub.num_comments}")
-        await msg.delete()
-        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.user) 
@@ -167,35 +151,6 @@ class Fun(commands.Cog):
                 except:
                     await ctx.send("Woops! Something went wrong.")
 
-    @commands.command()
-    @commands.cooldown(1, 10, commands.BucketType.user) 
-    async def lyrics(self, ctx, *, values):
-        band, song = values.split(",")
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://api.lyrics.ovh/v1/{band}/{song}") as lyrics:
-                load = await lyrics.read()
-                lyricdata = json.loads(load)
-                lyricsraw = lyricdata["lyrics"]
-                print(len(lyricsraw))
-                try:
-                    embeds = []
-                    num1 = 0
-                    lyrc = lyricsraw.split('\n\n\n\n')
-                    for section in lyrc:
-                        num1 += 1
-                        num = discord.Embed().add_field(name=f"{song} Lyrics Part {num1}", value=section)
-                        embeds.append(num)
-                    paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
-                    paginator.add_reaction('⏪', "back")
-                    paginator.add_reaction('⏩', "next")
-                    
-                    await paginator.run(embeds)
-            
-                except KeyError:
-                    await ctx.send("Invalid song or band name.")
-                
-                except:
-                    await ctx.send("Sorry, something went wrong.")
 
     @commands.group(invoke_without_command=True)
     async def fbi(self, ctx):
@@ -390,6 +345,205 @@ class Fun(commands.Cog):
             )
             embed.set_image(url=member.avatar_url)
             await ctx.send(embed=embed)
+    
+
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def animal(self, ctx, animal=None):
+        animal_options = ["dog", "cat", "panda", "fox", "bird", "koala", "red_panda"]
+        if animal is None:
+            animal = random.choice(animal_options)
+        if (animal := animal.lower()) in animal_options:
+            animal_fact_url = f"https://some-random-api.ml/facts/{animal}"
+            animal_image_url = f"https://some-random-api.ml/img/{animal}"
+            
+
+            async with ctx.typing():
+
+                async with request("GET", animal_image_url, headers={}) as response:
+                    if response.status == 200:
+                        animal_api = await response.json()
+                        image_link = animal_api["link"]
+
+                    else:
+                        image_link = None
+
+                async with request("GET", animal_fact_url, headers={}) as response:
+                    if response.status == 200:
+                        animal_api = await response.json()
+
+                        embed = discord.Embed(title=f"{animal.title()} fact")
+                        embed.add_field(name="Fact", value=animal_api["fact"])
+                        if image_link is not None:
+                            embed.set_image(url=image_link)
+                        await ctx.send(embed=embed)
+
+                    else:
+                        await ctx.send(f"API returned a {response.status} status.")
+        else:
+            await ctx.send(f"Sorry but {animal} isn't in my api")
+
+
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def token(self, ctx):
+        token_web = f"https://some-random-api.ml/bottoken"
+
+        async with ctx.typing():
+            async with request("GET", token_web, headers={}) as response:
+                if response.status == 200:
+                    api = await response.json()
+                    bottoken = api["token"]
+                else:
+                    await ctx.send(f"API returned a {response.status} status.")
+
+            await ctx.send(bottoken)
+
+
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def meme(self, ctx):
+        meme_web = f"https://some-random-api.ml/meme"
+
+        async with ctx.typing():
+            async with request("GET", meme_web, headers={}) as response:
+                if response.status == 200:
+                    api = await response.json()
+                    image = api["image"]
+                    await ctx.send(image)
+                else:
+                    await ctx.send(f"API returned a {response.status} status.")
+
+
+
+
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def pat(self, ctx):
+        pat_image = f"https://some-random-api.ml/animu/pat"
+
+        async with ctx.typing():
+            async with request("GET", pat_image, headers={}) as response:
+                if response.status == 200:
+                    api = await response.json()
+                    image = api["link"]
+                else:
+                    await ctx.send(f"API returned a {response.status} status.")
+
+            await ctx.send(image)
+
+
+    @commands.command()
+    async def triggered(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as wastedSession:
+                async with wastedSession.get(f'https://some-random-api.ml/canvas/triggered?avatar={member.avatar_url_as(format="png", size=1024)}') as wastedImage:
+                    imageData = io.BytesIO(await wastedImage.read())
+                    
+                    await wastedSession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'triggered.gif'))
+
+    @commands.command()
+    async def rainbow(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as gaySession:
+                async with gaySession.get(f'https://some-random-api.ml/canvas/gay?avatar={member.avatar_url_as(format="png", size=1024)}') as gayImage:
+                    imageData = io.BytesIO(await gayImage.read())
+                    
+                    await gaySession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'gay.gif'))
+
+    @commands.command()
+    async def wasted(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as wastedSession:
+                async with wastedSession.get(f'https://some-random-api.ml/canvas/wasted?avatar={member.avatar_url_as(format="png", size=1024)}') as wastedImage:
+                    imageData = io.BytesIO(await wastedImage.read())
+                    
+                    await wastedSession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'wasted.gif'))
+
+
+
+
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def wink(self, ctx):
+        wink_image = f"https://some-random-api.ml/animu/wink"
+
+        async with ctx.typing():
+            async with request("GET", wink_image, headers={}) as response:
+                if response.status == 200:
+                    api = await response.json()
+                    image = api["link"]
+                else:
+                    await ctx.send(f"API returned a {response.status} status.")
+
+            await ctx.send(image)
+
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def lyrics(self, ctx, search=None):
+        search = search.replace(' ', '%20')
+        search_web = f"https://some-random-api.ml/lyrics?title={search}"
+
+        async with ctx.typing():
+            async with request("GET", search_web, headers={}) as response:
+                if response.status == 200:
+                    api = await response.json()
+                    title = api["title"]
+                    author = api["author"]
+                    lyrics = api["lyrics"]
+                    embed = discord.Embed(title=f"{title} By {author}", description=lyrics)
+                else:
+                    await ctx.send(f"API returned a {response.status} status.")
+
+            await ctx.send(embed=embed)
+            print(embed)
+
+
+
+
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def hug(self, ctx):
+        hug_image = f"https://some-random-api.ml/animu/hug"
+
+        async with ctx.typing():
+            async with request("GET", hug_image, headers={}) as response:
+                if response.status == 200:
+                    api = await response.json()
+                    image = api["link"]
+                else:
+                    await ctx.send(f"API returned a {response.status} status.")
+
+            await ctx.send(image)
+
+
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def pikachu(self, ctx):
+        pikachu_image = f"https://some-random-api.ml/img/pikachu"
+
+        async with ctx.typing():
+            async with request("GET", pikachu_image, headers={}) as response:
+                if response.status == 200:
+                    api = await response.json()
+                    image = api["link"]
+                else:
+                    await ctx.send(f"API returned a {response.status} status.")
+
+            await ctx.send(image)
+
 
     @ai.error
     async def ai_error(self, ctx, error):
@@ -406,16 +560,7 @@ class Fun(commands.Cog):
         if isinstance(error, commands.ChannelNotFound):
             await ctx.send("Channel not found.")
             return
-        
-
-    @lyrics.error
-    async def lyrics_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You didn't seem to tell me a song or a band.")
-            return
-        if ValueError:
-            await ctx.send("You need to tell me what person and song, separated by a comma.")
-            return
+    
         
     @fbi.error
     async def fbi_error(self, ctx, error):

@@ -6,7 +6,8 @@ import sys
 import os
 from dotenv import load_dotenv
 from jishaku.codeblocks import codeblock_converter
-
+import contextlib
+import io
 
 
 load_env = load_dotenv()
@@ -34,13 +35,13 @@ class Owner(commands.Cog):
         db.close()
         await ctx.send("OK")
 
-    @commands.command()
+    @commands.command(aliases=["close"])
     @commands.has_role(794015347018956821)
     async def shutdown(self, ctx):
         await ctx.send("Ending Python process ConchBot... Goodbye")
         await self.client.logout()
 
-    @commands.command()
+    @commands.command(aliases=["pull"])
     @commands.has_role(794015347018956821)
     async def refresh(self, ctx):
         cog = self.client.get_cog("Jishaku")
@@ -64,6 +65,7 @@ class Owner(commands.Cog):
         embed.add_field(name="I'll be back soon...", value="Don't worry", inline=True)
         await ctx.send(embed=embed)
         restarter()
+        
 
 def setup(client):
     client.add_cog(Owner(client))

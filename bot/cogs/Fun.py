@@ -492,7 +492,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def lyrics(self, ctx, search=None):
+    async def lyrics(self, ctx, *, search=None):
         search = search.replace(' ', '%20')
         search_web = f"https://some-random-api.ml/lyrics?title={search}"
 
@@ -514,7 +514,7 @@ class Fun(commands.Cog):
                     
 
                     embed1 = discord.Embed(title=f"{title} by {author} | Page 1", description=lyrics[:int(len(lyrics)/2)])
-                    embed2 = discord.Embed(title=f"{title} by {author} | Page 1", description=lyrics[int(len(lyrics)/2):])
+                    embed2 = discord.Embed(title=f"{title} by {author} | Page 2", description=lyrics[int(len(lyrics)/2):])
 
                     embeds = [embed1, embed2]
 

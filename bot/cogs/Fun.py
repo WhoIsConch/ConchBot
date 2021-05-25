@@ -507,9 +507,19 @@ class Fun(commands.Cog):
                     embed = discord.Embed(title=f"{title} By {author}", description=lyrics)
                 else:
                     await ctx.send(f"API returned a {response.status} status.")
+            try:
+                await ctx.send(embed=embed)
+            except:
+                paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
+                paginator.add_reaction('▶', 'next')
+                paginator.add_reaction('◀', 'back')
 
-            await ctx.send(embed=embed)
-            print(embed)
+                embed1 = discord.Embed(title=f"{title} by {author} | Page 1", description=lyrics[:len(lyrics)])
+                embed2 = discord.Embed(title=f"{title} by {author} | Page 1", description=lyrics[len(lyrics):])
+
+                embeds = [embed1, embed2]
+
+                await paginator.run(embeds)
 
 
 

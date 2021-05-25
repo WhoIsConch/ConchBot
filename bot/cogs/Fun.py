@@ -554,6 +554,25 @@ class Fun(commands.Cog):
             await ctx.send(image)
 
 
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def define(self, ctx, word):
+        word_lowered = word.lower()
+        word_link = f"https://some-random-api.ml/dictionary?word={word_lowered}"
+
+        async with ctx.typing():
+            async with request("GET", word_link, headers={}) as response:
+                if response.status == 200:
+                    api = await response.json()
+                    word_name = api["word"]
+                    word_definition = api["definition"]
+                    embed = discord.Embed(title=word_name, description=word_definition)
+                else:
+                    await ctx.send(f"API returned a {response.status} status.")
+
+            await ctx.send(embed=embed)
+
+
     @ai.error
     async def ai_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):

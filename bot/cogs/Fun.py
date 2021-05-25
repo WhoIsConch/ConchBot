@@ -161,20 +161,23 @@ class Fun(commands.Cog):
             async with session.get("https://api.fbi.gov/wanted/v1/list", params={'page': page}) as response:
                 data = json.loads(await response.read())
                 embeds = []
-                for item in data["items"]:
-                    embed = discord.Embed(title=f"FBI Wanted | {item['title']}")
-                    embed.add_field(name="Details:", value=item['details'])
-                    embed.add_field(name="Warning Message:", value=item['warning_message'])
-                    embed.add_field(name="Reward:", value=item['reward_text'])
-                    embed.add_field(name="UID:", value=item['uid'])
-                    embed.set_footer(text="Data from FBI API | For more info on an entry, use 'cb fbi details {UID}'")
-                    embeds.append(embed)
-                
-                paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
-                paginator.add_reaction('⏪', "back")
-                paginator.add_reaction('⏩', "next")
-                    
-                await paginator.run(embeds)
+                try:
+                  for item in data["items"]:
+                      embed = discord.Embed(title=f"FBI Wanted | {item['title']}")
+                      embed.add_field(name="Details:", value=item['details'])
+                      embed.add_field(name="Warning Message:", value=item['warning_message'])
+                      embed.add_field(name="Reward:", value=item['reward_text'])
+                      embed.add_field(name="UID:", value=item['uid'])
+                      embed.set_footer(text="Data from FBI API | For more info on an entry, use 'cb fbi details {UID}'")
+                      embeds.append(embed)
+
+                  paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
+                  paginator.add_reaction('⏪', "back")
+                  paginator.add_reaction('⏩', "next")
+
+                  await paginator.run(embeds)
+                 except IndexError:
+                    return await ctx.send("Too high of a page") #added a handler just in case
 
     @fbi.command()
     @commands.cooldown(1, 10, commands.BucketType.user) 

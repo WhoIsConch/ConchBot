@@ -567,6 +567,20 @@ class Fun(commands.Cog):
                     word_name = api["word"]
                     word_definition = api["definition"]
                     embed = discord.Embed(title=word_name, description=word_definition)
+                    try:
+                        await ctx.send(embed=embed)
+                    except:
+                        paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
+                        paginator.add_reaction('◀', 'back')
+                        paginator.add_reaction('▶', 'next')
+                        
+
+                        embed1 = discord.Embed(title=f"{word_name} | Page 1", description=word_definition[:int(len(word_definition)/2)])
+                        embed2 = discord.Embed(title=f"{word_name} | Page 2", description=word_definition[int(len(word_definition)/2):])
+
+                        embeds = [embed1, embed2]
+
+                        await paginator.run(embeds)
                 else:
                     await ctx.send(f"API returned a {response.status} status.")
 

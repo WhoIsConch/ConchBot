@@ -85,10 +85,11 @@ class Currency(commands.Cog):
         else:
             await cursor.execute(f'INSERT INTO main (user_id, wallet, bank, items) VALUES ({user.id}, 0, 0, 0)')
         await cursor.execute(f'CREATE TABLE IF NOT EXISTS u{user.id} (item TEXT, amount INT)')
+        await cursoro.execute(f"CREATE TABLE IF NOT EXISTS u{user.id} (task, status)")
         await db.commit()
         await cursor.close()
         await db.close()
-        await cursoro.execute(f"CREATE TABLE IF NOT EXISTS u{user.id} (task, status)")
+        
         await dbo.commit()
         await cursoro.close()
         await dbo.close()
@@ -594,7 +595,6 @@ class Currency(commands.Cog):
             await self.item_func(ctx.author, "Bronze Conch", -1)
 
     @commands.group(aliases=["tasks"], invoke_without_command=True)
-    @commands.cooldown(1, 3600, commands.BucketType.user) 
     async def task(self, ctx):
         await self.open_account(ctx.author)
         db = await aiosqlite.connect('./bot/db/tasks.db')
@@ -615,6 +615,7 @@ class Currency(commands.Cog):
         await ctx.send(embed=embed)
 
     @task.command()
+    @commands.cooldown(1, 3600, commands.BucketType.user) 
     async def start(self, ctx, task):
         await self.open_account(ctx.author)
         db = await aiosqlite.connect('./bot/db/tasks.db')

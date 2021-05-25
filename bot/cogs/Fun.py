@@ -472,9 +472,6 @@ class Fun(commands.Cog):
                     
                     await ctx.reply(file=discord.File(imageData, 'wasted.gif'))
 
-
-
-
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def wink(self, ctx):
@@ -578,8 +575,6 @@ class Fun(commands.Cog):
                 await paginator.run(embeds)
             else:
                 await ctx.send(f"API returned a {response.status} status.")
-
-
 
     @ai.error
     async def ai_error(self, ctx, error):

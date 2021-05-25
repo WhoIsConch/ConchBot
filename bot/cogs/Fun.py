@@ -496,33 +496,31 @@ class Fun(commands.Cog):
         search = search.replace(' ', '%20')
         search_web = f"https://some-random-api.ml/lyrics?title={search}"
 
-        async with ctx.typing():
-            async with request("GET", search_web, headers={}) as response:
-                if response.status == 200:
-                    api = await response.json()
-                    title = api["title"]
-                    author = api["author"]
-                    lyrics = api["lyrics"]
-                    print(lyrics)
-                    embed = discord.Embed(title=f"{title} By {author}", description=lyrics)
-                else:
-                    await ctx.send(f"API returned a {response.status} status.")
-            try:
-                await ctx.send(embed=embed)
-            except:
-                paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
-                paginator.add_reaction('▶', 'next')
-                paginator.add_reaction('◀', 'back')
+        await ctx.channel.trigger_typing()
+        async with request("GET", search_web, headers={}) as response:
+            if response.status == 200:
+                api = await response.json()
+                title = api["title"]
+                author = api["author"]
+                lyrics = api["lyrics"]
+                
+                embed = discord.Embed(title=f"{title} by {author}", description=lyrics)
+                try:
+                    await ctx.send(embed=embed)
+                except:
+                    paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
+                    paginator.add_reaction('◀', 'back')
+                    paginator.add_reaction('▶', 'next')
+                    
 
-                embed1 = discord.Embed(title=f"{title} by {author} | Page 1", description=lyrics[:len(lyrics)])
-                embed2 = discord.Embed(title=f"{title} by {author} | Page 1", description=lyrics[len(lyrics):])
+                    embed1 = discord.Embed(title=f"{title} by {author} | Page 1", description=lyrics[:int(len(lyrics)/2)])
+                    embed2 = discord.Embed(title=f"{title} by {author} | Page 1", description=lyrics[int(len(lyrics)/2):])
 
-                embeds = [embed1, embed2]
+                    embeds = [embed1, embed2]
 
-                await paginator.run(embeds)
-
-
-
+                    await paginator.run(embeds)
+            else:
+                await ctx.send(f"API returned a {response.status} status.")
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)

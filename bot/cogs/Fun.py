@@ -176,7 +176,7 @@ class Fun(commands.Cog):
                   paginator.add_reaction('⏩', "next")
 
                   await paginator.run(embeds)
-                 except IndexError:
+                except IndexError:
                     return await ctx.send("Too high of a page") #added a handler just in case
 
     @fbi.command()

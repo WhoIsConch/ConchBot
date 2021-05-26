@@ -177,8 +177,7 @@ class Fun(commands.Cog):
 
                   await paginator.run(embeds)
                 except IndexError:
-                    return await ctx.send("Too high of a page") #added a handler just in case
-
+                    return await ctx.send("Too high of a page") 
     @fbi.command()
     @commands.cooldown(1, 10, commands.BucketType.user) 
     async def details(self, ctx, uid, value=None):
@@ -578,6 +577,20 @@ class Fun(commands.Cog):
                 await paginator.run(embeds)
             else:
                 await ctx.send(f"API returned a {response.status} status.")
+
+    @commands.command()
+    async def memes(self, ctx):
+        meme_link = f"https://some-random-api.ml/meme"
+
+        async with request("GET", meme_link, headers={}) as response:
+            if response.status == 200:
+                api = await response.json()
+                image = api["image"]
+                caption = api["caption"]
+
+                embed = discord.Embed(title="Meme", description=caption)
+                embed.set_image(url=image)
+                await ctx.send(embed=embed)
 
     @ai.error
     async def ai_error(self, ctx, error):

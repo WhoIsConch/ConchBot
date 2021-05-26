@@ -352,7 +352,7 @@ class Fun(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def animal(self, ctx, animal=None):
-        animal_options = ["dog", "cat", "panda", "fox", "bird", "koala", "red_panda"]
+        animal_options = ["dog", "cat", "panda", "fox", "bird", "koala", "red_panda", "racoon", "kangaroo", "elephant", "giraffe", "whale"]
         if animal is None:
             animal = random.choice(animal_options)
         if (animal := animal.lower()) in animal_options:

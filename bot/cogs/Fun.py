@@ -1,5 +1,6 @@
 import datetime
 import json
+import re
 from aiohttp import request
 import random
 import inspect
@@ -405,16 +406,25 @@ class Fun(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def meme(self, ctx):
-        meme_web = "https://some-random-api.ml/meme"
+        try:
+            async with aiohttp.ClientSession() as cs:
+                async with cs.get('https://www.reddit.com/r/memes/hot.json') as r:
+                    res = await r.json()
+                embed = discord.Embed(title="Meme")
+                embed.set_image(url=res['data']['children'] [random.randint(0, 25)]['data']['url'])
+                await ctx.send(embed=embed)
+        except:
+            meme_link = f"https://some-random-api.ml/meme"
 
-        async with ctx.typing():
-            async with request("GET", meme_web, headers={}) as response:
+            async with request("GET", meme_link, headers={}) as response:
                 if response.status == 200:
                     api = await response.json()
                     image = api["image"]
-                    await ctx.send(image)
-                else:
-                    await ctx.send(f"API returned a {response.status} status.")
+                    caption = api["caption"]
+
+                    embed = discord.Embed(title="Meme", description=caption)
+                    embed.set_image(url=image)
+                    await ctx.send(embed=embed)
 
 
 
@@ -577,21 +587,6 @@ class Fun(commands.Cog):
                 await paginator.run(embeds)
             else:
                 await ctx.send(f"API returned a {response.status} status.")
-
-    @commands.command()
-    async def memes(self, ctx):
-        meme_link = f"https://some-random-api.ml/meme"
-
-        async with request("GET", meme_link, headers={}) as response:
-            if response.status == 200:
-                api = await response.json()
-                image = api["image"]
-                caption = api["caption"]
-
-                embed = discord.Embed(title="Meme", description=caption)
-                embed.set_image(url=image)
-                await ctx.send(embed=embed)
-
     @ai.error
     async def ai_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):

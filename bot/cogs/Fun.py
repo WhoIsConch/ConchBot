@@ -177,7 +177,7 @@ class Fun(commands.Cog):
 
                   await paginator.run(embeds)
                 except IndexError:
-                    return await ctx.send("Too high of a page") 
+                    return await ctx.send("Page not available or the number you inputed is doesn't exist") 
     @fbi.command()
     @commands.cooldown(1, 10, commands.BucketType.user) 
     async def details(self, ctx, uid, value=None):

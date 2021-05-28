@@ -471,6 +471,19 @@ class Fun(commands.Cog):
                     
                     await ctx.reply(file=discord.File(imageData, 'gay.gif'))
 
+    @commands.command(aliases=['passed'])
+    async def missionpassed(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as passSession:
+                async with passSession.get(f'https://some-random-api.ml/canvas/passed?avatar={member.avatar_url_as(format="png", size=1024)}') as passedImage:
+                    imageData = io.BytesIO(await passedImage.read())
+                    
+                    await passSession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'passed.gif'))
+
     @commands.command()
     async def wasted(self, ctx, member: discord.Member=None):
         if not member:

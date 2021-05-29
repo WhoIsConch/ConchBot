@@ -391,7 +391,7 @@ class Help(commands.Cog):
             embed.add_field(name="Image Commands", value="`Fuck, Brain, MentalIllness, idputmy, isthis`\nView more"
             " information on page `4`.")
             embed.add_field(name="Support Commands", value="`Report, Suggest, Invite, Vote\nView more"
-            " information on page `5`.")
+            " information on page` `5`.")
             embed.add_field(name="NSFW Commands", value=cmds + "\nView more information on page `6`.")
             embed.add_field(name="Extra Links", value="[Invite Me!](https://top.gg/bot/733467297666170980/invite/)"
             " | [Support Server](https://discord.gg/PyAcRfukvc) | [Website](https://conch.glitch.me) "

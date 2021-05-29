@@ -4,6 +4,7 @@ from itertools import cycle
 import discord
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_env = load_dotenv()
 
@@ -11,7 +12,8 @@ class Client(commands.Bot):
     def __init__(self):
         allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)
         super().__init__(command_prefix=['cb ', 'cB ', 'Cb ', 'CB '], intents=discord.Intents.all(), allowed_mentions=allowed_mentions, case_insensitive=True)
-    
+        self.launch_time = datetime.utcnow()
+
 
     def load_cogs(self):
         self.remove_command('help')

@@ -66,6 +66,11 @@ class Owner(commands.Cog):
         await ctx.send(embed=embed)
         restarter()
         
+    @commands.command()
+    @commands.is_owner()
+    async def eval(self, ctx, *, code: codeblock_converter):
+        cog = self.bot.get_cog("Jishaku")
+        await cog.jsk_python(ctx, argument=code)
 
 def setup(client):
     client.add_cog(Owner(client))

@@ -79,7 +79,7 @@ class Fun(commands.Cog):
         except:
             pass
 
-        if message.content == "<@!733467297666170980>":
+        if message.content == f"<@!{self.client.user.id}>":
             await message.channel.send("My prefix is `cb `")
 
     @commands.command(aliases=["chatbot"])

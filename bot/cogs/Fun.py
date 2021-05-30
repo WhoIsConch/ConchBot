@@ -260,10 +260,10 @@ class Fun(commands.Cog):
     @commands.command()
     async def wanted(self, ctx, member : discord.Member=None):
         if member is None:
-            member == ctx.author
+            member = ctx.author
 
         wanted = Image.open("bot/src/MemeTemplates/wanted.jpg")
-        asset = ctx.author.avatar_url_as(size=128)
+        asset = member.avatar_url_as(size=128)
         data = BytesIO(await asset.read())
         pfp = Image.open(data)
         pfp = pfp.resize((308, 306))

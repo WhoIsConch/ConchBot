@@ -270,6 +270,11 @@ class Fun(commands.Cog):
         wanted.paste(pfp, (69, 143))
         wanted.save("profile.jpg")
         await ctx.send(file = discord.File("profile.jpg"))
+        file = 'profile.jpg'
+        location = "./"
+        path = os.path.join(location, file)
+        os.remove(path)
+
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.user) 

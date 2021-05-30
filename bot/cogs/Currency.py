@@ -659,9 +659,6 @@ class Currency(commands.Cog):
         await self.item_func(user, item, amount)
         await ctx.send(f"Successfully given {user.name} {amount} {item}s.")
 
-    
-    
-
     @buy.error
     async def buy_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
@@ -670,16 +667,14 @@ class Currency(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You need to specify an item to buy.")
             return
-
-
+ 
     @steal.error
     async def steal_error(self, ctx, error):
 
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("That's not a valid member.")
             return
-            
-
+        
     @give.error
     async def give_error(self, ctx, error):
         if isinstance(error, asyncio.TimeoutError):
@@ -688,9 +683,7 @@ class Currency(commands.Cog):
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("That member doesn't exist.")
             return
-
-
-        
+   
      
 def setup(client):
     client.add_cog(Currency(client))

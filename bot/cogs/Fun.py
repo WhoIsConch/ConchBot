@@ -1,5 +1,7 @@
 import datetime
 import json
+from operator import imatmul
+import re
 from aiohttp import request
 import random
 import inspect
@@ -17,6 +19,7 @@ from prsaw import RandomStuff
 from dotenv import load_dotenv
 import os
 from io import BytesIO
+from PIL import Image
 
 
 load_dotenv('.env')
@@ -76,7 +79,7 @@ class Fun(commands.Cog):
         except:
             pass
 
-        if message.content == "<@!786620946412863538>":
+        if message.content == "<@!733467297666170980>":
             await message.channel.send("My prefix is `cb `")
 
     @commands.command(aliases=["chatbot"])
@@ -161,21 +164,23 @@ class Fun(commands.Cog):
             async with session.get("https://api.fbi.gov/wanted/v1/list", params={'page': page}) as response:
                 data = json.loads(await response.read())
                 embeds = []
-                for item in data["items"]:
-                    embed = discord.Embed(title=f"FBI Wanted | {item['title']}")
-                    embed.add_field(name="Details:", value=item['details'])
-                    embed.add_field(name="Warning Message:", value=item['warning_message'])
-                    embed.add_field(name="Reward:", value=item['reward_text'])
-                    embed.add_field(name="UID:", value=item['uid'])
-                    embed.set_footer(text="Data from FBI API | For more info on an entry, use 'cb fbi details {UID}'")
-                    embeds.append(embed)
-                
-                paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
-                paginator.add_reaction('⏪', "back")
-                paginator.add_reaction('⏩', "next")
-                    
-                await paginator.run(embeds)
+                try:
+                  for item in data["items"]:
+                      embed = discord.Embed(title=f"FBI Wanted | {item['title']}")
+                      embed.add_field(name="Details:", value=item['details'])
+                      embed.add_field(name="Warning Message:", value=item['warning_message'])
+                      embed.add_field(name="Reward:", value=item['reward_text'])
+                      embed.add_field(name="UID:", value=item['uid'])
+                      embed.set_footer(text="Data from FBI API | For more info on an entry, use 'cb fbi details {UID}'")
+                      embeds.append(embed)
 
+                  paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
+                  paginator.add_reaction('⏪', "back")
+                  paginator.add_reaction('⏩', "next")
+
+                  await paginator.run(embeds)
+                except IndexError:
+                    return await ctx.send("Page not available or the number you inputed is doesn't exist") 
     @fbi.command()
     @commands.cooldown(1, 10, commands.BucketType.user) 
     async def details(self, ctx, uid, value=None):
@@ -251,6 +256,25 @@ class Fun(commands.Cog):
                     await ctx.send(embed=embed)
                 except:
                     await ctx.send("Country not found. Country names ***are case-sensitive***.")
+
+    @commands.command()
+    async def wanted(self, ctx, member : discord.Member=None):
+        if member is None:
+            member == ctx.author
+
+        wanted = Image.open("bot/src/MemeTemplates/wanted.jpg")
+        asset = ctx.author.avatar_url_as(size=128)
+        data = BytesIO(await asset.read())
+        pfp = Image.open(data)
+        pfp = pfp.resize((308, 306))
+        wanted.paste(pfp, (69, 143))
+        wanted.save("profile.jpg")
+        await ctx.send(file = discord.File("profile.jpg"))
+        file = 'profile.jpg'
+        location = "./"
+        path = os.path.join(location, file)
+        os.remove(path)
+
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.user) 
@@ -350,7 +374,7 @@ class Fun(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def animal(self, ctx, animal=None):
-        animal_options = ["dog", "cat", "panda", "fox", "bird", "koala", "red_panda"]
+        animal_options = ["dog", "cat", "panda", "fox", "bird", "koala", "red_panda", "racoon", "kangaroo", "elephant", "giraffe", "whale"]
         if animal is None:
             animal = random.choice(animal_options)
         if (animal := animal.lower()) in animal_options:
@@ -403,16 +427,25 @@ class Fun(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def meme(self, ctx):
-        meme_web = "https://some-random-api.ml/meme"
+        try:
+            async with aiohttp.ClientSession() as cs:
+                async with cs.get('https://www.reddit.com/r/memes/hot.json') as r:
+                    res = await r.json()
+                embed = discord.Embed(title="Meme")
+                embed.set_image(url=res['data']['children'] [random.randint(0, 25)]['data']['url'])
+                await ctx.send(embed=embed)
+        except:
+            meme_link = f"https://some-random-api.ml/meme"
 
-        async with ctx.typing():
-            async with request("GET", meme_web, headers={}) as response:
+            async with request("GET", meme_link, headers={}) as response:
                 if response.status == 200:
                     api = await response.json()
                     image = api["image"]
-                    await ctx.send(image)
-                else:
-                    await ctx.send(f"API returned a {response.status} status.")
+                    caption = api["caption"]
+
+                    embed = discord.Embed(title="Meme", description=caption)
+                    embed.set_image(url=image)
+                    await ctx.send(embed=embed)
 
 
 
@@ -458,6 +491,19 @@ class Fun(commands.Cog):
                     await gaySession.close()
                     
                     await ctx.reply(file=discord.File(imageData, 'gay.gif'))
+
+    @commands.command(aliases=['passed'])
+    async def missionpassed(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as passSession:
+                async with passSession.get(f'https://some-random-api.ml/canvas/passed?avatar={member.avatar_url_as(format="png", size=1024)}') as passedImage:
+                    imageData = io.BytesIO(await passedImage.read())
+                    
+                    await passSession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'passed.gif'))
 
     @commands.command()
     async def wasted(self, ctx, member: discord.Member=None):
@@ -575,7 +621,6 @@ class Fun(commands.Cog):
                 await paginator.run(embeds)
             else:
                 await ctx.send(f"API returned a {response.status} status.")
-
     @ai.error
     async def ai_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):

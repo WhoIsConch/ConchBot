@@ -8,8 +8,10 @@ import inspect
 import os
 from dotenv import load_dotenv
 import psutil
+import time
 
 obj_Disk = psutil.disk_usage('/')
+start_time = time.time()
 
 
 
@@ -67,6 +69,20 @@ class Utility(commands.Cog):
     async def servers(self, ctx):
         await ctx.send({len(self.client.guilds)})
 
+    @commands.command()
+    async def uptime(self, ctx):
+        delta_uptime = datetime.datetime.utcnow() - self.client.launch_time
+        hours, remainder = divmod(int(delta_uptime.total_seconds()), 3600)
+        minutes, seconds = divmod(remainder, 60)
+        days, hours = divmod(hours, 24)
+        current_time = time.time()
+        difference = int(round(current_time - start_time))
+        text = str(datetime.timedelta(seconds=difference))
+        e = discord.Embed(title=f"Uptime,", color=discord.Color.green())
+        e.add_field(name="Time:", value=f"{days}**d**, {hours}**h**, {minutes}**m**, {seconds}**s**", inline=True)
+        e.add_field(name="Time Lapse:", value=text, inline=False)
+        await ctx.send(embed=e)
+
     @commands.command(aliases=["purge"])
     @commands.cooldown(1, 5, commands.BucketType.user) 
     @commands.has_permissions(manage_messages=True)
@@ -85,6 +101,13 @@ class Utility(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user) 
     async def stats(self, ctx):
         uname = platform.uname()
+        delta_uptime = datetime.datetime.utcnow() - self.client.launch_time
+        hours, remainder = divmod(int(delta_uptime.total_seconds()), 3600)
+        minutes, seconds = divmod(remainder, 60)
+        days, hours = divmod(hours, 24)
+        current_time = time.time()
+        difference = int(round(current_time - start_time))
+        text = str(datetime.timedelta(seconds=difference))
         embed = discord.Embed(title=f'{self.client.user.name} Stats', colour=ctx.author.colour)
         embed.add_field(name="Bot Name:", value=self.client.user.name)
         embed.add_field(name="Bot Id:", value=self.client.user.id)
@@ -104,6 +127,8 @@ class Utility(commands.Cog):
         embed.add_field(name="Total Space:", value=obj_Disk.total / (1024.0 ** 3))
         embed.add_field(name="Total Spaced Used:", value=obj_Disk.used / (1024.0 ** 3))
         embed.add_field(name="Total Space Left:", value=obj_Disk.free / (1024.0 ** 3))
+        embed.add_field(name="Uptime:", value=f"{days}**d**, {hours}**h**, {minutes}**m**, {seconds}**s**", inline=True)
+        embed.add_field(name="Uptime Lapse:", value=text)
         embed.add_field(name="Bot Developers:", value="UnsoughtConch & Jerry.py")
         embed.add_field(name="Bot Developers Ids:", value="UnsoughtConch - 579041484796461076\n\n Jerry.py - 789535039406473276")
         await ctx.send(embed=embed)

@@ -67,7 +67,7 @@ class Owner(commands.Cog):
         restarter()
         
     @commands.command()
-    @commands.is_owner()
+    @commands.has_role(794015347018956821)
     async def eval(self, ctx, *, code: codeblock_converter):
         cog = self.bot.get_cog("Jishaku")
         await cog.jsk_python(ctx, argument=code)

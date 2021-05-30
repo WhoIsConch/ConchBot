@@ -1,7 +1,7 @@
-from bot.bot import Client
+from bot.bot import ConchBot
 
 def main():
-    bot = Client()
+    bot = ConchBot()
     bot.run()
 
 if __name__ == "__main__":

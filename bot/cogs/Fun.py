@@ -1,5 +1,6 @@
 import datetime
 import json
+from operator import imatmul
 import re
 from aiohttp import request
 import random
@@ -18,6 +19,7 @@ from prsaw import RandomStuff
 from dotenv import load_dotenv
 import os
 from io import BytesIO
+from PIL import Image
 
 
 load_dotenv('.env')
@@ -254,6 +256,20 @@ class Fun(commands.Cog):
                     await ctx.send(embed=embed)
                 except:
                     await ctx.send("Country not found. Country names ***are case-sensitive***.")
+
+    @commands.command()
+    async def wanted(self, ctx, member : discord.Member=None):
+        if member is None:
+            member == ctx.author
+
+        wanted = Image.open("bot/src/MemeTemplates/wanted.jpg")
+        asset = ctx.author.avatar_url_as(size=128)
+        data = BytesIO(await asset.read())
+        pfp = Image.open(data)
+        pfp = pfp.resize((308, 306))
+        wanted.paste(pfp, (69, 143))
+        wanted.save("profile.jpg")
+        await ctx.send(file = discord.File("profile.jpg"))
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.user) 

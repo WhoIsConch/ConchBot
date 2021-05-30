@@ -9,7 +9,7 @@ from datetime import datetime
 
 load_env = load_dotenv()
 
-class Client(commands.Bot):
+class ConchBot(commands.Bot):
     def __init__(self):
         allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)
         intents = discord.Intents.all()

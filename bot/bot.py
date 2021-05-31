@@ -9,7 +9,7 @@ from datetime import datetime
 
 load_env = load_dotenv()
 
-class Client(commands.Bot):
+class ConchBot(commands.Bot):
     def __init__(self):
         allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)
         intents = discord.Intents.all()
@@ -45,7 +45,7 @@ class Client(commands.Bot):
     async def on_ready(self):
         print("------")
         print("ConchBot is online!")
-        print("Note: The fact that in owner.py cog in bot/cogs folder. We used @commands.has_role(). You could replacing whats inside () with your owner role id/name or use @commands.is_owner() for only the owner can use.")
+        print("Note:The fact that in owner.py cog in bot/cogs folder. We used @commands.has_role(). You could replacing whats inside () with your owner role id/name or use @commands.is_owner() for only the owner can use.")
         await self.status_loop()
     
     async def shutdown(self):

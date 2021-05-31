@@ -79,7 +79,7 @@ class Fun(commands.Cog):
         except:
             pass
 
-        if message.content == "<@!733467297666170980>":
+        if message.content == f"<@!{self.client.user.id}>":
             await message.channel.send("My prefix is `cb `")
 
     @commands.command(aliases=["chatbot"])
@@ -260,10 +260,10 @@ class Fun(commands.Cog):
     @commands.command()
     async def wanted(self, ctx, member : discord.Member=None):
         if member is None:
-            member == ctx.author
+            member = ctx.author
 
         wanted = Image.open("bot/src/MemeTemplates/wanted.jpg")
-        asset = ctx.author.avatar_url_as(size=128)
+        asset = member.avatar_url_as(size=128)
         data = BytesIO(await asset.read())
         pfp = Image.open(data)
         pfp = pfp.resize((308, 306))

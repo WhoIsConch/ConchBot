@@ -3,6 +3,7 @@ import os
 from itertools import cycle
 import discord
 from discord.ext import commands, tasks
+from discord.ext.commands import Bot
 from discord.ext.commands.bot import when_mentioned_or
 from dotenv import load_dotenv
 from datetime import datetime
@@ -13,7 +14,7 @@ class ConchBot(commands.Bot):
     def __init__(self):
         allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)
         intents = discord.Intents.all()
-        super().__init__(command_prefix=when_mentioned_or('cb!', 'cB ', 'Cb ', 'CB '), intents=intents, allowed_mentions=allowed_mentions, case_insensitive=True)
+        super().__init__(command_prefix=when_mentioned_or('cb ', 'cB ', 'Cb ', 'CB '), intents=intents, allowed_mentions=allowed_mentions, case_insensitive=True)
         self.launch_time = datetime.utcnow()
 
 

@@ -40,12 +40,31 @@ class Support(commands.Cog):
         )
         embed.add_field(name="Submitted By:", value=ctx.author)
         embed.add_field(name="Bug Description:", value=content)
+        embed.set_footer(text=f"User ID: {ctx.author.id}")
         await cursor.execute(f'UPDATE bugnum SET num = {num} WHERE placeholder = 1')
         await channel.send(embed=embed)
         await ctx.send("Thank you for the bug report! Our team will identify and fix the problem as soon as possible!")
         await db.commit()
         await cursor.close()
         db.close
+
+    # @commands.command()
+    # @commands.is_owner()
+    # async def respond(self, ctx, *, content):
+    #     user, content = content.split(':;')
+
+    #     user = self.client.get_user(user.id)
+
+    #     if user is None:
+    #         return await ctx.send("Failed.")
+
+    #     embed=discord.Embed(title="Bug Report Response", color=discord.Color.random(), description="*You are receiving this message because you have recently submitted a bug about ConchBot.*")
+    #     embed.add_field(name="Response:", value=content)
+    #     embed.set_footer(text="*If this response asks for more information, you can just use the report command again.*")
+
+    #     await user.send(embed=embed)
+
+    #     await ctx.send("User contacted.")
 
     @commands.command()
     @commands.cooldown(1, 86400, BucketType.user)

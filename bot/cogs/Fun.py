@@ -84,7 +84,7 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=["chatbot"])
     @commands.has_permissions(manage_guild=True)
-    async def ai(self, ctx, channel:discord.TextChannel):
+    async def ai(self, ctx):
         await ctx.send("You can set up a chatbot channel by naming any channel 'conchchat,' or I can do it for you! "
         "would you like me to do it for you? `Yes` or `no`.")
         msg = await self.client.wait_for('message', check=lambda message: message.author == ctx.author, timeout=30)
@@ -181,6 +181,7 @@ class Fun(commands.Cog):
                   await paginator.run(embeds)
                 except IndexError:
                     return await ctx.send("Page not available or the number you inputed is doesn't exist") 
+    
     @fbi.command()
     @commands.cooldown(1, 10, commands.BucketType.user) 
     async def details(self, ctx, uid, value=None):
@@ -447,9 +448,6 @@ class Fun(commands.Cog):
                     embed.set_image(url=image)
                     await ctx.send(embed=embed)
 
-
-
-
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def pat(self, ctx):
@@ -621,6 +619,7 @@ class Fun(commands.Cog):
                 await paginator.run(embeds)
             else:
                 await ctx.send(f"API returned a {response.status} status.")
+    
     @ai.error
     async def ai_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):

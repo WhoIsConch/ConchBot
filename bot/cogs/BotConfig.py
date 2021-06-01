@@ -29,7 +29,7 @@ class Config(commands.Cog):
         elif check[0] == 2:
             return "fuf"
 
-    @commands.group(invoke_without_command=True, disasbled=True)
+    @commands.group(invoke_without_command=True, disabled=True)
     async def config(self, ctx):
         embed = discord.Embed(title="Configuration Settings", colour=discord.Colour.gold())
         embed.add_field(name="Family Friendly Mode", value=f"Status: {await self.check_ff(ctx.guild)}\n "

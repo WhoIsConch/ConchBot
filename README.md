@@ -1,8 +1,9 @@
 ## ConchBot
 
-[![](https://img.shields.io/badge/Discord-ConchBot%20Support-blue)](https://discord.gg/3vzm7gt9Jy) [![](https://img.shields.io/badge/Discord-ConchBot%20Development%20Server-blue)](https://discord.gg/FxBVy86nnG) [![](https://img.shields.io/badge/Vote-ConchBot-blue)](https://top.gg/bot/733467297666170980)
+[![](https://img.shields.io/discord/793898305176338453?color=blue&label=Conchbot%20Support%20Server&style=for-the-badge)](https://discord.gg/3vzm7gt9Jy) [ ![](https://img.shields.io/discord/842232034356756502?color=blue&label=Conchbot%20Development%20Server&style=for-the-badge)
+](https://discord.gg/FxBVy86nnG) 
 
-![](https://img.shields.io/discord/793898305176338453?color=blue&label=Conchbot%20Support%20Server&style=for-the-badge) ![](https://img.shields.io/discord/842232034356756502?color=blue&label=Conchbot%20Development%20Server&style=for-the-badge)
+[![](https://img.shields.io/badge/Vote-ConchBot-blue?style=flat-square)](https://top.gg/bot/733467297666170980)
 
 
 

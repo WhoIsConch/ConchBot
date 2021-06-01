@@ -51,11 +51,22 @@ if not os.path.exists('.env'):
     env.write(f"GITHUB_REPO_BRANCH={github_repo_branch}\n")
     print("------")
 
+    # Error channel
     print("We need error reporting channel so that means you need to get the id of the channel")
     print("------")
     error_reporting_channel = input("Your error channel id: ")
-    env.write(f"ERROR_CHANNEL={error_reporting_channel}")
+    env.write(f"ERROR_CHANNEL={error_reporting_channel}\n")
     print("------")
+
+    # Ifunny info
+
+    # Ifunny
+    print("We need ifunny info to make these commands work so please input a valid response")
+    iFunnyemail = input("Your iFunnyemail: ")
+    env.write(f"iFunnyemail={iFunnyemail}\n")
+
+    iFunnypass = input("Your iFunnypass: ")
+    env.write(f"iFunnypass={iFunnypass}\n")
 
 
     # Close File

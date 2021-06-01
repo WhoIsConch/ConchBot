@@ -7,5 +7,4 @@ aiosqlite
 uuid
 jishaku
 dblpy
-sphinx
-sphinx-rtd-theme
+ifunny

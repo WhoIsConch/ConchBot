@@ -253,9 +253,12 @@ class NSFW(commands.Cog):
             images = await rule34.getImages(tags=query)
             total = []
 
-            for image in images:
-                total.append(image)
-            
+            try:
+                for image in images:
+                    total.append(image)
+            except:
+                return await ctx.send(f"No images were found on Rule34 with the tag `{query}`")
+                
             finalimg = random.choice(total)
 
             embed = discord.Embed(title="ID: " + finalimg.id, colour=ctx.author.colour, url=finalimg.file_url)

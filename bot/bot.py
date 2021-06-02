@@ -4,6 +4,7 @@ from itertools import cycle
 import discord
 from discord import message
 from discord.ext import commands, tasks
+from discord.ext.commands import Bot
 from discord.ext.commands.bot import when_mentioned_or
 from dotenv import load_dotenv
 from datetime import datetime

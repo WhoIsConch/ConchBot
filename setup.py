@@ -68,7 +68,20 @@ if not os.path.exists('.env'):
     iFunnypass = input("Your iFunnypass: ")
     env.write(f"iFunnypass={iFunnypass}\n")
 
+    print("If you dont wanna do this please delete the functions - up and down and remove self.up() and self.down()")
+    print("If you want please input a valid response")
+    print("Create a status by going to https://manage.statuspage.io/")
+    print("Status email starts with `component+`")
+    status_email = input("Status email: ")
+    env.write(f"STATUSEMAIL={status_email}\n")
 
+    print("Your gmail email")
+    gmail_email = input("Your gmail email: ")
+    env.write(f"EMAIL={gmail_email}\n")
+
+    print("Your gmail password")
+    gmail_pass = input("Your gmail password: ")
+    env.write(f"EMAIL_PASS={gmail_pass}\n")
     # Close File
     env.close()
 

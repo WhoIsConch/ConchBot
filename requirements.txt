@@ -7,4 +7,4 @@ aiosqlite
 uuid
 jishaku
 dblpy
-ifunny
+git+https://github.com/gastrodon/ifunny-python

@@ -116,5 +116,4 @@ You can reach out to us in a issue. By creating a issue.
 
 If you need help with a big issue you can join our discord support server below and create a ticket so we can contact you.
 
-[![](https://img.shields.io/badge/Discord-ConchBot%20Support-blue)]() 
-
+[![](https://img.shields.io/discord/793898305176338453?color=blue&label=Conchbot%20Support%20Server&style=for-the-badge)](https://discord.gg/3vzm7gt9Jy)

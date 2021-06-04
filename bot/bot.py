@@ -21,7 +21,7 @@ class ConchBot(commands.Bot):
     def __init__(self):
         allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)
         intents = discord.Intents.all()
-        super().__init__(command_prefix=when_mentioned_or('cb ', 'cB ', 'Cb ', 'CB '), intents=intents, allowed_mentions=allowed_mentions, case_insensitive=True)
+        super().__init__(command_prefix=when_mentioned_or('cb ', 'cB ', 'Cb ', 'CB '), intents=intents, allowed_mentions=allowed_mentions, case_insensitive=True, strip_after_prefix=True)
         self.launch_time = datetime.utcnow()
 
 

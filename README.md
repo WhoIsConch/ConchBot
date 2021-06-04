@@ -118,10 +118,3 @@ If you need help with a big issue you can join our discord support server below 
 
 [![](https://img.shields.io/badge/Discord-ConchBot%20Support-blue)]() 
 
-
-
-## ReadTheDocs (Docs)
-
-There is no docs yet but we will be working it so stay tuned. We'll put a coming soon tag on it
-
-![](https://th.bing.com/th/id/R0e9a9adfa101cdd79c06b36f45629620?rik=DtpSjWwnbEjBng&riu=http%3a%2f%2fwichitaarts.com%2fwp-content%2fuploads%2f2017%2f03%2fshutterstock_285426443.jpg&ehk=Gd3LdnSFNaeYE6YXLcrc3HEaFvOJdNpJM9%2fHfYdnBIQ%3d&risl=&pid=ImgRaw)

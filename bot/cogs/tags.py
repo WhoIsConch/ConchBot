@@ -74,9 +74,10 @@ class Tags(commands.Cog):
         d2 = today.strftime("%B %d, %Y")
         
         id = shortuuid.uuid()
-
+        content = content.replace("'", "///")
+        content2 = content.replace('"', "////") 
         await cursor.execute(f"INSERT INTO g{guild.id} (name, content, creator_id, created_at, last_edited, tag_id)"
-            f" VALUES ('{name.lower()}', '{content}', {author.id}, '{d2}', '{d2}', '{id}')")
+            f" VALUES ('{name.lower()}', '{content2}', {author.id}, '{d2}', '{d2}', '{id}')")
 
         await db.commit()
         await cursor.close()

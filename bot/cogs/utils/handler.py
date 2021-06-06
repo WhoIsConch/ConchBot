@@ -27,7 +27,7 @@ class CommandErrorHandler(commands.Cog):
                     return await ctx.send(e[0])
                     
             except:
-                await ctx.send("Command Not Found")
+                await ctx.send("Command/Tag Not Found")
 
         if isinstance(error, discord.errors.HTTPException):
             await ctx.send("Something went wrong. Note: The bot might be ratelimited")

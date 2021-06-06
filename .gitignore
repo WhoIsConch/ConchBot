@@ -25,4 +25,3 @@ profile.jpg
 
 # Databases so the bot doesn't reset them every update
 bot/db/
-config.db

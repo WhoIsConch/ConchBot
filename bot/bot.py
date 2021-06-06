@@ -2,15 +2,25 @@ import asyncio
 import os
 from itertools import cycle
 import discord
+from discord import message
 from discord.ext import commands, tasks
 from discord.ext.commands import Bot
 from discord.ext.commands.bot import when_mentioned_or
 from dotenv import load_dotenv
 from datetime import datetime
+<<<<<<< HEAD
 from bot.cogs.tags import Tags
 from bot.cogs.Currency import Currency
 from bot.cogs.BotConfig import Config
 from bot.cogs.utils.errors import Blacklisted
+=======
+import smtplib
+from email.message import EmailMessage
+from email.mime.multipart import MIMEMultipart
+
+from email.mime.text import MIMEText
+
+>>>>>>> 02df291a8fd443ffb7a3558f3dfcb824937f07b0
 
 load_env = load_dotenv()
 
@@ -18,7 +28,7 @@ class ConchBot(commands.Bot):
     def __init__(self):
         allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)
         intents = discord.Intents.all()
-        super().__init__(command_prefix=when_mentioned_or('cb ', 'cB ', 'Cb ', 'CB '), intents=intents, allowed_mentions=allowed_mentions, case_insensitive=True)
+        super().__init__(command_prefix=when_mentioned_or('cb ', 'cB ', 'Cb ', 'CB '), intents=intents, allowed_mentions=allowed_mentions, case_insensitive=True, strip_after_prefix=True)
         self.launch_time = datetime.utcnow()
 
         @self.before_invoke
@@ -63,6 +73,7 @@ class ConchBot(commands.Bot):
         self.load_extension('jishaku')
         print("Loaded `jishaku`")
         print("------")
+        
 
     @tasks.loop(seconds=15.0)
     async def status_loop(self):
@@ -77,7 +88,43 @@ class ConchBot(commands.Bot):
         print("------")
         print("ConchBot is online!")
         print("Note:The fact that in owner.py cog in bot/cogs folder. We used @commands.has_role(). You could replacing whats inside () with your owner role id/name or use @commands.is_owner() for only the owner can use.")
+        self.up()
         await self.status_loop()
+
+    def up(self):
+        email_pass = os.getenv("EMAIL_PASS")
+        from_address = os.getenv("EMAIL")
+        to_address = os.getenv("STATUSEMAIL")
+        message = MIMEMultipart('UP')
+        message['Subject'] = 'UP'
+        message['From'] = from_address
+        message['To'] = to_address
+        content = MIMEText(f'ConchBot is Up!', 'plain')
+        message.attach(content)
+        mail = smtplib.SMTP('smtp.gmail.com', 587)
+        mail.ehlo()
+        mail.starttls()
+        mail.login(from_address, email_pass)
+        mail.sendmail(from_address,to_address, message.as_string())
+        mail.close()
+        print("Successfully sent email")
+
+    def down(self, error):
+        email_pass = os.getenv("EMAIL_PASS")
+        from_address = os.getenv("EMAIL")
+        to_address = os.getenv("STATUSEMAIL")
+        message = MIMEMultipart('DOWN')
+        message['Subject'] = 'DOWN'
+        message['From'] = from_address
+        message['To'] = to_address
+        content = MIMEText(f'ConchBot is Down! Error: {error}', 'plain')
+        message.attach(content)
+        mail = smtplib.SMTP('smtp.gmail.com', 587)
+        mail.ehlo()
+        mail.starttls()
+        mail.login(from_address, email_pass)
+        mail.sendmail(from_address,to_address, message.as_string())
+        mail.close()
     
     async def shutdown(self):
         print("------")
@@ -100,6 +147,11 @@ class ConchBot(commands.Bot):
     async def on_disconnect(self):
         print("------")
         print("Conch Bot disconnected.")
+
+    async def on_error(self, error):
+        self.down(error)
+        raise error
+
 
     def run(self):
         self.load_cogs()

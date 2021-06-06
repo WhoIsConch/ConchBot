@@ -1,9 +1,7 @@
 ## ConchBot
 
 [![](https://img.shields.io/discord/793898305176338453?color=blue&label=Conchbot%20Support%20Server&style=for-the-badge)](https://discord.gg/3vzm7gt9Jy) [ ![](https://img.shields.io/discord/842232034356756502?color=blue&label=Conch%20Development&style=for-the-badge)
-](https://discord.gg/FxBVy86nnG) 
-
-[![](https://img.shields.io/badge/Vote-ConchBot-blue?style=flat-square)](https://top.gg/bot/733467297666170980)
+](https://discord.gg/FxBVy86nnG) ![](https://img.shields.io/github/repo-size/ConchDev/ConchBot?color=blue&label=ConchBot%20Size&style=for-the-badge) [![](https://img.shields.io/github/issues-raw/ConchDev/ConchBot?label=Issues&style=for-the-badge)](https://github.com/ConchDev/ConchBot/issues) [![](https://img.shields.io/github/issues-pr-raw/ConchDev/ConchBot?label=Pull%20Requests&style=for-the-badge)](https://github.com/ConchDev/ConchBot/pulls) ![](https://img.shields.io/github/milestones/all/ConchDev/ConchBot?label=MileStones&style=for-the-badge) ![](https://img.shields.io/github/discussions/ConchDev/ConchBot?style=for-the-badge) ![](https://img.shields.io/github/downloads/ConchDev/ConchBot/total?style=for-the-badge) ![](https://img.shields.io/github/languages/count/ConchDev/ConchBot?label=Programming%20Languages&style=for-the-badge) [![](https://img.shields.io/github/license/ConchDev/ConchBot?style=for-the-badge)](https://github.com/ConchDev/ConchBot/blob/master/LICENSE) [![](https://img.shields.io/github/contributors/ConchDev/ConchBot?style=for-the-badge)](https://github.com/ConchDev/ConchBot/graphs/contributors) ![](https://img.shields.io/github/languages/top/ConchDev/ConchBot?style=for-the-badge) [![](https://img.shields.io/badge/ConchBot-Status-blue?style=for-the-badge)](https://conchbot.statuspage.io/) [![](https://img.shields.io/badge/Vote-ConchBot-blue?style=for-the-badge)](https://top.gg/bot/733467297666170980) 
 
 
 
@@ -115,12 +113,4 @@ You can reach out to us in a issue. By creating a issue.
 
 If you need help with a big issue you can join our discord support server below and create a ticket so we can contact you.
 
-[![](https://img.shields.io/badge/Discord-ConchBot%20Support-blue)]() 
-
-
-
-## ReadTheDocs (Docs)
-
-There is no docs yet but we will be working it so stay tuned. We'll put a coming soon tag on it
-
-![](https://th.bing.com/th/id/R0e9a9adfa101cdd79c06b36f45629620?rik=DtpSjWwnbEjBng&riu=http%3a%2f%2fwichitaarts.com%2fwp-content%2fuploads%2f2017%2f03%2fshutterstock_285426443.jpg&ehk=Gd3LdnSFNaeYE6YXLcrc3HEaFvOJdNpJM9%2fHfYdnBIQ%3d&risl=&pid=ImgRaw)
+[![](https://img.shields.io/discord/793898305176338453?color=blue&label=Conchbot%20Support%20Server&style=for-the-badge)](https://discord.gg/3vzm7gt9Jy)

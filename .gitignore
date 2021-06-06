@@ -13,15 +13,6 @@ venv
 # Images
 text.png
 Meme.png
-ConchPixel32.png
-AllMyHomiesHateTemplate.jpg
-Brain.png
-BusTrain.png
-IdPutMy.png
-IsThis.jpg
-MentalIlness.png
-TradeOffer.jpg
-profile.jpg
 
 # Databases so the bot doesn't reset them every update
 bot/db/

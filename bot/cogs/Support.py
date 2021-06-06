@@ -3,8 +3,10 @@ import discord
 from discord.ext import commands
 from discord.ext.commands.cooldowns import BucketType
 from dotenv import load_dotenv
+import dbl
 import os
-import datetime
+from bot.cogs.Currency import Currency
+
 
 env = load_dotenv()
 
@@ -12,8 +14,29 @@ env = load_dotenv()
 class Support(commands.Cog):
     def __init__(self, client):
         self.client = client
+        self.dbl = dbl.DBLClient(self.client, os.getenv('DBLTOKEN'), autopost=True, webhook_path='/dblwebhook', webhook_auth='69420', webhook_port=5000)
 
-    @commands.command()
+    async def getvotes(self):
+        return await self.dbl.get_bot_upvotes()
+    
+    @commands.Cog.listener()
+    async def on_dbl_vote(self, data):
+        channel = self.client.get_channel(724050498847506436)
+        user = self.client.get_user(int(data['user']))
+        if user is None:
+            pass
+        else:
+            await user.send("Thanks for voting for ConchBot! Due to this, you'll get awesome perks, such as:"
+            "\nUnlocked image commands!\nNo message on the AI!\nA `bronze conch` currency item! (Use with `cb use bronze`)")
+        await Currency.item_func(self, user, "Bronze Conch", 1)
+
+        await channel.send(data)
+
+    @commands.Cog.listener()
+    async def on_guild_post(self):
+        print("Server count successfully posted!")
+
+    @commands.command(description="Displays an embed of where you can get support for ConchBot.")
     async def support(self, ctx):
         embed = discord.Embed(
             title="ConchBot Support",
@@ -25,7 +48,7 @@ class Support(commands.Cog):
         embed.add_field(name="Or, if you don't want to join a server...", value="You can submit bugs or errors via 'cb report {description of bug}.")
         await ctx.send(embed=embed)
     
-    @commands.command()
+    @commands.command(description="Report a bug to the ConchBot developers.")
     @commands.cooldown(1, 86400, commands.BucketType.user)
     async def report(self, ctx, *, content):
         channel = self.client.get_channel(795711741606101024)
@@ -66,7 +89,7 @@ class Support(commands.Cog):
 
     #     await ctx.send("User contacted.")
 
-    @commands.command()
+    @commands.command(description="Suggest a feature!")
     @commands.cooldown(1, 86400, BucketType.user)
     async def suggest(self, ctx, *, suggestion):
         channel = self.client.get_channel(819029394534039604)
@@ -90,15 +113,28 @@ class Support(commands.Cog):
             await suggestion_message.add_reaction("⬆️")
             await suggestion_message.add_reaction("⬇️")
 
-    
+    @commands.group(invoke_without_command=True, description="Vote for ConchBot on Top.gg or DBL!")
+    async def vote(self, ctx):
+        embed = discord.Embed(title="Vote for ConchBot", colour=discord.Colour.blue())
+        embed.add_field(name="Perks", value="Voting for ConchBot gets you awesome perks, such as unlocked commands and currency items!")
+        embed.add_field(name="Top.gg", value="You can vote for ConchBot on Top.gg [here!](https://top.gg/bot/733467297666170980/vote)")
+        embed.add_field(name="Discord Bot List", value="You can vote for ConchBot on Discord Bot List [here!](https://discord.ly/conchbot)")
+        embed.set_footer(text="When you're done voting, please use the \"cb vote claim\" command to claim your reward!")
+        await ctx.send(embed=embed)
 
+    @commands.command(description="Get a link to invite ConchBot to your server!")
+    async def invite(self, ctx):
+        embed = discord.Embed(
+            title="ConchBot Invites",
+            colour=ctx.author.colour
+        )
+        embed.add_field(name="ConchBot Invite:", value="You can invite ConchBot to your server "
+        "[here](https://discord.com/api/oauth2/authorize?client_id=733467297666170980&permissions=388102&scope=bot)")
+        embed.add_field(name="Support Server Invite:", value="You can join ConchBot Support "
+        "[here](https://discord.gg/PyAcRfukvc)")
+        embed.add_field(name="ConchBot's creator (UnsoughtConch)'s community server:",
+        value="You can join Conch's community server [here](https://discord.gg/n8XyytfxMk)")
+        await ctx.send(embed=embed)
 
-    @suggest.error
-    async def suggest_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You must input a suggestion for ConchBot.")
-            return
-
-            
 def setup(client):
     client.add_cog(Support(client))

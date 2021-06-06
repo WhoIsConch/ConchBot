@@ -14,10 +14,15 @@ ifclient = Client()
 ifclient.login(os.getenv("iFunnyemail"), os.getenv("iFunnypass"))
 
 class iFunny(commands.Cog):
+
+    '''
+    The iFunny category holds all of the features needed to interact with the iFunny API, just one of the many social points of ConchBot.
+    '''
+
     def __init__(self, client):
         self.client = client
 
-    @commands.group(invoke_without_command=True)
+    @commands.group(invoke_without_command=True, description="This command shows you the paginated guide to the iFunny group of commands.")
     async def ifunny(self, ctx):
         main = discord.Embed(title="Guide to the iFunny group of commands [BETA]", description="DISCLAIMER: All iFunny functionality is currently in beta, so commands may not work as"
         " expected.", color=discord.Color.gold())
@@ -77,7 +82,7 @@ class iFunny(commands.Cog):
 
         await paginator.run(embeds)
 
-    @ifunny.command(aliases=["featured", 'features'])
+    @ifunny.command(aliases=["featured", 'features'], description="Shows a featured post from iFunny.")
     async def feature(self, ctx):
         msg = await ctx.send(embed=discord.Embed(title="Getting meme from iFunny collective...", color=discord.Color.random()))
         feed = ifclient.featured
@@ -102,7 +107,7 @@ class iFunny(commands.Cog):
         await ctx.send(embed=embed)
         await msg.delete()
 
-    @ifunny.command()
+    @ifunny.command(description="Shows a collective post from iFunny.")
     async def collective(self, ctx):
         msg = await ctx.send(embed=discord.Embed(title="Getting meme from iFunny collective...", color=discord.Color.random()))
         feed = ifclient.collective
@@ -127,7 +132,7 @@ class iFunny(commands.Cog):
         await ctx.send(embed=embed)
         await msg.delete()
 
-    @ifunny.command()
+    @ifunny.command(description="Bring up info of an iFunny user.")
     async def user(self, ctx, *, name):
         user = User.by_nick(name)
 
@@ -155,7 +160,7 @@ class iFunny(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @ifunny.command()
+    @ifunny.command(description="Post an image to the DiscordConchbot iFunny account.")
     @commands.cooldown(1, 86400, BucketType.user)
     async def post(self, ctx, image=None):
         if image is None:

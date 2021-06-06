@@ -6,6 +6,19 @@ class Config(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+    async def check_blacklist(self, id):
+        db = await aiosqlite.connect('./bot/db/config.db')
+        cursor = await db.cursor()
+        
+        await cursor.execute(f"SELECT id FROM blacklist WHERE id = {id}")
+        result = await cursor.fetchone()
+
+        if result is None:
+            return False
+        
+        else:
+            return True
+
     async def check_ff(self, guild):
         db = await aiosqlite.connect('./bot/db/config.db')
         cursor = await db.cursor()

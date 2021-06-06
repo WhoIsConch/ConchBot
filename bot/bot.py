@@ -7,6 +7,10 @@ from discord.ext.commands import Bot
 from discord.ext.commands.bot import when_mentioned_or
 from dotenv import load_dotenv
 from datetime import datetime
+from bot.cogs.tags import Tags
+from bot.cogs.Currency import Currency
+from bot.cogs.BotConfig import Config
+from bot.cogs.utils.errors import Blacklisted
 
 load_env = load_dotenv()
 
@@ -16,6 +20,32 @@ class ConchBot(commands.Bot):
         intents = discord.Intents.all()
         super().__init__(command_prefix=when_mentioned_or('cb ', 'cB ', 'Cb ', 'CB '), intents=intents, allowed_mentions=allowed_mentions, case_insensitive=True)
         self.launch_time = datetime.utcnow()
+
+        @self.before_invoke
+        async def before_command(ctx):
+            if ctx.command.qualified_name == "support":
+                await ctx.invoke(ctx.command)
+
+            userstat = await Config.check_blacklist(self, ctx.author.id)
+            serverstat = await Config.check_blacklist(self, ctx.guild.id)
+
+            if userstat is True:
+                try:
+                    raise Blacklisted(ctx)
+                except Blacklisted as e:
+                    await e.memsend()
+                    raise
+                    
+
+            elif serverstat is True:
+                try:
+                    raise Blacklisted(ctx)
+                except Blacklisted as e:
+                    await Blacklisted.guildsend(self)
+                    raise
+                
+            await Tags.create_table(self, ctx.guild.id)
+            await Currency.open_account(self, ctx.author)
 
 
     def load_cogs(self):
@@ -42,7 +72,7 @@ class ConchBot(commands.Bot):
         while True:
             await self.change_presence(activity=discord.Game(next(statuses)))
             await asyncio.sleep(15)
-            
+
     async def on_ready(self):
         print("------")
         print("ConchBot is online!")

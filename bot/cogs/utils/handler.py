@@ -6,6 +6,8 @@ import asyncio
 from dotenv import load_dotenv
 import os
 import datetime
+from bot.cogs.tags import Tags
+import traceback
 
 env = load_dotenv()
 
@@ -16,8 +18,16 @@ class CommandErrorHandler(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
-            await ctx.send(f"Command doesn't exist")
-            return
+            try:
+                await Tags.create_table(self, ctx.guild.id)
+                e = await Tags.get_tag(self, ctx.guild.id, ctx.message.content[3:])
+                if e is False:
+                    return
+                else:
+                    return await ctx.send(e[0])
+                    
+            except:
+                traceback.print_exc()
 
         if isinstance(error, discord.errors.HTTPException):
             await ctx.send("Something went wrong. Note: The bot might be ratelimited")
@@ -31,8 +41,7 @@ class CommandErrorHandler(commands.Cog):
             await ctx.send(f"You are cooldown. Please try again in **{error.retry_after:.2f}s**")
             return
 
-        
-        if isinstance(error, discord.ext.commands.errors.NotOwner):
+        if isinstance(error, commands.errors.NotOwner):
             await ctx.send("You are not the owner of this bot so you can't use this command")
             return
 
@@ -44,7 +53,7 @@ class CommandErrorHandler(commands.Cog):
             await ctx.send("You need to tell me what I need to do, ig this is a image, separate text on the top and bottom with a comma.")
             return
 
-        if isinstance(error, discord.ext.commands.ChannelNotFound):
+        if isinstance(error, commands.ChannelNotFound):
             await ctx.send("Channel doesn't exist")
 
 
@@ -75,7 +84,7 @@ class CommandErrorHandler(commands.Cog):
             await ctx.send("You waited too long :(")
             return
 
-        if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+        if isinstance(error, commands.errors.MissingRequiredArgument):
             await ctx.send("There are required arguements/parameters you need to input")
             return
 
@@ -99,7 +108,9 @@ class CommandErrorHandler(commands.Cog):
             now = datetime.datetime.now()
             time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
             error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
-            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
+            e = traceback.format_exception(type(error), error, error.__traceback__)
+            print(e)
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {e} ```')
             return
 
 def setup(client):

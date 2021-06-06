@@ -18,10 +18,15 @@ reddit = asyncpraw.Reddit(client_id = os.getenv("redditid"),
             user_agent = "ConchBotPraw")
 
 class NSFW(commands.Cog):
+
+    '''
+    ConchBot has one of the best NSFW categories on Discord, while not even being its main focus.
+    '''
+
     def __init__(self, client):
         self.client = client
 
-    @commands.group(invoke_without_command=True)
+    @commands.group(invoke_without_command=True, description="Get a hentai image from r/hentai.")
     async def hentai(self, ctx):
         msg = await ctx.send("Getting your porn...")
         subreddit = await reddit.subreddit('hentai')
@@ -39,7 +44,7 @@ class NSFW(commands.Cog):
         await msg.delete()
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(description="Use a sauce code to find a hentai comic from nhentai.net.\n[id] value is optional. Returns random NHentai comic when none.")
     @commands.cooldown(1, 5, commands.BucketType.user) 
     async def sauce(self, ctx, id=None):
         await ctx.send("Getting your porn...")
@@ -72,7 +77,7 @@ class NSFW(commands.Cog):
             
             await paginator.run(embeds)
 
-    @commands.command()
+    @commands.command(description="Get porn from Reddit r/porn.")
     @commands.cooldown(1, 5, commands.BucketType.user) 
     async def porn(self, ctx):
         msg = await ctx.send("Getting your porn...")
@@ -91,7 +96,7 @@ class NSFW(commands.Cog):
         await msg.delete()
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["tits", "boob", "tit"])
+    @commands.command(aliases=["tits", "boob", "tit"], description="Get a picture of boobs via r/boobs.")
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def boobs(self, ctx):
         msg = await ctx.send("Getting your porn...")
@@ -110,7 +115,7 @@ class NSFW(commands.Cog):
         await msg.delete()
         await ctx.send(embed=embed)
     
-    @commands.command(aliases=["tittydrop", "titdrop"])
+    @commands.command(aliases=["tittydrop", "titdrop"], description="Get a boobdrop from r/tittydrop. [MOST GIFS MAY NOT SHOW]")
     @commands.cooldown(1, 5, commands.BucketType.user) 
     async def boobdrop(self, ctx):
         msg = await ctx.send("Getting your porn...")
@@ -129,12 +134,13 @@ class NSFW(commands.Cog):
         await msg.delete()
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(description="What the fuck?")
     @commands.cooldown(1, 5, commands.BucketType.user) 
     async def feet(self, ctx):
         await ctx.send("What the fuck is wrong with you? Fucking toe gobbling fuck.")
+        await self.client.get_channel(793927796354449459).send("Some degenerate just tried to use the feet command.")
         
-    @commands.command()
+    @commands.command(description="Get gay porn from r/gayporn.")
     @commands.cooldown(1, 5, commands.BucketType.user) 
     async def gay(self, ctx):
         msg = await ctx.send("Getting your porn...")
@@ -153,7 +159,26 @@ class NSFW(commands.Cog):
         await msg.delete()
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(aliases=["lesbo"], description="Get a lesbian porn image from r/lesbians.")
+    @commands.cooldown(1, 5, commands.BucketType.user) 
+    async def lesbian(self, ctx):
+        msg = await ctx.send("Getting your porn...")
+        subreddit = await reddit.subreddit('lesbians')
+        top = subreddit.top(limit=50)
+        all_subs = []
+
+        async for submission in top:
+            all_subs.append(submission)
+        
+        ransub = random.choice(all_subs)
+
+        embed = discord.Embed(title=ransub.title, colour=ctx.author.colour, url=ransub.url)
+        embed.set_image(url=ransub.url)
+        embed.set_footer(text=f"Posted by {ransub.author} on Reddit. | ❤ {ransub.ups} | 💬 {ransub.num_comments}")
+        await msg.delete()
+        await ctx.send(embed=embed)
+
+    @commands.command(description="Get Overwatch porn from r/overwatch_porn.")
     @commands.cooldown(1, 5, commands.BucketType.user) 
     async def overwatch(self, ctx):
         msg = await ctx.send("Getting your porn...")
@@ -172,7 +197,7 @@ class NSFW(commands.Cog):
         await msg.delete()
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(description="Get an SFM piece of porn from r/sfmcompileclub.")
     @commands.cooldown(1, 5, commands.BucketType.user) 
     async def sfm(self, ctx):
         msg = await ctx.send("Getting your porn...")
@@ -191,7 +216,7 @@ class NSFW(commands.Cog):
         await msg.delete()
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["vagina"])
+    @commands.command(aliases=["vagina"], description="Get pussy pics from r/pussy.")
     @commands.cooldown(1, 5, commands.BucketType.user) 
     async def pussy(self, ctx):
         msg = await ctx.send("Getting your porn...")
@@ -210,7 +235,7 @@ class NSFW(commands.Cog):
         await msg.delete()
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(description="Get a waifu from r/waifusgonewild.")
     @commands.cooldown(1, 5, commands.BucketType.user) 
     async def waifu(self, ctx):
         msg = await ctx.send("Getting your porn...")
@@ -229,7 +254,7 @@ class NSFW(commands.Cog):
         await msg.delete()
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["r34"])
+    @commands.command(aliases=["r34"], description="Get Rule34 images!\n[query] value is optional - defaults to r/rule34 when none.")
     @commands.cooldown(1, 5, commands.BucketType.user) 
     async def rule34(self, ctx, *, query=None):
         if query is None:
@@ -249,6 +274,7 @@ class NSFW(commands.Cog):
             await msg.delete()
             await ctx.send(embed=embed)
         else:
+            query=query.replace(" ", "_")
             msg = await ctx.send("Grabbing your porn...")
             images = await rule34.getImages(tags=query)
             total = []
@@ -258,7 +284,7 @@ class NSFW(commands.Cog):
                     total.append(image)
             except:
                 return await ctx.send(f"No images were found on Rule34 with the tag `{query}`")
-                
+
             finalimg = random.choice(total)
 
             embed = discord.Embed(title="ID: " + finalimg.id, colour=ctx.author.colour, url=finalimg.file_url)
@@ -267,7 +293,7 @@ class NSFW(commands.Cog):
             await msg.delete()
             await ctx.send(embed=embed)
 
-    @commands.command(aliases=["futa"])
+    @commands.command(aliases=["futa"], description="Is futanari considered gay? Get a Futa image from r/futanari.")
     @commands.cooldown(1, 5, commands.BucketType.user) 
     async def futanari(self, ctx):
         msg = await ctx.send("Getting your porn...")
@@ -286,26 +312,7 @@ class NSFW(commands.Cog):
         await msg.delete()
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["lesbo"])
-    @commands.cooldown(1, 5, commands.BucketType.user) 
-    async def lesbian(self, ctx):
-        msg = await ctx.send("Getting your porn...")
-        subreddit = await reddit.subreddit('lesbians')
-        top = subreddit.top(limit=50)
-        all_subs = []
-
-        async for submission in top:
-            all_subs.append(submission)
-        
-        ransub = random.choice(all_subs)
-
-        embed = discord.Embed(title=ransub.title, colour=ctx.author.colour, url=ransub.url)
-        embed.set_image(url=ransub.url)
-        embed.set_footer(text=f"Posted by {ransub.author} on Reddit. | ❤ {ransub.ups} | 💬 {ransub.num_comments}")
-        await msg.delete()
-        await ctx.send(embed=embed)
-
-    @commands.command()
+    @commands.command(description="See images of naked people in pain. Images from r/bdsm.")
     @commands.cooldown(1, 5, commands.BucketType.user) 
     async def bdsm(self, ctx):
         msg = await ctx.send("Getting your porn...")

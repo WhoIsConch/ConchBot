@@ -1,26 +1,21 @@
-import datetime
 import json
-from operator import imatmul
-import re
+from aiohttp_requests import requests
 from aiohttp import request
 import random
-import inspect
 import os
 import dbl
 import aiohttp
-import io
 import asyncpraw
 import discord
 import DiscordUtils
+from discord.ext.commands.cooldowns import BucketType
 import httpx
 from discord.ext import commands
 from dotenv import load_dotenv
 from prsaw import RandomStuff
 from dotenv import load_dotenv
 import os
-from io import BytesIO
-from PIL import Image
-
+import urllib
 
 load_dotenv('.env')
 
@@ -34,13 +29,42 @@ rs = RandomStuff(async_mode=True, api_key = os.getenv("aiapikey"))
 dbltoken = os.getenv('DBLTOKEN')
 
 class Fun(commands.Cog):
+    '''
+    The fun category is where most fun commands are. ConchBot is all about its fun commands, so most commands will be here.
+    '''
+
     def __init__(self, client):
         self.client = client
         self.dbl = dbl.DBLClient(self.client, dbltoken)
+        self.delete_snipes = dict()
+        self.edit_snipes = dict()
+        self.delete_snipes_attachments = dict()
         
-    @commands.command()
-    async def test(self, ctx):
-        await ctx.send("Test")
+    async def category_convert(self, category):
+        cat = category.lower()
+        categories = ['education', 'diy', 'recreational', 'social', 'charity', 'cooking', 'relaxation', 'music', 'busywork']
+        alias1 = ['edu', '', 'recreation', '', '', 'baking', 'relax', '', 'work']
+        alias2 = ['educational', 'rec', '', '', '', 'relaxational', '', '']
+
+        if cat in categories:
+            return cat
+        elif cat in alias1:
+            index = alias1.index(cat)
+            return categories[index]
+        elif cat in alias2:
+            index = alias2.index(cat)
+            return categories[index]
+        else:
+            return False
+            
+    @commands.Cog.listener()
+    async def on_message_delete(self, message):
+        self.delete_snipes[message.channel] = message
+        self.delete_snipes_attachments[message.channel] = message.attachments
+
+    @commands.Cog.listener()
+    async def on_message_edit(self, before, after):
+        self.edit_snipes[after.channel] = (before, after)
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -82,7 +106,7 @@ class Fun(commands.Cog):
         if message.content == f"<@!{self.client.user.id}>":
             await message.channel.send("My prefix is `cb `")
 
-    @commands.command(aliases=["chatbot"])
+    @commands.command(aliases=["chatbot"], description="Set up an AI chat channel in your server!")
     @commands.has_permissions(manage_guild=True)
     async def ai(self, ctx):
         await ctx.send("You can set up a chatbot channel by naming any channel 'conchchat,' or I can do it for you! "
@@ -104,8 +128,18 @@ class Fun(commands.Cog):
         else:
             await ctx.send("That's not a valid option.")
 
+    @commands.command(description="Shorten a link!")
+    @commands.cooldown(1, 5, BucketType.user)
+    async def shorten(self, ctx, *, url):
+        o = urllib.parse.quote(url, safe='/ :')
 
-    @commands.command()
+        async with aiohttp.ClientSession() as session:
+            async with session.post('https://tinyuid.com/api/v1/shorten', json={'url':o}) as resp:
+                e = await resp.json()
+
+        return await ctx.send(f"<{e['result_url']}>")
+
+    @commands.command(description="Get a meme from (almost) any Reddit subreddit!")
     @commands.cooldown(1, 10, commands.BucketType.user) 
     async def reddit(self, ctx, subreddit):
         message = await ctx.send("This may take a hot minute... Sit tight!")
@@ -138,7 +172,7 @@ class Fun(commands.Cog):
         except:
             await ctx.send("Something went wrong. This may be the fact that the subreddit does not exist or is locked.")
 
-    @commands.command()
+    @commands.command(description="It's This for That is a fun API and website! It gives startup ideas.")
     @commands.cooldown(1, 10, commands.BucketType.user) 
     async def itft(self, ctx):
         async with aiohttp.ClientSession() as session:
@@ -155,7 +189,7 @@ class Fun(commands.Cog):
                     await ctx.send("Woops! Something went wrong.")
 
 
-    @commands.group(invoke_without_command=True)
+    @commands.group(invoke_without_command=True, description="Surf the FBI watchlist!")
     async def fbi(self, ctx):
         await ctx.send("What page?")
         msg = await self.client.wait_for('message', check=lambda message: message.author == ctx.author, timeout=10)
@@ -182,7 +216,7 @@ class Fun(commands.Cog):
                 except IndexError:
                     return await ctx.send("Page not available or the number you inputed is doesn't exist") 
     
-    @fbi.command()
+    @fbi.command(description="View the specific details of a person on the FBI watchlist via a UID!\n[value] value is optional.")
     @commands.cooldown(1, 10, commands.BucketType.user) 
     async def details(self, ctx, uid, value=None):
         async with aiohttp.ClientSession() as session:
@@ -240,7 +274,7 @@ class Fun(commands.Cog):
 
                 await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(description="View COVID statistics for any country!")
     @commands.cooldown(1, 10, commands.BucketType.user) 
     async def covid(self, ctx, country):
         async with aiohttp.ClientSession() as session:
@@ -258,26 +292,7 @@ class Fun(commands.Cog):
                 except:
                     await ctx.send("Country not found. Country names ***are case-sensitive***.")
 
-    @commands.command()
-    async def wanted(self, ctx, member : discord.Member=None):
-        if member is None:
-            member = ctx.author
-
-        wanted = Image.open("bot/src/MemeTemplates/wanted.jpg")
-        asset = member.avatar_url_as(size=128)
-        data = BytesIO(await asset.read())
-        pfp = Image.open(data)
-        pfp = pfp.resize((308, 306))
-        wanted.paste(pfp, (69, 143))
-        wanted.save("profile.jpg")
-        await ctx.send(file = discord.File("profile.jpg"))
-        file = 'profile.jpg'
-        location = "./"
-        path = os.path.join(location, file)
-        os.remove(path)
-
-
-    @commands.command()
+    @commands.command(description="Get a joke from the r/jokes subreddit!")
     @commands.cooldown(1, 10, commands.BucketType.user) 
     async def joke(self, ctx):
         msg = await ctx.send("Grabbing your joke...")
@@ -296,15 +311,15 @@ class Fun(commands.Cog):
         await msg.delete()
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=['repeat'])
+    @commands.command(aliases=['repeat'], description="Make the bot repeat a word or phrase.")
     @commands.cooldown(1, 3, commands.BucketType.user) 
-    async def echo(self, ctx, channel:discord.TextChannel=None, *, msg):
+    async def echo(self, ctx, channel:discord.TextChannel, *, msg):
         if channel is None:
             await ctx.send(msg)
         else:
             await channel.send(msg)
 
-    @commands.command(name='8ball')
+    @commands.command(name='8ball', description="Ask the 8-ball a question and receive an answer!")
     @commands.cooldown(1, 5, commands.BucketType.user) 
     async def _8ball(self, ctx, *, msg):
         responses = ['As I see it, yes.',
@@ -335,13 +350,13 @@ class Fun(commands.Cog):
         embed.add_field(name="Answer:", value=random.choice(responses))
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["LMGTFY"])
+    @commands.command(aliases=["LMGTFY"], description="Make a Google link with the specified query.")
     @commands.cooldown(1, 3, commands.BucketType.user) 
     async def google(self, ctx, *, query):
         nquery = query.replace(' ', '+').lower()
         await ctx.send(f"https://www.google.com/search?q={nquery}")
 
-    @commands.command(aliases=['chances', 'odds', 'odd'])
+    @commands.command(aliases=['chances', 'odds', 'odd'], description="Rate the chances of something happening!")
     @commands.cooldown(1, 5, commands.BucketType.user) 
     async def chance(self, ctx, *, msg):
         chancenum = random.randint(0, 10)
@@ -353,7 +368,7 @@ class Fun(commands.Cog):
         embed.add_field(name="The chances are...", value=chancenum)
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=['avatar'])
+    @commands.command(aliases=['avatar'], description="Show someone's profile picture!\n[member] value is optional.")
     @commands.cooldown(1, 3, commands.BucketType.user) 
     async def pfp(self, ctx, member: discord.Member=None):
         if member is None:
@@ -371,8 +386,7 @@ class Fun(commands.Cog):
             embed.set_image(url=member.avatar_url)
             await ctx.send(embed=embed)
     
-
-    @commands.command()
+    @commands.command(description="Show an image and a fact about the given animal!\n[animal] value is optional.")
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def animal(self, ctx, animal=None):
         animal_options = ["dog", "cat", "panda", "fox", "bird", "koala", "red_panda", "racoon", "kangaroo", "elephant", "giraffe", "whale"]
@@ -408,8 +422,7 @@ class Fun(commands.Cog):
         else:
             await ctx.send(f"Sorry but {animal} isn't in my api")
 
-
-    @commands.command()
+    @commands.command(description="Returns a real-looking Discord bot token.")
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def token(self, ctx):
         token_web = "https://some-random-api.ml/bottoken"
@@ -424,8 +437,7 @@ class Fun(commands.Cog):
 
             await ctx.send(bottoken)
 
-
-    @commands.command()
+    @commands.command(description="Get a random meme!")
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def meme(self, ctx):
         try:
@@ -448,92 +460,9 @@ class Fun(commands.Cog):
                     embed.set_image(url=image)
                     await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(description="Get lyrics of a specific song!")
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def pat(self, ctx):
-        pat_image = "https://some-random-api.ml/animu/pat"
-
-        async with ctx.typing():
-            async with request("GET", pat_image, headers={}) as response:
-                if response.status == 200:
-                    api = await response.json()
-                    image = api["link"]
-                else:
-                    await ctx.send(f"API returned a {response.status} status.")
-
-            await ctx.send(image)
-
-
-    @commands.command()
-    async def triggered(self, ctx, member: discord.Member=None):
-        if not member:
-            member = ctx.author
-        async with ctx.typing():
-            async with aiohttp.ClientSession() as wastedSession:
-                async with wastedSession.get(f'https://some-random-api.ml/canvas/triggered?avatar={member.avatar_url_as(format="png", size=1024)}') as wastedImage:
-                    imageData = io.BytesIO(await wastedImage.read())
-                    
-                    await wastedSession.close()
-                    
-                    await ctx.reply(file=discord.File(imageData, 'triggered.gif'))
-
-    @commands.command()
-    async def rainbow(self, ctx, member: discord.Member=None):
-        if not member:
-            member = ctx.author
-        async with ctx.typing():
-            async with aiohttp.ClientSession() as gaySession:
-                async with gaySession.get(f'https://some-random-api.ml/canvas/gay?avatar={member.avatar_url_as(format="png", size=1024)}') as gayImage:
-                    imageData = io.BytesIO(await gayImage.read())
-                    
-                    await gaySession.close()
-                    
-                    await ctx.reply(file=discord.File(imageData, 'gay.gif'))
-
-    @commands.command(aliases=['passed'])
-    async def missionpassed(self, ctx, member: discord.Member=None):
-        if not member:
-            member = ctx.author
-        async with ctx.typing():
-            async with aiohttp.ClientSession() as passSession:
-                async with passSession.get(f'https://some-random-api.ml/canvas/passed?avatar={member.avatar_url_as(format="png", size=1024)}') as passedImage:
-                    imageData = io.BytesIO(await passedImage.read())
-                    
-                    await passSession.close()
-                    
-                    await ctx.reply(file=discord.File(imageData, 'passed.gif'))
-
-    @commands.command()
-    async def wasted(self, ctx, member: discord.Member=None):
-        if not member:
-            member = ctx.author
-        async with ctx.typing():
-            async with aiohttp.ClientSession() as wastedSession:
-                async with wastedSession.get(f'https://some-random-api.ml/canvas/wasted?avatar={member.avatar_url_as(format="png", size=1024)}') as wastedImage:
-                    imageData = io.BytesIO(await wastedImage.read())
-                    
-                    await wastedSession.close()
-                    
-                    await ctx.reply(file=discord.File(imageData, 'wasted.gif'))
-
-    @commands.command()
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def wink(self, ctx):
-        wink_image = f"https://some-random-api.ml/animu/wink"
-
-        async with ctx.typing():
-            async with request("GET", wink_image, headers={}) as response:
-                if response.status == 200:
-                    api = await response.json()
-                    image = api["link"]
-                else:
-                    await ctx.send(f"API returned a {response.status} status.")
-
-            await ctx.send(image)
-
-    @commands.command()
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def lyrics(self, ctx, *, search=None):
+    async def lyrics(self, ctx, *, search):
         search = search.replace(' ', '%20')
         search_web = f"https://some-random-api.ml/lyrics?title={search}"
 
@@ -563,39 +492,7 @@ class Fun(commands.Cog):
             else:
                 await ctx.send(f"API returned a {response.status} status.")
 
-    @commands.command()
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def hug(self, ctx):
-        hug_image = f"https://some-random-api.ml/animu/hug"
-
-        async with ctx.typing():
-            async with request("GET", hug_image, headers={}) as response:
-                if response.status == 200:
-                    api = await response.json()
-                    image = api["link"]
-                else:
-                    await ctx.send(f"API returned a {response.status} status.")
-
-            await ctx.send(image)
-
-
-    @commands.command()
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def pikachu(self, ctx):
-        pikachu_image = f"https://some-random-api.ml/img/pikachu"
-
-        async with ctx.typing():
-            async with request("GET", pikachu_image, headers={}) as response:
-                if response.status == 200:
-                    api = await response.json()
-                    image = api["link"]
-                else:
-                    await ctx.send(f"API returned a {response.status} status.")
-
-            await ctx.send(image)
-
-
-    @commands.command()
+    @commands.command(description="Define a word!")
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def define(self, ctx, word):
         word_lowered = word.lower()
@@ -620,63 +517,116 @@ class Fun(commands.Cog):
             else:
                 await ctx.send(f"API returned a {response.status} status.")
     
-    @ai.error
-    async def ai_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You don't have the permissions to do that! Please contact a server admin to do that for you.")
-            return
-        
+    @commands.group(invoke_without_command=True, description="Returns a random activity for when you're bored!")
+    @commands.cooldown(1, 5, BucketType.user)
+    async def bored(self, ctx):
+        response = await requests.get('https://boredapi.com/api/activity')
+        json = await response.json()
 
-    @echo.error
-    async def echo_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You must specify a message to send!")
-            return
-        if isinstance(error, commands.ChannelNotFound):
-            await ctx.send("Channel not found.")
-            return
-    
-        
-    @fbi.error
-    async def fbi_error(self, ctx, error):
-        if isinstance(error, ValueError):
-            await ctx.send("That isn't a valid number.")
-            return
-        
-    @details.error
-    async def details_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to provide a valid **UID.** These can be found via the `cb fbi` command.")
-            return
-        
+        embed = discord.Embed(title="I'm Bored", color=discord.Color.random())
+        embed.add_field(name="If you're bored, you should...", value=json["activity"])
+        if json['link']:
+            embed.add_field(name="I can find a link to this project at...", value=json['link'], inline=False)
+        if int(json['participants']) == 1:
+            people = "1 person."
+        else:
+            people = f"{json['participants']}"
+        embed.add_field(name="This might cost...", value="$" + str(int(json['price'])*10), inline=False)
+        embed.add_field(name="The amount of people needed for this project is...", value=people, inline=False)
+        embed.set_footer(text=f"Type: {json['type']} | Key: {json['key']} | Provided by BoredAPI")
 
-    @_8ball.error
-    async def _8ball_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to give me a question for the magic 8 ball to answer.")
-            return
+        await ctx.send(embed=embed)
 
-    @google.error
-    async def google_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You must include a query for me to Google.")
-            return
-       
-    @chance.error
-    async def chance_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You must specify what I am rating the chances of.")
-            return
+    @bored.command(description="Search for a specific activity via an activity key.")
+    @commands.cooldown(1, 5, BucketType.user)
+    async def key(self, ctx, key):
+        response = await requests.get(f'http://www.boredapi.com/api/activity?key={key}')
+        json = await response.json()
+
+        try:
+            embed = discord.Embed(title="I'm Bored", color=discord.Color.random())
+            embed.add_field(name="If you're bored, you should...", value=json["activity"])
+            if json['link']:
+                embed.add_field(name="I can find a link to this project at...", value=json['link'], inline=False)
+            if int(json['participants']) == 1:
+                people = "1 person."
+            else:
+                people = f"{json['participants']}"
+            embed.add_field(name="This might cost...", value="$" + str(int(json['price'])*10), inline=False)
+            embed.add_field(name="The amount of people needed for this project is...", value=people, inline=False)
+            embed.set_footer(text=f"Type: {json['type']} | Key: {json['key']} | Provided by BoredAPI")
+
+            await ctx.send(embed=embed)
+        except KeyError:
+            await ctx.send("No activity found with that key.")
+
+    @bored.command(description="Search for activities by category.\n[category] value is optional, returns a list of categories if none.")
+    @commands.cooldown(1, 5, BucketType.user)
+    async def category(self, ctx, category=None):
+        if not category:
+            embed = discord.Embed(title="List of Categories", color=discord.Color.random(), description="Education\nRecreational\nSocial\nDIY\nCharity\nCooking\nRelaxation\nMusic\nBusywork")
+            return await ctx.send(embed=embed)
         
-    @pfp.error
-    async def pfp_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("How the fuck are you getting this error? Please contact UnsoughtConch via `cb support`.")
-            return
-        if isinstance(error, commands.MemberNotFound):
-            await ctx.send("I could not find that member. Please make sure your ID is correct and you are mentioning an existing user.")
-            return
-        
+        category = await self.category_convert(category)
+
+        if not category:
+            return await ctx.send("That category does not exist.")
+
+        response = await requests.get(f'https://www.boredapi.com/api/activity?type={category}')
+        json = await response.json()
+
+        try:
+            embed = discord.Embed(title="I'm Bored", color=discord.Color.random())
+            embed.add_field(name="If you're bored, you should...", value=json["activity"])
+            if json['link']:
+                embed.add_field(name="I can find a link to this project at...", value=json['link'], inline=False)
+            if int(json['participants']) == 1:
+                people = "1 person."
+            else:
+                people = f"{json['participants']}"
+            embed.add_field(name="This might cost...", value="$" + str(int(json['price'])*10), inline=False)
+            embed.add_field(name="The amount of people needed for this project is...", value=people, inline=False)
+            embed.set_footer(text=f"Type: {json['type']} | Key: {json['key']} | Provided by BoredAPI")
+
+            await ctx.send(embed=embed)
+        except KeyError:
+            return await ctx.send("That category does not exist.")
+
+    @commands.group(name='snipe', description="Get the most recently deleted message in a channel!")
+    async def snipe_group(self, ctx):
+        if ctx.invoked_subcommand is None:
+            try:
+                sniped_message = self.delete_snipes[ctx.channel]
+            except KeyError:
+                await ctx.send('There are no deleted messages in this channel to snipe!')
+            else:
+                result = discord.Embed(
+                    color=discord.Color.red(),
+                    description=sniped_message.content,
+                    timestamp=sniped_message.created_at
+                )
+                result.set_author(name=sniped_message.author.display_name, icon_url=sniped_message.author.avatar_url)
+                try:
+                    result.set_image(url=self.delete_snipes_attachments[ctx.channel][0].url)
+                except:
+                    pass
+                await ctx.send(embed=result)
+                
+    @snipe_group.command(name='edit', description="Get the most recently edited message in the channel, before and after.")
+    async def snipe_edit(self, ctx):
+        try:
+            before, after = self.edit_snipes[ctx.channel]
+        except KeyError:
+            await ctx.send('There are no message edits in this channel to snipe!')
+        else:
+            result = discord.Embed(
+                color=discord.Color.red(),
+                timestamp=after.edited_at
+            )
+            result.add_field(name='Before', value=before.content, inline=False)
+            result.add_field(name='After', value=after.content, inline=False)
+            result.set_author(name=after.author.display_name, icon_url=after.author.avatar_url)
+            await ctx.send(embed=result)
 
 def setup(client):
     client.add_cog(Fun(client))

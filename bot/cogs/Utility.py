@@ -13,9 +13,6 @@ import time
 obj_Disk = psutil.disk_usage('/')
 start_time = time.time()
 
-
-
-
 env = load_dotenv()
 
 class Utility(commands.Cog):

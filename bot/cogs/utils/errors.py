@@ -1,24 +1,21 @@
+import discord
+
 class Blacklisted(Exception):
     def __init__(self,ctx):
+        super().__init__("error")
         self.ctx = ctx
     
     async def memsend(self):
-        await self.ctx.send("You are blacklisted from using ConchBot.")
-    
+        embed = discord.Embed(title="User Blacklisted", description="It looks like you have been blacklisted from using ConchBot.", color=discord.Color.red())
+        embed.set_footer(text="If you think this is a mistake, please join the ConchBot Support server via \"cb support\" - blacklisted users can use that command.")
+
+        await self.ctx.send(embed=embed)
+
     async def guildsend(self):
-        await self.ctx.send("This guild is blacklisted from using ConchBot.")
+        embed = discord.Embed(title="Server Blacklisted", description="It looks like this guild has been blacklisted from using ConchBot.", color=discord.Color.red())
+        embed.set_footer(text="If you think this is a mistake, please join the ConchBot Support server via \"cb support\" - blacklisted guilds can use that command.")
 
-class VoteLockedCmd(Exception):
-    def __init__(self,ctx):
-        self.ctx = ctx
-    
-    async def send(self):
-        await self.ctx.send("The three latest image generation commands are vote locked! You can either wait for "
-        "them to become available or vote for ConchBot at (<https://bit.ly/2PiLbwh>)!")
+        await self.ctx.send(embed=embed)
 
-class NSFWCmd(Exception):
-    def __init__(self, ctx):
-        self.ctx = ctx
+
     
-    async def send(self):
-        await self.ctx.send("This command is only available in NSFW channels!")

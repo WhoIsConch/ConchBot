@@ -1,7 +1,4 @@
-import asyncio
 import random
-import os
-import datetime
 import aiosqlite
 import discord
 from discord.ext import commands
@@ -68,6 +65,11 @@ tasks = {
 }
 
 class Currency(commands.Cog):
+
+    '''
+    The currency category holds all kinds of commands made to have fun making moners.
+    '''
+
     def __init__(self, client):
         self.client = client
 
@@ -138,7 +140,7 @@ class Currency(commands.Cog):
         await cursor.close()
         await db.close()
     
-    @commands.command(aliases=['inv', 'bag', 'bal', 'balance'])
+    @commands.command(aliases=['inv', 'bag', 'bal', 'balance'], description="View your items and balance.\n[user] value is optional.")
     async def inventory(self, ctx, user:discord.Member=None):
         db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
@@ -163,7 +165,7 @@ class Currency(commands.Cog):
             embed.add_field(name=f"{item[0]}s:", value=amount[0])
         await ctx.send(embed=embed)
         
-    @commands.command(aliases=['dep'])
+    @commands.command(aliases=['dep'], description="Deposit moners from your wallet into your bank!")
     async def deposit(self, ctx, amt):
         db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
@@ -185,7 +187,7 @@ class Currency(commands.Cog):
         await cursor.close()
         await db.close()
 
-    @commands.command(aliases=["with"])
+    @commands.command(aliases=["with"], description="Withdraw moners from your bank to your wallet!")
     async def withdraw(self, ctx, amt):
         db = await aiosqlite.connect('./bot/db/currency.db')
         cursor = await db.cursor()
@@ -211,7 +213,7 @@ class Currency(commands.Cog):
         await cursor.close()
         await db.close()
 
-    @commands.command()
+    @commands.command(description="Buy an item from the shop!\n[quantity] value is optional.")
     async def buy(self, ctx, item, quantity=1):
         ff = await Config.check_ff(self, ctx.guild)
         db = await aiosqlite.connect('./bot/db/currency.db')
@@ -248,7 +250,7 @@ class Currency(commands.Cog):
         await cursor.close()
         await db.close()
 
-    @commands.command()
+    @commands.command(description="Sell an item from your inventory.\n[quantity] value is optional.")
     async def sell(self, ctx, item, quantity=1):
         await self.open_account(ctx.author)
         db = await aiosqlite.connect('./bot/db/currency.db')
@@ -280,7 +282,7 @@ class Currency(commands.Cog):
         await cursor.close()
         await db.close()
 
-    @commands.command()
+    @commands.command(description="View the items available for purchase!")
     async def shop(self, ctx):
         embed = discord.Embed(title="ConchBot Shop", colour=ctx.author.colour)
         embed.add_field(name="Watch", value="Give people the time!")
@@ -289,7 +291,7 @@ class Currency(commands.Cog):
         embed.set_footer(text="To buy an item, use 'cb buy {item}.' Item name MUST be lowercase!")
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(description="Beg for moners!")
     @commands.cooldown(1, 15, BucketType.user)
     async def beg(self, ctx):
         await self.open_account(ctx.author)
@@ -323,7 +325,7 @@ class Currency(commands.Cog):
             await self.update_bank(ctx.author, amt)
             await ctx.send(f"{person} gave you {amt} moners!")
     
-    @commands.command(aliases=['rob', 'yoink'])
+    @commands.command(aliases=['rob', 'yoink'], description="Steal moners from someone!")
     @commands.cooldown(1, 60, BucketType.user)
     async def steal(self, ctx, victim:discord.Member):
         await self.open_account(ctx.author)
@@ -355,7 +357,7 @@ class Currency(commands.Cog):
                 await self.update_bank(victim, 100)
                 await ctx.send(failmsg)
 
-    @commands.command(aliases=['gift'])
+    @commands.command(aliases=['gift'], description="Give someone a gift of moners or an item!")
     async def give(self, ctx, user:discord.Member, mode):
         await self.open_account(ctx.author)
         await self.open_account(user)
@@ -430,7 +432,7 @@ class Currency(commands.Cog):
         await cursor.close()
         await db.close()
 
-    @commands.command()
+    @commands.command(description="Bet your moners on some slots!")
     @commands.cooldown(1, 20, BucketType.user)
     async def slots(self, ctx, amt):
         # TEMP: 4% chance of getting the mega jackpot!
@@ -497,7 +499,7 @@ class Currency(commands.Cog):
                 await ctx.send(embed=embed)
                 await self.update_bank(ctx.author, amt*-1)
 
-    @commands.command()
+    @commands.command(description="Get your daily moners!")
     @commands.cooldown(1, 86400, BucketType.user)
     async def daily(self, ctx):
         await self.open_account(ctx.author)
@@ -510,7 +512,7 @@ class Currency(commands.Cog):
         embed.add_field(name="200 moners have been placed in your wallet.", value="Come back tomorrow for more moners.")
         await ctx.send(embed=embed)
 
-    @commands.group(invoke_without_command=True)
+    @commands.group(invoke_without_command=True, description="Use an item from your inventory!")
     async def use(self, ctx):
         await ctx.send("You need to specify an item to use.")
     
@@ -594,7 +596,7 @@ class Currency(commands.Cog):
             await self.item_func(ctx.author, reward, 1)
             await self.item_func(ctx.author, "Bronze Conch", -1)
 
-    @commands.group(aliases=["tasks"], invoke_without_command=True)
+    @commands.group(aliases=["tasks"], invoke_without_command=True, description="Do a task for a reward of items!")
     async def task(self, ctx):
         await self.open_account(ctx.author)
         db = await aiosqlite.connect('./bot/db/tasks.db')
@@ -614,7 +616,7 @@ class Currency(commands.Cog):
         embed.set_footer(text="To do a task, use 'cb task start {task name}' | ✅ means finished task")
         await ctx.send(embed=embed)
 
-    @task.command()
+    @task.command(description="Start a task!")
     @commands.cooldown(1, 3600, commands.BucketType.user) 
     async def start(self, ctx, task):
         await self.open_account(ctx.author)
@@ -645,45 +647,5 @@ class Currency(commands.Cog):
         await cursor.close()
         await db.close()
 
-    @commands.command()
-    @commands.is_owner()
-    async def editmoners(self, ctx, user:discord.Member, amount:int):
-        await self.open_account(user)
-        await self.update_bank(user, amount)
-        await ctx.send(f"Successfully given {user.name} {amount} moners.")
-    
-    @commands.command()
-    @commands.is_owner()
-    async def edititems(self, ctx, user:discord.Member, item, amount:int):
-        await self.open_account(user)
-        await self.item_func(user, item, amount)
-        await ctx.send(f"Successfully given {user.name} {amount} {item}s.")
-
-    @buy.error
-    async def buy_error(self, ctx, error):
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Your amount must be an integer!")
-            return
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You need to specify an item to buy.")
-            return
- 
-    @steal.error
-    async def steal_error(self, ctx, error):
-
-        if isinstance(error, commands.MemberNotFound):
-            await ctx.send("That's not a valid member.")
-            return
-        
-    @give.error
-    async def give_error(self, ctx, error):
-        if isinstance(error, asyncio.TimeoutError):
-            await ctx.send("You took too long and I got bored.")
-            return
-        if isinstance(error, commands.MemberNotFound):
-            await ctx.send("That member doesn't exist.")
-            return
-   
-     
 def setup(client):
     client.add_cog(Currency(client))

@@ -8,19 +8,16 @@ from discord.ext.commands import Bot
 from discord.ext.commands.bot import when_mentioned_or
 from dotenv import load_dotenv
 from datetime import datetime
-<<<<<<< HEAD
 from bot.cogs.tags import Tags
 from bot.cogs.Currency import Currency
 from bot.cogs.BotConfig import Config
 from bot.cogs.utils.errors import Blacklisted
-=======
 import smtplib
 from email.message import EmailMessage
 from email.mime.multipart import MIMEMultipart
 
 from email.mime.text import MIMEText
 
->>>>>>> 02df291a8fd443ffb7a3558f3dfcb824937f07b0
 
 load_env = load_dotenv()
 

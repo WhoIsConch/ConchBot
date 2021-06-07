@@ -71,7 +71,7 @@ class CommandErrorHandler(commands.Cog):
             return
 
         if isinstance(error, commands.MissingRole):
-            await ctx.send("`You don't have have the role to use this")
+            await ctx.send("You don't have have the role to use this")
 
         if isinstance(error, discord.Forbidden):
             await ctx.send("I can't do this. I'm forbidden to do this.")

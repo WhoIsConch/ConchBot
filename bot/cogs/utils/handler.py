@@ -21,12 +21,12 @@ class CommandErrorHandler(commands.Cog):
             try:
                 e = await Tags.get_tag(self, ctx.guild.id, ctx.message.content[3:])
                 if e is False:
-                    return
+                    await ctx.send("Tag Not Found")
                 else:
                     return await ctx.send(e[0])
                     
             except:
-                traceback.print_exc()
+                await ctx.send("Command Not Found")
 
         if isinstance(error, discord.errors.HTTPException):
             await ctx.send("Something went wrong. Note: The bot might be ratelimited")
@@ -106,9 +106,8 @@ class CommandErrorHandler(commands.Cog):
         else:
             now = datetime.datetime.now()
             time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
-            error_channel = self.client.get_channel(int(os.getenv("ERROR_CHANNEL")))
+            error_channel = self.client.get_channel(os.getenv("ERROR_CHANNEL"))
             e = traceback.format_exception(type(error), error, error.__traceback__)
-            print(e)
             await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {e} ```')
             return
 

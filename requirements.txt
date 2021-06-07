@@ -8,3 +8,4 @@ uuid
 jishaku
 dblpy
 git+https://github.com/gastrodon/ifunny-python
+shortuuid

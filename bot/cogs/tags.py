@@ -20,12 +20,15 @@ class Tags(commands.Cog):
 
         await cursor.execute(f"SELECT content FROM g{guild_id} WHERE name = '{tag}'")
         result = await cursor.fetchone()
+        content = result[0]
+        content = content.replace("///", "'")
+        content2 = content.replace('////', '"') 
 
         if result is None:
             return False
 
         else:
-            return result
+            return content2
 
     async def create_table(self, id):
         db = await aiosqlite.connect("./bot/db/tags.db")
@@ -71,9 +74,10 @@ class Tags(commands.Cog):
         d2 = today.strftime("%B %d, %Y")
         
         id = shortuuid.uuid()
-
+        content = content.replace("'", "///")
+        content2 = content.replace('"', "////") 
         await cursor.execute(f"INSERT INTO g{guild.id} (name, content, creator_id, created_at, last_edited, tag_id)"
-            f" VALUES ('{name.lower()}', '{content}', {author.id}, '{d2}', '{d2}', '{id}')")
+            f" VALUES ('{name.lower()}', '{content2}', {author.id}, '{d2}', '{d2}', '{id}')")
 
         await db.commit()
         await cursor.close()
@@ -171,7 +175,10 @@ class Tags(commands.Cog):
                 await ctx.send("That tag already exists!")
                 return
 
-            await self.create_tag(ctx.author, ctx.guild, name, content)
+            content = content.replace("'", "///")
+            content2 = content.replace('"', "////") 
+
+            await self.create_tag(ctx.author, ctx.guild, name, content2)
             
             return await ctx.send(f"Tag {name} successfully created with tag ID {id}")
         else:
@@ -225,7 +232,10 @@ class Tags(commands.Cog):
                 return await ctx.send("A tag with that ID doesn't exist in this guild.")
 
             if int(result[0]) == int(ctx.author.id):
-                await self.edit_info(ctx.guild.id, id, content)
+                content = content.replace("'", "///")
+                content2 = content.replace('"', "////") 
+
+                await self.edit_info(ctx.guild.id, id, content2)
                 await ctx.send("Tag successfully edited.")
 
             else:

@@ -20,15 +20,12 @@ class Tags(commands.Cog):
 
         await cursor.execute(f"SELECT content FROM g{guild_id} WHERE name = '{tag}'")
         result = await cursor.fetchone()
-        content = result[0]
-        content = content.replace("///", "'")
-        content2 = content.replace('////', '"') 
 
         if result is None:
             return False
 
         else:
-            return content2
+            return result
 
     async def create_table(self, id):
         db = await aiosqlite.connect("./bot/db/tags.db")
@@ -74,10 +71,9 @@ class Tags(commands.Cog):
         d2 = today.strftime("%B %d, %Y")
         
         id = shortuuid.uuid()
-        content = content.replace("'", "///")
-        content2 = content.replace('"', "////") 
+
         await cursor.execute(f"INSERT INTO g{guild.id} (name, content, creator_id, created_at, last_edited, tag_id)"
-            f" VALUES ('{name.lower()}', '{content2}', {author.id}, '{d2}', '{d2}', '{id}')")
+            f" VALUES ('{name.lower()}', '{content}', {author.id}, '{d2}', '{d2}', '{id}')")
 
         await db.commit()
         await cursor.close()
@@ -164,8 +160,10 @@ class Tags(commands.Cog):
             try:
                 name, content = val.split(":;")
             except:
-                await ctx.send("You must separate your values by a comma.")
+                await ctx.send("You must separate your values with `:;`.")
                 return
+            
+            content = await commands.clean_content().convert(content)
 
             await self.create_table(ctx.guild.id)
 
@@ -175,10 +173,7 @@ class Tags(commands.Cog):
                 await ctx.send("That tag already exists!")
                 return
 
-            content = content.replace("'", "///")
-            content2 = content.replace('"', "////") 
-
-            await self.create_tag(ctx.author, ctx.guild, name, content2)
+            await self.create_tag(ctx.author, ctx.guild, name, content)
             
             return await ctx.send(f"Tag {name} successfully created with tag ID {id}")
         else:
@@ -222,6 +217,7 @@ class Tags(commands.Cog):
             
             try:
                 id, content = vals.split(':;')
+                content = await commands.clean_content().convert(content)
             except:
                 await ctx.send("Please give us two values separated by the string \":;\"")
                 return
@@ -232,10 +228,7 @@ class Tags(commands.Cog):
                 return await ctx.send("A tag with that ID doesn't exist in this guild.")
 
             if int(result[0]) == int(ctx.author.id):
-                content = content.replace("'", "///")
-                content2 = content.replace('"', "////") 
-
-                await self.edit_info(ctx.guild.id, id, content2)
+                await self.edit_info(ctx.guild.id, id, content)
                 await ctx.send("Tag successfully edited.")
 
             else:

@@ -162,8 +162,6 @@ class Tags(commands.Cog):
             except:
                 await ctx.send("You must separate your values with `:;`.")
                 return
-            
-            content = await commands.clean_content().convert(content)
 
             await self.create_table(ctx.guild.id)
 
@@ -217,7 +215,6 @@ class Tags(commands.Cog):
             
             try:
                 id, content = vals.split(':;')
-                content = await commands.clean_content().convert(content)
             except:
                 await ctx.send("Please give us two values separated by the string \":;\"")
                 return

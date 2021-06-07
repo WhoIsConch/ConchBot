@@ -19,7 +19,6 @@ class CommandErrorHandler(commands.Cog):
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
             try:
-                await Tags.create_table(self, ctx.guild.id)
                 e = await Tags.get_tag(self, ctx.guild.id, ctx.message.content[3:])
                 if e is False:
                     return

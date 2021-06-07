@@ -188,7 +188,6 @@ class Fun(commands.Cog):
                 except:
                     await ctx.send("Woops! Something went wrong.")
 
-
     @commands.group(invoke_without_command=True, description="Surf the FBI watchlist!")
     async def fbi(self, ctx):
         await ctx.send("What page?")

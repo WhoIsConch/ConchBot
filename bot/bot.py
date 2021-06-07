@@ -23,15 +23,9 @@ async def get_prefix(bot, message):
     prefixes.append('cB ')
     prefixes.append('CB ')
     prefixes.append('Cb ')
-    prefixes.append('cb')
-    prefixes.append('cB')
-    prefixes.append('CB')
-    prefixes.append('Cb')
     id = bot.user.id
     prefixes.append(f'<@!{id}> ')
     prefixes.append(f'<@!{id}>')
-    prefixes.append(f'<@{id}> ')
-    prefixes.append(f'<@{id}> ')
     return prefixes
 
 load_env = load_dotenv()

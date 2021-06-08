@@ -15,9 +15,18 @@ from bot.cogs.utils.errors import Blacklisted
 import smtplib
 from email.message import EmailMessage
 from email.mime.multipart import MIMEMultipart
-
 from email.mime.text import MIMEText
 
+async def get_prefix(bot, message):
+    prefixes = []
+    prefixes.append('cb ')
+    prefixes.append('cB ')
+    prefixes.append('CB ')
+    prefixes.append('Cb ')
+    id = bot.user.id
+    prefixes.append(f'<@!{id}> ')
+    prefixes.append(f'<@!{id}>')
+    return prefixes
 
 load_env = load_dotenv()
 
@@ -25,7 +34,8 @@ class ConchBot(commands.Bot):
     def __init__(self):
         allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)
         intents = discord.Intents.all()
-        super().__init__(command_prefix=when_mentioned_or('cb ', 'cB ', 'Cb ', 'CB '), intents=intents, allowed_mentions=allowed_mentions, case_insensitive=True, strip_after_prefix=True)
+        prefix = get_prefix
+        super().__init__(command_prefix=prefix, intents=intents, allowed_mentions=allowed_mentions, case_insensitive=True, strip_after_prefix=True)
         self.launch_time = datetime.utcnow()
 
         @self.before_invoke

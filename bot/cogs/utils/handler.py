@@ -26,7 +26,7 @@ class CommandErrorHandler(commands.Cog):
                     return await ctx.send(e[0])
                     
             except:
-                await ctx.send("Command Not Found")
+                return
 
         if isinstance(error, discord.errors.HTTPException):
             await ctx.send("Something went wrong. Note: The bot might be ratelimited")
@@ -70,7 +70,7 @@ class CommandErrorHandler(commands.Cog):
             return
 
         if isinstance(error, commands.MissingRole):
-            await ctx.send("`You don't have have the role to use this")
+            await ctx.send("You don't have have the role to use this")
 
         if isinstance(error, discord.Forbidden):
             await ctx.send("I can't do this. I'm forbidden to do this.")

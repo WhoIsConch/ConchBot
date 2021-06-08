@@ -617,7 +617,6 @@ class Currency(commands.Cog):
         await ctx.send(embed=embed)
 
     @task.command(description="Start a task!")
-    @commands.cooldown(1, 3600, commands.BucketType.user) 
     async def start(self, ctx, task):
         await self.open_account(ctx.author)
         db = await aiosqlite.connect('./bot/db/tasks.db')

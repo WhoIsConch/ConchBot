@@ -16,6 +16,8 @@ import smtplib
 from email.message import EmailMessage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import asyncio
+import time
 
 async def get_prefix(bot, message):
     prefixes = []
@@ -73,10 +75,10 @@ class ConchBot(commands.Bot):
             if filename.endswith(f".py"):
                 self.load_extension(f"bot.cogs.{filename[:-3]}")
                 print(f"Loaded `{filename[:20]}` Cog")
-        print("------")   
+        print("------")  
         self.load_extension('bot.cogs.utils.handler')
         print("Loaded Error Handler")
-        print("------")
+        print("------") 
         self.load_extension('jishaku')
         print("Loaded `jishaku`")
         print("------")
@@ -99,6 +101,7 @@ class ConchBot(commands.Bot):
         await self.status_loop()
 
     def up(self):
+        print("------")
         email_pass = os.getenv("EMAIL_PASS")
         from_address = os.getenv("EMAIL")
         to_address = os.getenv("STATUSEMAIL")
@@ -117,6 +120,7 @@ class ConchBot(commands.Bot):
         print("Successfully sent email")
 
     def down(self, error):
+        print("------")
         email_pass = os.getenv("EMAIL_PASS")
         from_address = os.getenv("EMAIL")
         to_address = os.getenv("STATUSEMAIL")
@@ -161,6 +165,7 @@ class ConchBot(commands.Bot):
 
 
     def run(self):
+        time.sleep(2)
         self.load_cogs()
         print("Running bot...")
 

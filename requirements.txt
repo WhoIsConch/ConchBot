@@ -9,3 +9,9 @@ jishaku
 dblpy
 git+https://github.com/gastrodon/ifunny-python
 shortuuid
+aiohttp_requests
+discordutils
+httpx
+prsaw
+hentai
+psutil

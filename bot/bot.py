@@ -119,7 +119,7 @@ class ConchBot(commands.Bot):
         mail.close()
         print("Successfully sent email")
 
-    def down(self, error):
+    def down(self):
         print("------")
         email_pass = os.getenv("EMAIL_PASS")
         from_address = os.getenv("EMAIL")
@@ -128,7 +128,7 @@ class ConchBot(commands.Bot):
         message['Subject'] = 'DOWN'
         message['From'] = from_address
         message['To'] = to_address
-        content = MIMEText(f'ConchBot is Down! Error: {error}', 'plain')
+        content = MIMEText(f'ConchBot is Down!', 'plain')
         message.attach(content)
         mail = smtplib.SMTP('smtp.gmail.com', 587)
         mail.ehlo()
@@ -159,9 +159,9 @@ class ConchBot(commands.Bot):
         print("------")
         print("Conch Bot disconnected.")
 
-    async def on_error(self, error):
-        self.down(error)
-        raise error
+    async def on_error(self):
+        self.down()
+        raise
 
 
     def run(self):

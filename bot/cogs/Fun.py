@@ -9,6 +9,7 @@ import asyncpraw
 import discord
 import DiscordUtils
 from discord.ext.commands.cooldowns import BucketType
+import io
 import httpx
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -16,6 +17,7 @@ from prsaw import RandomStuff
 from dotenv import load_dotenv
 import os
 import urllib
+from discord.ext.commands.core import command
 
 load_dotenv('.env')
 
@@ -80,17 +82,20 @@ class Fun(commands.Cog):
                         break
                 if flag is True:
                     await message.channel.trigger_typing()
-                    aimsg = await rs.get_ai_response(message.content)
-                    await message.reply(aimsg)
+                    aimsg = rs.get_ai_response(message.content)
+                    message = aimsg["message"]
+                    await message.reply(message)
                 else:
                     await message.channel.trigger_typing()
-                    aimsg = await rs.get_ai_response(message.content)
-                    await message.reply(f"{aimsg}\n\n*Consider voting for me on Top.gg! (<https://bit.ly/2PiLbwh>) "
+                    aimsg = rs.get_ai_response(message.content)
+                    message = aimsg["message"]
+                    await message.reply(f"{message}\n\n*Consider voting for me on Top.gg! (<https://bit.ly/2PiLbwh>) "
                     "It only takes a second of your time and you won't see this message anymore!*")
             except AttributeError:
                 await message.channel.trigger_typing()
                 aimsg = await rs.get_ai_response(message.content)
-                await message.reply(aimsg)
+                message = aimsg["message"]
+                await message.reply(message)
             except httpx.ReadTimeout:
                 await message.channel.send("It seems my API has timed out. Please give me a few minutes, and if the problem "
                 "continues, please contact UnsoughtConch via my `cb support` command.")
@@ -627,6 +632,126 @@ class Fun(commands.Cog):
             result.add_field(name='After', value=after.content, inline=False)
             result.set_author(name=after.author.display_name, icon_url=after.author.avatar_url)
             await ctx.send(embed=result)
+
+    @commands.command(description="This command makes anyone *glassed*.\n[member] value is optional.")
+    async def glass(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as glassSession:
+                async with glassSession.get(f'https://some-random-api.ml/canvas/glass?avatar={member.avatar_url_as(format="png", size=1024)}') as glassImage:
+                    imageData = io.BytesIO(await glassImage.read())
+                    
+                    await glassSession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'glass.gif'))
+
+    @commands.command(description="This command makes anyone *inverted*.\n[member] value is optional.")
+    async def invert(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as invertSession:
+                async with invertSession.get(f'https://some-random-api.ml/canvas/invert?avatar={member.avatar_url_as(format="png", size=1024)}') as invertImage:
+                    imageData = io.BytesIO(await invertImage.read())
+                    
+                    await invertSession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'invert.gif'))
+
+
+    @commands.command(description="This command makes anyone *glassed*.\n[member] value is optional.")
+    async def bright(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as brightSession:
+                async with brightSession.get(f'https://some-random-api.ml/canvas/bright?avatar={member.avatar_url_as(format="png", size=1024)}') as brightImage:
+                    imageData = io.BytesIO(await brightImage.read())
+                    
+                    await brightSession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'bright.gif'))
+
+    @commands.command(description="This command convert rgb to hex")
+    async def hex(self, ctx, hex):
+        if not hex:
+            await ctx.send("Put a hex code in")
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as hexSession:
+                async with hexSession.get(f'https://some-random-api.ml/canvas/colorviewer?hex={hex}') as hexImage:
+                    imageData = io.BytesIO(await hexImage.read())
+                    
+                    await hexSession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'hex.gif'))
+
+
+
+    @commands.group(invoke_without_command=True)
+    async def youtube(self, ctx):
+        pass
+
+    @youtube.command()
+    async def comment(self, ctx, member: discord.Member, comment:str):
+        member_avatar = member.avatar_url_as(format="png", size=256)
+        api_link = f"https://some-random-api.ml/canvas/youtube-comment?avatar={member_avatar}&comment={comment}&username={member.name}"
+
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as youtubeSession:
+                async with youtubeSession.get(api_link) as youtubeComment:
+                    imageData = io.BytesIO(await youtubeComment.read())
+                    
+                    await youtubeSession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'youtube.gif'))
+
+
+    @command()
+    async def blur(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as blurSession:
+                async with blurSession.get(f'https://some-random-api.ml/canvas/blur?avatar={member.avatar_url_as(format="png", size=1024)}') as blurImage:
+                    imageData = io.BytesIO(await blurImage.read())
+                    
+                    await blurSession.close()
+
+        await ctx.reply(file=discord.File(imageData, 'blur.gif'))
+
+    @command()
+    async def pixel(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as pixelSession:
+                async with pixelSession.get(f'https://some-random-api.ml/canvas/pixelate?avatar={member.avatar_url_as(format="png", size=1024)}') as pixelImage:
+                    imageData = io.BytesIO(await pixelImage.read())
+                    
+                    await pixelSession.close()
+
+        await ctx.reply(file=discord.File(imageData, 'pixel.gif'))
+
+    @command()
+    async def amongus(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+            
+        impostor = random.choice(['true', 'false'])
+        apikey = os.getenv("SRA_API_KEY")
+        link = f"https://some-random-api.ml/premium/amongus?username={member.name}&avatar={member.avatar_url_as(format='png')}&impostor={impostor}&key={apikey}"
+        
+        async with aiohttp.ClientSession() as session:
+            async with session.get(link) as resp:
+                fp = io.BytesIO(await resp.read())
+
+                await session.close()
+                    
+        await ctx.reply(file=discord.File(fp, 'amogus.gif'))
+
+                
+            
 
 def setup(client):
     client.add_cog(Fun(client))

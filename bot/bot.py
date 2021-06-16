@@ -171,4 +171,4 @@ class ConchBot(commands.Bot):
 
         TOKEN = os.getenv("TOKEN")
         
-        super().run("NzMzNDY3Mjk3NjY2MTcwOTgw.XxDkpg.7EpIxfzjYG1esdyUeswIit-9X-k", reconnect=True)
+        super().run(TOKEN, reconnect=True)

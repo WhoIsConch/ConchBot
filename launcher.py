@@ -1,8 +1,9 @@
 from bot.bot import ConchBot
 
-def main():
+def run_bot():
     bot = ConchBot()
     bot.run()
 
+
 if __name__ == "__main__":
-    main()
+    run_bot()

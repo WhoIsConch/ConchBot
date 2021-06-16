@@ -16,3 +16,6 @@ Meme.png
 
 # Databases so the bot doesn't reset them every update
 bot/db/
+
+# Website
+web/

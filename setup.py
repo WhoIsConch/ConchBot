@@ -75,11 +75,9 @@ if not os.path.exists('.env'):
     status_email = input("Status email: ")
     env.write(f"STATUSEMAIL={status_email}\n")
 
-    print("Your gmail email")
     gmail_email = input("Your gmail email: ")
     env.write(f"EMAIL={gmail_email}\n")
 
-    print("Your gmail password")
     gmail_pass = input("Your gmail password: ")
     env.write(f"EMAIL_PASS={gmail_pass}\n")
     # Close File

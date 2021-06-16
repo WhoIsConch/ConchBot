@@ -95,43 +95,43 @@ class ConchBot(commands.Bot):
         print("------")
         print("ConchBot is online!")
         print("Note:The fact that in owner.py cog in bot/cogs folder. We used @commands.has_role(). You could replacing whats inside () with your owner role id/name or use @commands.is_owner() for only the owner can use.")
-        self.up()
+        # self.up()
         await self.status_loop()
 
-    def up(self):
-        email_pass = os.getenv("EMAIL_PASS")
-        from_address = os.getenv("EMAIL")
-        to_address = os.getenv("STATUSEMAIL")
-        message = MIMEMultipart('UP')
-        message['Subject'] = 'UP'
-        message['From'] = from_address
-        message['To'] = to_address
-        content = MIMEText(f'ConchBot is Up!', 'plain')
-        message.attach(content)
-        mail = smtplib.SMTP('smtp.gmail.com', 587)
-        mail.ehlo()
-        mail.starttls()
-        mail.login(from_address, email_pass)
-        mail.sendmail(from_address,to_address, message.as_string())
-        mail.close()
-        print("Successfully sent email")
+    # def up(self):
+    #     email_pass = os.getenv("EMAIL_PASS")
+    #     from_address = os.getenv("EMAIL")
+    #     to_address = os.getenv("STATUSEMAIL")
+    #     message = MIMEMultipart('UP')
+    #     message['Subject'] = 'UP'
+    #     message['From'] = from_address
+    #     message['To'] = to_address
+    #     content = MIMEText(f'ConchBot is Up!', 'plain')
+    #     message.attach(content)
+    #     mail = smtplib.SMTP('smtp.gmail.com', 587)
+    #     mail.ehlo()
+    #     mail.starttls()
+    #     mail.login(from_address, email_pass)
+    #     mail.sendmail(from_address,to_address, message.as_string())
+    #     mail.close()
+    #     print("Successfully sent email")
 
-    def down(self, error):
-        email_pass = os.getenv("EMAIL_PASS")
-        from_address = os.getenv("EMAIL")
-        to_address = os.getenv("STATUSEMAIL")
-        message = MIMEMultipart('DOWN')
-        message['Subject'] = 'DOWN'
-        message['From'] = from_address
-        message['To'] = to_address
-        content = MIMEText(f'ConchBot is Down! Error: {error}', 'plain')
-        message.attach(content)
-        mail = smtplib.SMTP('smtp.gmail.com', 587)
-        mail.ehlo()
-        mail.starttls()
-        mail.login(from_address, email_pass)
-        mail.sendmail(from_address,to_address, message.as_string())
-        mail.close()
+    # def down(self, error):
+    #     email_pass = os.getenv("EMAIL_PASS")
+    #     from_address = os.getenv("EMAIL")
+    #     to_address = os.getenv("STATUSEMAIL")
+    #     message = MIMEMultipart('DOWN')
+    #     message['Subject'] = 'DOWN'
+    #     message['From'] = from_address
+    #     message['To'] = to_address
+    #     content = MIMEText(f'ConchBot is Down! Error: {error}', 'plain')
+    #     message.attach(content)
+    #     mail = smtplib.SMTP('smtp.gmail.com', 587)
+    #     mail.ehlo()
+    #     mail.starttls()
+    #     mail.login(from_address, email_pass)
+    #     mail.sendmail(from_address,to_address, message.as_string())
+    #     mail.close()
     
     async def shutdown(self):
         print("------")
@@ -166,4 +166,4 @@ class ConchBot(commands.Bot):
 
         TOKEN = os.getenv("TOKEN")
         
-        super().run(TOKEN, reconnect=True)
+        super().run("NzMzNDY3Mjk3NjY2MTcwOTgw.XxDkpg.7EpIxfzjYG1esdyUeswIit-9X-k", reconnect=True)

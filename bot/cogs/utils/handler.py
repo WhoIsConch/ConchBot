@@ -17,11 +17,13 @@ class CommandErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+        raise error
         if isinstance(error, commands.CommandNotFound):
             try:
                 e = await Tags.get_tag(self, ctx.guild.id, ctx.message.content[3:])
+                print(e)
                 if e is False:
-                    await ctx.send("Tag Not Found")
+                    return
                 else:
                     return await ctx.send(e[0])
                     

@@ -536,6 +536,32 @@ class Fun(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    @commands.group(invoke_without_command=True)
+    async def qr(self, ctx, value):
+        o = urllib.parse.quote(value)
+
+        await ctx.send(f'https://api.qrserver.com/v1/create-qr-code/?data={o}')
+
+    @qr.command()
+    async def read(self, ctx, image=None):
+        if image is not None:
+            url = urllib.parse.quote(image)
+
+        else:
+            if len(ctx.message.attachments) > 1:
+                return await ctx.send("We can only decode one QR code at a time.")
+
+            url = urllib.parse.quote(ctx.message.attachments[0].url)
+
+        async with aiohttp.ClientSession() as cs:
+            async with cs.get(f'https://api.qrserver.com/v1/read-qr-code/?fileurl={url}') as r:
+                try:
+                    res = await r.json()
+                except:
+                    return await ctx.send("Your QR code has to be an attachment or a URL.")
+
+        await ctx.send(res[0]['symbol'][0]['data'])
+
     @bored.command(description="Search for a specific activity via an activity key.")
     @commands.cooldown(1, 5, BucketType.user)
     async def key(self, ctx, key):
@@ -626,6 +652,14 @@ class Fun(commands.Cog):
             result.add_field(name='After', value=after.content, inline=False)
             result.set_author(name=after.author.display_name, icon_url=after.author.avatar_url)
             await ctx.send(embed=result)
+
+    @commands.group()
+    async def gofile(self, ctx):
+        pass
+
+    @gofile.command()
+    async def upload(self, ctx, url):
+        pass
 
 def setup(client):
     client.add_cog(Fun(client))

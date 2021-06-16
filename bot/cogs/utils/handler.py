@@ -16,7 +16,7 @@ class CommandErrorHandler(commands.Cog):
         self.client = client
 
     @commands.Cog.listener()
-    async def on_error(self, ctx, error):
+    async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
             try:
                 e = await Tags.get_tag(self, ctx.guild.id, ctx.message.content[3:])
@@ -106,7 +106,7 @@ class CommandErrorHandler(commands.Cog):
         else:
             now = datetime.datetime.now()
             time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
-            error_channel = self.client.get_channel(os.getenv("ERROR_CHANNEL"))
+            error_channel = self.client.get_channel(833508151802069002)
             e = traceback.format_exception(type(error), error, error.__traceback__)
             await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {e} ```')
             return

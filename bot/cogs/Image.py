@@ -171,7 +171,7 @@ class Image(commands.Cog):
         font = ImageFont.truetype("bot/src/arial.ttf", 40)
         draw = ImageDraw.Draw(img)
         text = textwrap.fill(text, width=20)
-        draw.text((26, 45), text, font=font, fill="Black", stroke_width=2, stroke_fill="whitre")
+        draw.text((26, 45), text, font=font, fill="black", stroke_width=2, stroke_fill="white")
         img.save("Meme.png")
         await msg.delete()
         await ctx.send(file=discord.File("Meme.png"))

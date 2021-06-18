@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Developement Discord Server
+    about: Use our development Discord server to ask for questions.
+    url: https://discord.gg/FxBVy86nnG
+
+  - name: Support Discord Server
+    about: Use our support Discord server to ask for help or bug.
+    url: https://discord.gg/3vzm7gt9Jy

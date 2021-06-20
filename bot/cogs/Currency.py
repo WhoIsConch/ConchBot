@@ -1,3 +1,4 @@
+import asyncio
 import random
 import aiosqlite
 import discord
@@ -646,5 +647,27 @@ class Currency(commands.Cog):
         await cursor.close()
         await db.close()
 
+    @commands.command(aliases=["lotto"])
+    async def lottery(self, ctx, amount:int):
+        await ctx.send(embed=discord.Embed(title=f"You are about to enter the lottery with {amount} moners. Are you sure? `y/n`",  color=discord.Color.gold(), description="If you don't know what you're"
+        " doing, I suggest you use the `lottery info` command first."))
+
+        def check(m):
+            return m.content.lower() == "y" or m.content.lower() == "n" and m.author == ctx.author
+
+        try:
+            conf = await self.client.wait_for('message', check=check, timeout=10)
+        except asyncio.TimeoutError:
+            return await ctx.send("You must respond with either `y` or `n` in 10 seconds.")
+
+        if conf.content.lower() == "n":
+            return await ctx.send("Aborting...")
+
+        walamt, bankamt = await self.get_amt(ctx.author.id)
+
+        if int(walamt[0]) < amount:
+            if int(bankamt[0]) < amount:
+                return await ctx.send("You don't have that much moners to gamble!")
+            
 def setup(client):
     client.add_cog(Currency(client))

@@ -108,7 +108,7 @@ class CommandErrorHandler(commands.Cog):
             time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
             error_channel = self.client.get_channel(833508151802069002)
             e = traceback.format_exception(type(error), error, error.__traceback__)
-            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {e} ```')
+            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
             return
 
 def setup(client):

@@ -18,6 +18,7 @@ from dotenv import load_dotenv
 import os
 import urllib
 from discord.ext.commands.core import command
+import aiosqlite
 
 load_dotenv('.env')
 
@@ -59,6 +60,40 @@ class Fun(commands.Cog):
         else:
             return False
             
+    async def create_gofile_folder(self, user_id):
+        db = await aiosqlite.connect('./bot/db/config.db')
+        cursor = await db.cursor()
+
+        await cursor.execute(f"SELECT user_id FROM gofile WHERE user_id = {user_id}")
+        result = await cursor.fetchone()
+
+        if result is not None:
+            return True
+
+        else:
+            await cursor.execute(f"INSERT INTO gofile (user_id) VALUES ({user_id})")
+            await db.commit()
+            await cursor.close()
+            await db.close()
+
+            folderid = os.getenv("GOFILE_FOLDER_ID")
+            token = os.getenv("GOFILE_TOKEN")
+
+            async with aiohttp.ClientSession() as session:
+                async with session.put("https://api.gofile.io/createFolder", data=f'parentFolderId={str(folderid)}&token={str(token)}&folderName={str(user_id)}') as resp:
+                    data = json.loads(await resp.read())
+                    status = data['status']
+                    dat = str(data['data']) + "ee"
+
+            if str(status) == "ok":
+                print(dat)
+                print(str(data))
+                return True
+
+            else:
+                print(status)
+                return False
+
     @commands.Cog.listener()
     async def on_message_delete(self, message):
         self.delete_snipes[message.channel] = message
@@ -662,9 +697,10 @@ class Fun(commands.Cog):
     async def gofile(self, ctx):
         pass
 
-    @gofile.command()
+    @gofile.command(disabled=True)
     async def upload(self, ctx, url):
-        pass
+        status = await self.create_gofile_folder(ctx.author.id)
+        return await ctx.send(status)
 
     @commands.command(description="This command makes anyone *glassed*.\n[member] value is optional.")
     async def glass(self, ctx, member: discord.Member=None):
@@ -718,8 +754,6 @@ class Fun(commands.Cog):
                     await hexSession.close()
                     
                     await ctx.reply(file=discord.File(imageData, 'hex.gif'))
-
-
 
     @commands.group(invoke_without_command=True)
     async def youtube(self, ctx):

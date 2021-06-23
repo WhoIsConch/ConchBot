@@ -1,4 +1,4 @@
-name: ConchBot
+name: lint & test
 
 on:
   push:

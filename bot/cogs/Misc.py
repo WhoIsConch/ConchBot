@@ -11,8 +11,6 @@ class Misc(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        db = await aiosqlite.connect('./bot/db/config.db')
-        cursor = await db.cursor()
         for channel in guild.text_channels:
             if channel.permissions_for(guild.me).send_messages:
                 embed = discord.Embed(
@@ -31,10 +29,6 @@ class Misc(commands.Cog):
             break
         channel1 = self.client.get_channel(793927796354449459)
         await channel1.send(f"ConchBot has joined a server called {guild.name}!")
-        await cursor.execute(f"SELECT guild_id FROM config WHERE guild_id = {guild.id}")
-        check = await cursor.fetchone()
-        if check is None:
-            await cursor.execute(f"INSERT INTO config (guild_id) VALUES ({guild.id})")
 
 def setup(client):
     client.add_cog(Misc(client))

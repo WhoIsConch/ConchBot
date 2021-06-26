@@ -120,6 +120,9 @@ class Currency(commands.Cog):
         await cursor.execute(f'SELECT bank FROM main WHERE user_id = {user.id}')
         bankamt = await cursor.fetchone()
 
+        await cursor.close()
+        await db.close()
+
         return walamt, bankamt
 
     async def item_func(self, user, item, amount=None):
@@ -165,6 +168,9 @@ class Currency(commands.Cog):
             amount = await cursor.fetchone()
             embed.add_field(name=f"{item[0]}s:", value=amount[0])
         await ctx.send(embed=embed)
+
+        await cursor.close()
+        await db.close()
         
     @commands.command(aliases=['dep'], description="Deposit moners from your wallet into your bank!")
     async def deposit(self, ctx, amt):
@@ -616,6 +622,9 @@ class Currency(commands.Cog):
                 embed.add_field(name=entry, value=f"Description: {tasks[entry].get('desc')}\nReward: {tasks[entry].get('reward')}")
         embed.set_footer(text="To do a task, use 'cb task start {task name}' | ✅ means finished task")
         await ctx.send(embed=embed)
+        
+        await cursor.close()
+        await db.close()
 
     @task.command(description="Start a task!")
     async def start(self, ctx, task):

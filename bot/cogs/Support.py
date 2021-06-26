@@ -69,7 +69,7 @@ class Support(commands.Cog):
         await ctx.send("Thank you for the bug report! Our team will identify and fix the problem as soon as possible!")
         await db.commit()
         await cursor.close()
-        db.close
+        await db.close()
 
     # @commands.command()
     # @commands.is_owner()

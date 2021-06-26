@@ -86,12 +86,11 @@ class ConchBot(commands.Bot):
 
     @tasks.loop(seconds=15.0)
     async def status_loop(self):
-        statuses = cycle(["New plethora of currency commands!", 
-            "Revamped ConchBot!", "cb help", f"Watching {len(set(self.get_all_members()))} "
-            f"users and {len(self.guilds)} servers.", "New memes and media commands!"])
+        statuses = cycle([f"{len(set(self.get_all_members()))} "
+            f"users and {len(self.guilds)} servers.", "cb help"])
         while True:
-            await self.change_presence(activity=discord.Game(next(statuses)))
-            await asyncio.sleep(15)
+            await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=next(statuses)))
+            await asyncio.sleep(20)
 
     async def on_ready(self):
         print("------")

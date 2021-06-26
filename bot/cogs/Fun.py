@@ -68,6 +68,8 @@ class Fun(commands.Cog):
         result = await cursor.fetchone()
 
         if result is not None:
+            await cursor.close()
+            await db.close()
             return True
 
         else:
@@ -93,7 +95,7 @@ class Fun(commands.Cog):
             else:
                 print(status)
                 return False
-
+                
     @commands.Cog.listener()
     async def on_message_delete(self, message):
         self.delete_snipes[message.channel] = message
@@ -387,6 +389,29 @@ class Fun(commands.Cog):
         )
         embed.add_field(name="Question:", value=msg)
         embed.add_field(name="Answer:", value=random.choice(responses))
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.is_owner()
+    async def hehewed(self, ctx):
+        embed = discord.Embed(title="**__Ping and Access Roles__**", description="Get your roles by reacting to the corresponding reaction.", color=discord.Color.red())
+        embed.add_field(name="**Announcement Ping**", value="React with 📣 to get pings for server announcements!", inline=False)
+        embed.add_field(name="**Vote Ping**", value=f"React with 🗳 to get pings when there's a new vote in {self.client.get_channel(726098004708163594).mention}!", inline=False)
+        embed.add_field(name="**Revive Ping**", value="React with 💀 to get pinged when the chat is dead!", inline=False)
+        embed.add_field(name="**NSFW Access**", value=f"React with 🔞 to get access to {self.client.get_channel(814256958806556723).mention}!", inline=False)
+        embed.set_footer(text="React with a listed reaction to get that role.")
+        await ctx.send(embed=embed)
+
+        embed = discord.Embed(title="**__Color Roles__**", color=discord.Color.teal(), description="Make your name a pretty color!")
+        embed.add_field(name="**Red**", value=f"React with 🔴 to get a {ctx.guild.get_role(857816667190198282).mention} name!", inline=False)
+        embed.add_field(name="**Orange**", value=f"React with 🟠 to get an {ctx.guild.get_role(857816821242789929).mention} name!", inline=False)
+        embed.add_field(name="**Yellow**", value=f"React with 🟡 to get a {ctx.guild.get_role(857816873848012820).mention} name!", inline=False)
+        embed.add_field(name="**Green**", value=f"React with 🟢 to get a {ctx.guild.get_role(857816937152380948).mention} name!", inline=False)
+        embed.add_field(name="**Blue**", value=f"React with 🔵 to get a {ctx.guild.get_role(857816980887044157).mention} name!", inline=False)
+        embed.add_field(name="**Purple**", value=f"React with 🟣 to get a {ctx.guild.get_role(857817018039009290).mention} name!", inline=False)
+        embed.add_field(name="**White**", value=f"React with ⚪ to get a {ctx.guild.get_role(857817054706663494).mention} name!", inline=False)
+        embed.add_field(name="**Black**", value=f"React with ⚫ to get a {ctx.guild.get_role(857817144989712434).mention} name!", inline=False)
+        embed.set_footer(text="React with a listed reaction to get that color name.")
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["LMGTFY"], description="Make a Google link with the specified query.")

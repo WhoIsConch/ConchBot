@@ -294,72 +294,7 @@ class Utility(commands.Cog):
             return
         
 
-    @commands.command(aliases=["encoder"])
-    async def encode(self, ctx, type, *, code):
-        types = ["binary", "base64"]
-        type = type.lower()
-        if type in types:
-            async with aiohttp.ClientSession() as encodeSession:
-                if type == "binary":
-                    async with encodeSession.get(f"https://some-random-api.ml/binary?text={code}") as encoder:
-                        if encoder.status == 200:
-                            api = await encoder.json()
-                            encoded = api["binary"]
-                            embed = discord.Embed(title="Binary Encoder")
-                            embed.add_field(name="Input", value=f"```{code}```", inline=False)
-                            embed.add_field(name="Output", value=f"```{encoded}```", inline=False)
-                            embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
-                            await ctx.send(embed=embed)
-                        else:
-                            await ctx.send(f"The api has troubles sorry try again later. Error code: {encoder.status}")
-                else:
-                    async with encodeSession.get(f"https://some-random-api.ml/base64?encode={code}") as encoder:
-                        if encoder.status == 200:
-                            api = await encoder.json()
-                            encoded = api["base64"]
-                            embed = discord.Embed(title="Base64 Encoder")
-                            embed.add_field(name="Input", value=f"```{code}```", inline=False)
-                            embed.add_field(name="Output", value=f"```{encoded}```", inline=False)
-                            embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
-                            await ctx.send(embed=embed)
-                        else:
-                            await ctx.send(f"The api has troubles sorry try again later. Error code: {encoder.status}")
-        else:
-            await ctx.send("Use binary or base64")
-
-
-    @commands.command(aliases=["decoder"])
-    async def decode(self, ctx, type, *, code):
-        types = ["binary", "base64"]
-        type = type.lower()
-        if type in types:
-            async with aiohttp.ClientSession() as decodeSession:
-                if type == "binary":
-                    async with decodeSession.get(f"https://some-random-api.ml/binary?decode={code}") as decoder:
-                        if decoder.status == 200:
-                            api = await decoder.json()
-                            decoded = api["text"]
-                            embed = discord.Embed(title="Binary Decoder")
-                            embed.add_field(name="Input", value=f"```{code}```", inline=False)
-                            embed.add_field(name="Output", value=f"```{decoded}```", inline=False)
-                            embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
-                            await ctx.send(embed=embed)
-                        else:
-                            await ctx.send(f"The api has troubles sorry try again later. Error code: {decoder.status}")
-                else:
-                    async with decodeSession.get(f"https://some-random-api.ml/base64?decode={code}") as decoder:
-                        if decoder.status == 200:
-                            api = await decoder.json()
-                            decoded = api["text"]
-                            embed = discord.Embed(title="Base64 Decoder")
-                            embed.add_field(name="Input", value=f"```{code}```", inline=False)
-                            embed.add_field(name="Output", value=f"```{decoded}```", inline=False)
-                            embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
-                            await ctx.send(embed=embed)
-                        else:
-                            await ctx.send(f"The api has troubles sorry try again later. Error code: {decoder.status}")
-        else:
-            await ctx.send("Use binary or base64")
+    
 
 
 def setup(client):

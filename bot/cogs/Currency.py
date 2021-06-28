@@ -1,3 +1,4 @@
+import asyncio
 import random
 import aiosqlite
 import discord
@@ -119,6 +120,9 @@ class Currency(commands.Cog):
         await cursor.execute(f'SELECT bank FROM main WHERE user_id = {user.id}')
         bankamt = await cursor.fetchone()
 
+        await cursor.close()
+        await db.close()
+
         return walamt, bankamt
 
     async def item_func(self, user, item, amount=None):
@@ -164,6 +168,9 @@ class Currency(commands.Cog):
             amount = await cursor.fetchone()
             embed.add_field(name=f"{item[0]}s:", value=amount[0])
         await ctx.send(embed=embed)
+
+        await cursor.close()
+        await db.close()
         
     @commands.command(aliases=['dep'], description="Deposit moners from your wallet into your bank!")
     async def deposit(self, ctx, amt):
@@ -615,6 +622,9 @@ class Currency(commands.Cog):
                 embed.add_field(name=entry, value=f"Description: {tasks[entry].get('desc')}\nReward: {tasks[entry].get('reward')}")
         embed.set_footer(text="To do a task, use 'cb task start {task name}' | ✅ means finished task")
         await ctx.send(embed=embed)
+        
+        await cursor.close()
+        await db.close()
 
     @task.command(description="Start a task!")
     async def start(self, ctx, task):
@@ -646,5 +656,27 @@ class Currency(commands.Cog):
         await cursor.close()
         await db.close()
 
+    @commands.command(aliases=["lotto"])
+    async def lottery(self, ctx, amount:int):
+        await ctx.send(embed=discord.Embed(title=f"You are about to enter the lottery with {amount} moners. Are you sure? `y/n`",  color=discord.Color.gold(), description="If you don't know what you're"
+        " doing, I suggest you use the `lottery info` command first."))
+
+        def check(m):
+            return m.content.lower() == "y" or m.content.lower() == "n" and m.author == ctx.author
+
+        try:
+            conf = await self.client.wait_for('message', check=check, timeout=10)
+        except asyncio.TimeoutError:
+            return await ctx.send("You must respond with either `y` or `n` in 10 seconds.")
+
+        if conf.content.lower() == "n":
+            return await ctx.send("Aborting...")
+
+        walamt, bankamt = await self.get_amt(ctx.author.id)
+
+        if int(walamt[0]) < amount:
+            if int(bankamt[0]) < amount:
+                return await ctx.send("You don't have that much moners to gamble!")
+            
 def setup(client):
     client.add_cog(Currency(client))

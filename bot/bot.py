@@ -88,12 +88,11 @@ class ConchBot(commands.Bot):
 
     @tasks.loop(seconds=15.0)
     async def status_loop(self):
-        statuses = cycle(["New plethora of currency commands!", 
-            "Revamped ConchBot!", "cb help", f"Watching {len(set(self.get_all_members()))} "
-            f"users and {len(self.guilds)} servers.", "New memes and media commands!"])
+        statuses = cycle([f"{len(set(self.get_all_members()))} "
+            f"users and {len(self.guilds)} servers.", "cb help"])
         while True:
-            await self.change_presence(activity=discord.Game(next(statuses)))
-            await asyncio.sleep(15)
+            await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=next(statuses)))
+            await asyncio.sleep(20)
 
     async def on_ready(self):
         print("------")
@@ -143,23 +142,28 @@ class ConchBot(commands.Bot):
         print("------")
         print("Conch Bot Closing connection to Discord...")
         print("------")
+        self.down()
 
     async def close(self):
         print("------")
         print("Conch Bot Closing on keyboard interrupt...\n")
         print("------")
+        self.down()
 
     async def on_connect(self):
         print("------")
         print(f"Conch Bot Connected to Discord (latency: {self.latency*1000:,.0f} ms).")
+        self.up()
 
     async def on_resumed(self):
         print("------")
         print("Conch Bot resumed.")
+        self.up()
 
     async def on_disconnect(self):
         print("------")
         print("Conch Bot disconnected.")
+        self.down()
 
     async def on_error(self):
         self.down()

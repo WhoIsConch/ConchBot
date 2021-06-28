@@ -18,6 +18,7 @@ from dotenv import load_dotenv
 import os
 import urllib
 from discord.ext.commands.core import command
+import aiosqlite
 
 load_dotenv('.env')
 
@@ -59,6 +60,42 @@ class Fun(commands.Cog):
         else:
             return False
             
+    async def create_gofile_folder(self, user_id):
+        db = await aiosqlite.connect('./bot/db/config.db')
+        cursor = await db.cursor()
+
+        await cursor.execute(f"SELECT user_id FROM gofile WHERE user_id = {user_id}")
+        result = await cursor.fetchone()
+
+        if result is not None:
+            await cursor.close()
+            await db.close()
+            return True
+
+        else:
+            await cursor.execute(f"INSERT INTO gofile (user_id) VALUES ({user_id})")
+            await db.commit()
+            await cursor.close()
+            await db.close()
+
+            folderid = os.getenv("GOFILE_FOLDER_ID")
+            token = os.getenv("GOFILE_TOKEN")
+
+            async with aiohttp.ClientSession() as session:
+                async with session.put("https://api.gofile.io/createFolder", data=f'parentFolderId={str(folderid)}&token={str(token)}&folderName={str(user_id)}') as resp:
+                    data = json.loads(await resp.read())
+                    status = data['status']
+                    dat = str(data['data']) + "ee"
+
+            if str(status) == "ok":
+                print(dat)
+                print(str(data))
+                return True
+
+            else:
+                print(status)
+                return False
+                
     @commands.Cog.listener()
     async def on_message_delete(self, message):
         self.delete_snipes[message.channel] = message
@@ -354,6 +391,29 @@ class Fun(commands.Cog):
         embed.add_field(name="Answer:", value=random.choice(responses))
         await ctx.send(embed=embed)
 
+    @commands.command()
+    @commands.is_owner()
+    async def hehewed(self, ctx):
+        embed = discord.Embed(title="**__Ping and Access Roles__**", description="Get your roles by reacting to the corresponding reaction.", color=discord.Color.red())
+        embed.add_field(name="**Announcement Ping**", value="React with 📣 to get pings for server announcements!", inline=False)
+        embed.add_field(name="**Vote Ping**", value=f"React with 🗳 to get pings when there's a new vote in {self.client.get_channel(726098004708163594).mention}!", inline=False)
+        embed.add_field(name="**Revive Ping**", value="React with 💀 to get pinged when the chat is dead!", inline=False)
+        embed.add_field(name="**NSFW Access**", value=f"React with 🔞 to get access to {self.client.get_channel(814256958806556723).mention}!", inline=False)
+        embed.set_footer(text="React with a listed reaction to get that role.")
+        await ctx.send(embed=embed)
+
+        embed = discord.Embed(title="**__Color Roles__**", color=discord.Color.teal(), description="Make your name a pretty color!")
+        embed.add_field(name="**Red**", value=f"React with 🔴 to get a {ctx.guild.get_role(857816667190198282).mention} name!", inline=False)
+        embed.add_field(name="**Orange**", value=f"React with 🟠 to get an {ctx.guild.get_role(857816821242789929).mention} name!", inline=False)
+        embed.add_field(name="**Yellow**", value=f"React with 🟡 to get a {ctx.guild.get_role(857816873848012820).mention} name!", inline=False)
+        embed.add_field(name="**Green**", value=f"React with 🟢 to get a {ctx.guild.get_role(857816937152380948).mention} name!", inline=False)
+        embed.add_field(name="**Blue**", value=f"React with 🔵 to get a {ctx.guild.get_role(857816980887044157).mention} name!", inline=False)
+        embed.add_field(name="**Purple**", value=f"React with 🟣 to get a {ctx.guild.get_role(857817018039009290).mention} name!", inline=False)
+        embed.add_field(name="**White**", value=f"React with ⚪ to get a {ctx.guild.get_role(857817054706663494).mention} name!", inline=False)
+        embed.add_field(name="**Black**", value=f"React with ⚫ to get a {ctx.guild.get_role(857817144989712434).mention} name!", inline=False)
+        embed.set_footer(text="React with a listed reaction to get that color name.")
+        await ctx.send(embed=embed)
+
     @commands.command(aliases=["LMGTFY"], description="Make a Google link with the specified query.")
     @commands.cooldown(1, 3, commands.BucketType.user) 
     async def google(self, ctx, *, query):
@@ -533,11 +593,122 @@ class Fun(commands.Cog):
     async def gofile(self, ctx):
         pass
 
-    @gofile.command()
+    @gofile.command(disabled=True)
     async def upload(self, ctx, url):
+        status = await self.create_gofile_folder(ctx.author.id)
+        return await ctx.send(status)
+
+
+    @commands.command(description="This command makes anyone *glassed*.\n[member] value is optional.")
+    async def glass(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as glassSession:
+                async with glassSession.get(f'https://some-random-api.ml/canvas/glass?avatar={member.avatar_url_as(format="png", size=1024)}') as glassImage:
+                    imageData = io.BytesIO(await glassImage.read())
+                    
+                    await glassSession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'glass.gif'))
+
+    @commands.command(description="This command makes anyone *inverted*.\n[member] value is optional.")
+    async def invert(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as invertSession:
+                async with invertSession.get(f'https://some-random-api.ml/canvas/invert?avatar={member.avatar_url_as(format="png", size=1024)}') as invertImage:
+                    imageData = io.BytesIO(await invertImage.read())
+                    
+                    await invertSession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'invert.gif'))
+
+
+    @commands.command(description="This command makes anyone *glassed*.\n[member] value is optional.")
+    async def bright(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as brightSession:
+                async with brightSession.get(f'https://some-random-api.ml/canvas/bright?avatar={member.avatar_url_as(format="png", size=1024)}') as brightImage:
+                    imageData = io.BytesIO(await brightImage.read())
+                    
+                    await brightSession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'bright.gif'))
+
+    @commands.command(description="This command convert rgb to hex")
+    async def hex(self, ctx, hex):
+        if not hex:
+            await ctx.send("Put a hex code in")
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as hexSession:
+                async with hexSession.get(f'https://some-random-api.ml/canvas/colorviewer?hex={hex}') as hexImage:
+                    imageData = io.BytesIO(await hexImage.read())
+                    
+                    await hexSession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'hex.gif'))
+
+    @commands.group(invoke_without_command=True)
+    async def youtube(self, ctx):
         pass
 
-    
+    @youtube.command()
+    async def comment(self, ctx, member: discord.Member, comment:str):
+        member_avatar = member.avatar_url_as(format="png", size=256)
+        api_link = f"https://some-random-api.ml/canvas/youtube-comment?avatar={member_avatar}&comment={comment}&username={member.name}"
+
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as youtubeSession:
+                async with youtubeSession.get(api_link) as youtubeComment:
+                    imageData = io.BytesIO(await youtubeComment.read())
+                    
+                    await youtubeSession.close()
+                    
+                    await ctx.reply(file=discord.File(imageData, 'youtube.gif'))
+
+
+    @command()
+    async def blur(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as blurSession:
+                async with blurSession.get(f'https://some-random-api.ml/canvas/blur?avatar={member.avatar_url_as(format="png", size=1024)}') as blurImage:
+                    imageData = io.BytesIO(await blurImage.read())
+                    
+                    await blurSession.close()
+
+        await ctx.reply(file=discord.File(imageData, 'blur.gif'))
+
+    @command()
+    async def pixel(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+        async with ctx.typing():
+            async with aiohttp.ClientSession() as pixelSession:
+                async with pixelSession.get(f'https://some-random-api.ml/canvas/pixelate?avatar={member.avatar_url_as(format="png", size=1024)}') as pixelImage:
+                    imageData = io.BytesIO(await pixelImage.read())
+                    
+                    await pixelSession.close()
+
+        await ctx.reply(file=discord.File(imageData, 'pixel.gif'))
+
+    @command()
+    async def amongus(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+            
+        impostor = random.choice(['true', 'false'])
+        apikey = os.getenv("SRA_API_KEY")
+        link = f"https://some-random-api.ml/premium/amongus?username={member.name}&avatar={member.avatar_url_as(format='png')}&impostor={impostor}&key={apikey}"
+        
+        async with aiohttp.ClientSession() as session:
+            async with session.get(link) as resp:
+                fp = io.BytesIO(await resp.read())
 
     
 

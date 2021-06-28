@@ -41,6 +41,9 @@ class Utility(commands.Cog):
         await cursor.execute(f"SELECT published FROM updates WHERE version = '{version}'")
         published = await cursor.fetchone()
 
+        await cursor.close()
+        await db.close()        
+
         return version, name[0], desc[0], updates[0], published[0]
 
     @commands.command()
@@ -185,8 +188,6 @@ class Utility(commands.Cog):
             embed.set_footer(icon_url=ctx.author.avatar_url, text=f"Requested {ctx.author.name}#{ctx.author.discriminator}")
             await ctx.send(embed=embed)
 
-
-
     @commands.command()
     async def leave(self, ctx):
         check = ctx.author.guild_permissions.kick_members
@@ -206,9 +207,6 @@ class Utility(commands.Cog):
 
     @commands.group(invoke_without_command=True, aliases=["update"])
     async def updates(self, ctx):
-        db = await aiosqlite.connect("./bot/db/updates.db")
-        cursor = await db.cursor()
-
         version, name, desc, updates, published = await self.get_update_info()
         
         embed = discord.Embed(title=f"**__ConchBot Update {name}__**", colour=ctx.author.colour)
@@ -258,6 +256,9 @@ class Utility(commands.Cog):
         await cursor.execute("SELECT version FROM updates")
         versions = await cursor.fetchall()
 
+        await cursor.close()
+        await db.close()        
+
         embed = discord.Embed(title="ConchBot Updates", color=ctx.author.color)
 
         for version in versions:
@@ -269,9 +270,6 @@ class Utility(commands.Cog):
 
     @updates.command()
     async def info(self, ctx, version: int):
-        db = await aiosqlite.connect("./bot/db/updates.db")
-        cursor = await db.cursor()
-
         version, name, desc, updates, published = await self.get_update_info(version)
 
         embed = discord.Embed(title=f"**__ConchBot Update {name}__**", colour=ctx.author.colour)

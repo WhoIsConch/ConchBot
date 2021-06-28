@@ -13,6 +13,9 @@ class Config(commands.Cog):
         await cursor.execute(f"SELECT id FROM blacklist WHERE id = {id}")
         result = await cursor.fetchone()
 
+        await db.close()
+        await db.close()
+
         if result is None:
             return False
         

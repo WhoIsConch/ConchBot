@@ -21,6 +21,9 @@ class Tags(commands.Cog):
         await cursor.execute(f"SELECT content FROM g{guild_id} WHERE name = '{tag}'")
         result = await cursor.fetchone()
 
+        await cursor.close()
+        await db.close()
+
         if result is None:
             return False
 
@@ -44,6 +47,9 @@ class Tags(commands.Cog):
 
         await cursor.execute(f"SELECT name FROM g{guild} WHERE name = '{name.lower()}'")
         result = await cursor.fetchone()
+
+        await cursor.close()
+        await db.close()        
 
         if result is None:
             return False
@@ -99,6 +105,9 @@ class Tags(commands.Cog):
             created_at = row[1]
             last_edited = row[2]
             tag_id = row[3]
+
+        await cursor.close()
+        await db.close()
 
         return creator_id, created_at, last_edited, tag_id
 
@@ -198,6 +207,9 @@ class Tags(commands.Cog):
             await cursor.execute(f"SELECT creator_id FROM g{ctx.guild.id} WHERE tag_id = '{id}'")
             result = await cursor.fetchone()
 
+            await cursor.close()
+            await db.close()
+
             if result is None:
                 await ctx.send("Invalid tag ID.")
             elif int(result[0]) == int(ctx.author.id) or ctx.author.has_permissions(manage_messages=True):
@@ -222,9 +234,13 @@ class Tags(commands.Cog):
             result = await cursor.fetchone()
             
             if result is None:
+                await cursor.close()
+                await db.close()
                 return await ctx.send("A tag with that ID doesn't exist in this guild.")
 
             if int(result[0]) == int(ctx.author.id):
+                await cursor.close()
+                await db.close()
                 await self.edit_info(ctx.guild.id, id, content)
                 await ctx.send("Tag successfully edited.")
 
@@ -240,6 +256,9 @@ class Tags(commands.Cog):
 
             await cursor.execute(f"SELECT creator_id FROM g{ctx.guild.id} WHERE tag_id = '{id.content}'")
             result = await cursor.fetchone()
+
+            await cursor.close()
+            await db.close()
 
             if result is None:
                 return await ctx.send("A tag with that ID doesn't exist in this guild.")

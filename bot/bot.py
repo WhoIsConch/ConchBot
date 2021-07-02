@@ -39,6 +39,8 @@ class ConchBot(commands.Bot):
         prefix = get_prefix
         super().__init__(command_prefix=prefix, intents=intents, allowed_mentions=allowed_mentions, case_insensitive=True, strip_after_prefix=True)
         self.launch_time = datetime.utcnow()
+        os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
+        os.environ['JISHAKU_RETAIN'] = "True"
 
         @self.before_invoke
         async def before_command(ctx):

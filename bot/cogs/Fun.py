@@ -95,7 +95,7 @@ class Fun(commands.Cog):
             else:
                 print(status)
                 return False
-                
+
     @commands.Cog.listener()
     async def on_message_delete(self, message):
         self.delete_snipes[message.channel] = message
@@ -131,7 +131,7 @@ class Fun(commands.Cog):
             except AttributeError:
                 await message.channel.trigger_typing()
                 aimsg = await rs.get_ai_response(message.content)
-                message = aimsg["message"]
+                message = aimsg
                 await message.reply(message)
             except httpx.ReadTimeout:
                 await message.channel.send("It seems my API has timed out. Please give me a few minutes, and if the problem "

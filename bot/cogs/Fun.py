@@ -472,13 +472,13 @@ class Fun(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.group(invoke_without_command=True)
+    @commands.group(invoke_without_command=True, description="Make a QR code!")
     async def qr(self, ctx, value):
         o = urllib.parse.quote(value)
 
         await ctx.send(f'https://api.qrserver.com/v1/create-qr-code/?data={o}')
 
-    @qr.command()
+    @qr.command(description="Read a QR Code!")
     async def read(self, ctx, image=None):
         if image is not None:
             url = urllib.parse.quote(image)
@@ -598,13 +598,144 @@ class Fun(commands.Cog):
         status = await self.create_gofile_folder(ctx.author.id)
         return await ctx.send(status)
 
+    @commands.command(aliases=["encoder"], description="Encode something into binary or base64.")
+    async def encode(self, ctx, type, *, code):
+        types = ["binary", "base64"]
+        type = type.lower()
+        if type in types:
+            async with aiohttp.ClientSession() as encodeSession:
+                if type == "binary":
+                    async with encodeSession.get(f"https://some-random-api.ml/binary?text={code}") as encoder:
+                        if encoder.status == 200:
+                            api = await encoder.json()
+                            encoded = api["binary"]
+                            embed = discord.Embed(title="Binary Encoder")
+                            embed.add_field(name="Input", value=f"```{code}```", inline=False)
+                            embed.add_field(name="Output", value=f"```{encoded}```", inline=False)
+                            embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+                            await ctx.send(embed=embed)
+                        else:
+                            await ctx.send(f"The api has troubles sorry try again later. Error code: {encoder.status}")
+                else:
+                    async with encodeSession.get(f"https://some-random-api.ml/base64?encode={code}") as encoder:
+                        if encoder.status == 200:
+                            api = await encoder.json()
+                            encoded = api["base64"]
+                            embed = discord.Embed(title="Base64 Encoder")
+                            embed.add_field(name="Input", value=f"```{code}```", inline=False)
+                            embed.add_field(name="Output", value=f"```{encoded}```", inline=False)
+                            embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+                            await ctx.send(embed=embed)
+                        else:
+                            await ctx.send(f"The api has troubles sorry try again later. Error code: {encoder.status}")
+        else:
+            await ctx.send("Use binary or base64")
 
+    @commands.command(aliases=["decoder"], description="Decode a binary or base64 string.")
+    async def decode(self, ctx, type, *, code):
+        types = ["binary", "base64"]
+        type = type.lower()
+        if type in types:
+            async with aiohttp.ClientSession() as decodeSession:
+                if type == "binary":
+                    async with decodeSession.get(f"https://some-random-api.ml/binary?decode={code}") as decoder:
+                        if decoder.status == 200:
+                            api = await decoder.json()
+                            decoded = api["text"]
+                            embed = discord.Embed(title="Binary Decoder")
+                            embed.add_field(name="Input", value=f"```{code}```", inline=False)
+                            embed.add_field(name="Output", value=f"```{decoded}```", inline=False)
+                            embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+                            await ctx.send(embed=embed)
+                        else:
+                            await ctx.send(f"The api has troubles sorry try again later. Error code: {decoder.status}")
+                else:
+                    async with decodeSession.get(f"https://some-random-api.ml/base64?decode={code}") as decoder:
+                        if decoder.status == 200:
+                            api = await decoder.json()
+                            decoded = api["text"]
+                            embed = discord.Embed(title="Base64 Decoder")
+                            embed.add_field(name="Input", value=f"```{code}```", inline=False)
+                            embed.add_field(name="Output", value=f"```{decoded}```", inline=False)
+                            embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
+                            await ctx.send(embed=embed)
+                        else:
+                            await ctx.send(f"The api has troubles sorry try again later. Error code: {decoder.status}")
+        else:
+            await ctx.send("Use binary or base64")
 
+    @commands.command(description="Get lyrics of a specific song!")
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def lyrics(self, ctx, *, search):
+        search = search.replace(' ', '%20')
+        search_web = f"https://some-random-api.ml/lyrics?title={search}"
 
-    
-
+        await ctx.channel.trigger_typing()
+        async with request("GET", search_web, headers={}) as response:
+            if response.status == 200:
+                api = await response.json()
+                title = api["title"]
+                author = api["author"]
+                lyrics = api["lyrics"]
                 
-            
+                embed = discord.Embed(title=f"{title} by {author}", description=lyrics)
+                try:
+                    await ctx.send(embed=embed)
+                except:
+                    paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
+                    paginator.add_reaction('◀', 'back')
+                    paginator.add_reaction('▶', 'next')
+                    
+
+                    embed1 = discord.Embed(title=f"{title} by {author} | Page 1", description=lyrics[:int(len(lyrics)/2)])
+                    embed2 = discord.Embed(title=f"{title} by {author} | Page 2", description=lyrics[int(len(lyrics)/2):])
+
+                    embeds = [embed1, embed2]
+
+                    await paginator.run(embeds)
+            else:
+                await ctx.send(f"API returned a {response.status} status.")
+
+    @commands.command(description="Define a word!")
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def define(self, ctx, word):
+        word_lowered = word.lower()
+        word_link = f"https://some-random-api.ml/dictionary?word={word_lowered}"
+
+        async with request("GET", word_link, headers={}) as response:
+            if response.status == 200:
+                api = await response.json()
+                word_name = api["word"]
+                word_definition = api["definition"]
+                paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
+                paginator.add_reaction('◀', 'back')
+                paginator.add_reaction('▶', 'next')
+                
+
+                embed1 = discord.Embed(title=f"{word_name} | Page 1", description=word_definition[:int(len(word_definition)/2)])
+                embed2 = discord.Embed(title=f"{word_name} | Page 2", description=word_definition[int(len(word_definition)/2):])
+
+                embeds = [embed1, embed2]
+
+                await paginator.run(embeds)
+            else:
+                await ctx.send(f"API returned a {response.status} status.")    
+
+    @commands.command(description="Returns a real-looking Discord bot token.")
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def token(self, ctx):
+        token_web = "https://some-random-api.ml/bottoken"
+
+        async with ctx.typing():
+            async with request("GET", token_web, headers={}) as response:
+                if response.status == 200:
+                    api = await response.json()
+                    bottoken = api["token"]
+                else:
+                    await ctx.send(f"API returned a {response.status} status.")
+
+            await ctx.send(bottoken)
+
 
 def setup(client):
     client.add_cog(Fun(client))

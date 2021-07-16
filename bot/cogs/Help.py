@@ -8,13 +8,11 @@ class Help(commands.Cog):
     @commands.command()
     async def help(self, ctx, *, value=None):
         cogs = self.client.cogs
-        print(cogs)
         if value is None:
             embed = discord.Embed(title="ConchBot Commands", colour=discord.Colour.green(), description="ConchBot is a small bot trying to grow, so your support would"
-            " be amazing! Even as much as a vote on Top.gg or DBL can help greatly.\nMy command prefix is `cb `.\n"
+            " be amazing! Even as much as a vote on Top.gg or DBL can help greatly.\nMy command prefix is `cb `\n"
             "You can see my latest updates via \"cb updates\"")
             for cog in cogs:
-                print(cog)
                 cmdlist = []
                 commands = ""
                 blacklist = ['Jishaku', 'Help', 'Config', 'Owner', 'Misc']

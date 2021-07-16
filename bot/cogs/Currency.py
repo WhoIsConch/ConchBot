@@ -335,7 +335,6 @@ class Currency(commands.Cog):
     @commands.command(aliases=['rob', 'yoink'], description="Steal moners from someone!")
     @commands.cooldown(1, 60, BucketType.user)
     async def steal(self, ctx, victim:discord.Member):
-        await self.open_account(ctx.author)
         await self.open_account(victim)
         failmsg = "You failed and had to pay 100 moners. That's what you get."
         if victim == ctx.author:

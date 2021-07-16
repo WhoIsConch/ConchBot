@@ -2,26 +2,21 @@ import asyncio
 import os
 from itertools import cycle
 import discord
-from discord import message
 from discord.ext import commands, tasks
-from discord.ext.commands import Bot
-from discord.ext.commands.bot import when_mentioned_or
 from dotenv import load_dotenv
 from datetime import datetime
 from bot.cogs.tags import Tags
 from bot.cogs.Currency import Currency
-from bot.cogs.BotConfig import Config
-from bot.cogs.utils.errors import Blacklisted
 import smtplib
-from email.message import EmailMessage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import asyncio
 import time
+import aiohttp
 
 async def get_prefix(bot, message):
     prefixes = []
-    prefixes.append('cb ')
+    prefixes.append('cb!')
     prefixes.append('cB ')
     prefixes.append('CB ')
     prefixes.append('Cb ')
@@ -44,27 +39,9 @@ class ConchBot(commands.Bot):
 
         @self.before_invoke
         async def before_command(ctx):
-            if ctx.command.qualified_name == "support":
-                await ctx.invoke(ctx.command)
-
-            userstat = await Config.check_blacklist(self, ctx.author.id)
-            serverstat = await Config.check_blacklist(self, ctx.guild.id)
-
-            if userstat is True:
-                try:
-                    raise Blacklisted(ctx)
-                except Blacklisted as e:
-                    await e.memsend()
-                    raise
-                    
-
-            elif serverstat is True:
-                try:
-                    raise Blacklisted(ctx)
-                except Blacklisted as e:
-                    await Blacklisted.guildsend(self)
-                    raise
-                
+            if ctx.command.cog.qualified_name == "NSFW" and not ctx.channel.is_nsfw():
+                await ctx.send("This command can only be used in NSFW channels.")
+                raise
             await Tags.create_table(self, ctx.guild.id)
             await Currency.open_account(self, ctx.author)
 
@@ -100,6 +77,10 @@ class ConchBot(commands.Bot):
         print("Note:The fact that in owner.py cog in bot/cogs folder. We used @commands.has_role(). You could replacing whats inside () with your owner role id/name or use @commands.is_owner() for only the owner can use.")
         self.up()
         await self.status_loop()
+
+    async def create_aiohttp_session(self):
+        self.aiohttp = aiohttp.ClientSession()
+        print("AIOHTTP connection established.")
 
     def up(self):
         print("------")
@@ -164,10 +145,6 @@ class ConchBot(commands.Bot):
         print("------")
         print("Conch Bot disconnected.")
         self.down()
-
-    async def on_error(self):
-        self.down()
-        raise
 
 
     def run(self):

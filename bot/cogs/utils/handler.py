@@ -41,29 +41,24 @@ class CommandErrorHandler(commands.Cog):
             return
 
         if isinstance(error, commands.errors.NotOwner):
-            await ctx.send("You are not the owner of this bot so you can't use this command")
+            await ctx.send("This command is restricted to bot owners.")
             return
 
         if isinstance(error, IndexError):
-            await ctx.send("Thats not a valid number choice")
+            await ctx.send("That's not a valid number choice.")
             return
 
         if isinstance(error, ValueError):
-            await ctx.send("You need to tell me what I need to do, ig this is a image, separate text on the top and bottom with a comma.")
+            await ctx.send("You must seperate some values with a comma.")
             return
 
         if isinstance(error, commands.ChannelNotFound):
+            print(f"| {error} | ")
             await ctx.send("Channel doesn't exist")
-
 
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You don't have the permissions to do that! Please contact a server admin to do that for you.")
             return
-
-        if isinstance(error, commands.ChannelNotFound):
-            await ctx.send("Channel not found.")
-            return
-        
         
         if isinstance(error, commands.MemberNotFound):
             await ctx.send("That member doesn't exist.")

@@ -128,7 +128,7 @@ class NSFW(commands.Cog):
         
         ransub = random.choice(all_subs)
 
-        embed = discord.Embed(title=ransub.title, colour=ctx.author.colour, url=ransub.url, type="gifv")
+        embed = discord.Embed(title=ransub.title, colour=ctx.author.colour, url=ransub.url, type="link")
         embed.set_image(url=ransub.url)
         embed.set_footer(text=f"Posted by {ransub.author} on Reddit. | ❤ {ransub.ups} | 💬 {ransub.num_comments}")
         await msg.delete()

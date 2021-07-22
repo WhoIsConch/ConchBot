@@ -129,7 +129,7 @@ class Support(commands.Cog):
             colour=ctx.author.colour
         )
         embed.add_field(name="ConchBot Invite:", value="You can invite ConchBot to your server "
-        "[here](https://discord.com/api/oauth2/authorize?client_id=733467297666170980&permissions=388102&scope=bot)")
+        "[here](https://discord.com/api/oauth2/authorize?client_id=733467297666170980&permissions=2147871824&scope=bot)")
         embed.add_field(name="Support Server Invite:", value="You can join ConchBot Support "
         "[here](https://discord.gg/PyAcRfukvc)")
         embed.add_field(name="ConchBot's creator (UnsoughtConch)'s community server:",

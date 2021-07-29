@@ -18,8 +18,6 @@ The source code of the Discord bot ConchBot. The bot is **entirely** open source
 
 Also read liscense before doing. Please credit [UnsoughtConch](https://github.com/ConchDev) or [Jerry.py](https://github.com/Jerry-py) if you want use this/self hosting
 
-**Not crediting us will get you a copyright strike**
-
 
 ## How to Self-Host
 Follow the instructions to host your own ConchBot

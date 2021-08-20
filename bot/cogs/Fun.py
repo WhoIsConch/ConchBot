@@ -9,15 +9,12 @@ import asyncpraw
 import discord
 import DiscordUtils
 from discord.ext.commands.cooldowns import BucketType
-import io
 import httpx
 from discord.ext import commands
 from dotenv import load_dotenv
 from prsaw import RandomStuff
-from dotenv import load_dotenv
 import os
 import urllib
-from discord.ext.commands.core import command
 import aiosqlite
 
 load_dotenv('.env')
@@ -450,8 +447,6 @@ class Fun(commands.Cog):
             embed.set_image(url=member.avatar_url)
             await ctx.send(embed=embed)
     
-    
-    
     @commands.group(invoke_without_command=True, description="Returns a random activity for when you're bored!")
     @commands.cooldown(1, 5, BucketType.user)
     async def bored(self, ctx):
@@ -486,6 +481,9 @@ class Fun(commands.Cog):
         else:
             if len(ctx.message.attachments) > 1:
                 return await ctx.send("We can only decode one QR code at a time.")
+            
+            elif len(ctx.messsage.attachments) < 1:
+                return await ctx.send("You have to add some type of QR code for us to decode.")
 
             url = urllib.parse.quote(ctx.message.attachments[0].url)
 

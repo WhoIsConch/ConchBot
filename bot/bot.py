@@ -52,8 +52,11 @@ class ConchBot(commands.Bot):
         print("------")
         for filename in os.listdir(f"./bot/cogs"):
             if filename.endswith(f".py"):
-                self.load_extension(f"bot.cogs.{filename[:-3]}")
-                print(f"Loaded `{filename[:20]}` Cog")
+                try:
+                    self.load_extension(f"bot.cogs.{filename[:-3]}")
+                    print(f"Loaded `{filename[:20]}` Cog")
+                except:
+                    print(f"Failed to load {filename[:20]} cog.")
         print("------")  
         self.load_extension('bot.cogs.utils.handler')
         print("Loaded Error Handler")

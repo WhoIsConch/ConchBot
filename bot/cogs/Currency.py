@@ -655,7 +655,7 @@ class Currency(commands.Cog):
         await cursor.close()
         await db.close()
 
-    @commands.command(aliases=["lotto"])
+    @commands.command(aliases=["lotto"], disabled=True)
     async def lottery(self, ctx, amount:int):
         await ctx.send(embed=discord.Embed(title=f"You are about to enter the lottery with {amount} moners. Are you sure? `y/n`",  color=discord.Color.gold(), description="If you don't know what you're"
         " doing, I suggest you use the `lottery info` command first."))

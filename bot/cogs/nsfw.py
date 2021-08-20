@@ -112,8 +112,8 @@ class NSFW(commands.Cog):
         embed = discord.Embed(title=ransub.title, colour=ctx.author.colour, url=ransub.url)
         embed.set_image(url=ransub.url)
         embed.set_footer(text=f"Posted by {ransub.author} on Reddit. | ❤ {ransub.ups} | 💬 {ransub.num_comments}")
-        await msg.delete()
-        await ctx.send(embed=embed)
+        
+        await msg.edit(embed=embed)
     
     @commands.command(aliases=["tittydrop", "titdrop"], description="Get a boobdrop from r/tittydrop. [MOST GIFS MAY NOT SHOW]")
     @commands.cooldown(1, 5, commands.BucketType.user) 
@@ -271,27 +271,31 @@ class NSFW(commands.Cog):
             embed = discord.Embed(title=ransub.title, colour=ctx.author.colour, url=ransub.url)
             embed.set_image(url=ransub.url)
             embed.set_footer(text=f"Posted by {ransub.author} on Reddit. | ❤ {ransub.ups} | 💬 {ransub.num_comments}")
-            await msg.delete()
-            await ctx.send(embed=embed)
+
+            await msg.edit("", embed=embed)
         else:
-            query=query.replace(" ", "_")
-            msg = await ctx.send("Grabbing your porn...")
-            images = await rule34.getImages(tags=query)
-            total = []
-
             try:
-                for image in images:
-                    total.append(image)
+                query = query.replace(" ", "_")
+
+                msg = await ctx.send("Grabbing your porn...")
+                images = await rule34.getImages(tags=query)
+                total = []
+
+                try:
+                    for image in images:
+                        total.append(image)
+                except:
+                    return await ctx.send(f"No images were found on Rule34 with the tag `{query}`")
+
+                finalimg = random.choice(total)
+
+                embed = discord.Embed(title="ID: " + finalimg.id, colour=ctx.author.colour, url=finalimg.file_url)
+                embed.set_image(url=finalimg.file_url)
+                embed.set_footer(text=f"Posted by {finalimg.creator_ID} on Rule 34. | Score: {finalimg.score}")
+
+                await msg.edit(embed=embed)
             except:
-                return await ctx.send(f"No images were found on Rule34 with the tag `{query}`")
-
-            finalimg = random.choice(total)
-
-            embed = discord.Embed(title="ID: " + finalimg.id, colour=ctx.author.colour, url=finalimg.file_url)
-            embed.set_image(url=finalimg.file_url)
-            embed.set_footer(text=f"Posted by {finalimg.creator_ID} on Rule 34. | Score: {finalimg.score}")
-            await msg.delete()
-            await ctx.send(embed=embed)
+                return await ctx.send("Hmmm. API has sent something strange. Please try again later.")
 
     @commands.command(aliases=["futa"], description="Is futanari considered gay? Get a Futa image from r/futanari.")
     @commands.cooldown(1, 5, commands.BucketType.user) 

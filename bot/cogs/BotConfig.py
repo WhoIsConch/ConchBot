@@ -14,7 +14,7 @@ class Config(commands.Cog):
         result = await cursor.fetchone()
 
         await db.close()
-        await db.close()
+        await cursor.close()
 
         if result is None:
             return False

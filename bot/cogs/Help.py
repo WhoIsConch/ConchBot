@@ -52,6 +52,9 @@ class Help(commands.Cog):
         else:
             command = self.client.get_command(value.lower())
 
+            if command is None:
+                return await ctx.send("That command does not exist.")
+
             if command.cog.qualified_name == "NSFW":
                 return await ctx.send("You can only view NSFW commands in NSFW-marked channels.")
 

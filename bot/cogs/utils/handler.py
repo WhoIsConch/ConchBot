@@ -7,13 +7,14 @@ from dotenv import load_dotenv
 import os
 import datetime
 from bot.cogs.tags import Tags
-import traceback
+from bot.cogs.utils.embed import Embeds
 
 env = load_dotenv()
 
 class CommandErrorHandler(commands.Cog):
     def __init__(self, client):
         self.client = client
+        self.time = datetime.now().strftime('%Y:%m:%d %H:%M:%S')
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
@@ -33,83 +34,54 @@ class CommandErrorHandler(commands.Cog):
             except:
                 return
 
-        if isinstance(error, discord.errors.HTTPException):
-            await ctx.send("Something went wrong. Note: The bot might be ratelimited")
-            return
-
-        if isinstance(error, commands.DisabledCommand):
-            await ctx.send(f'The command has been disabled.')
-            return
-        
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f"You are cooldown. Please try again in **{error.retry_after:.2f}s**")
-            return
-
-        if isinstance(error, commands.errors.NotOwner):
-            await ctx.send("This command is restricted to bot owners.")
-            return
-
         if isinstance(error, IndexError):
-            await ctx.send("That's not a valid number choice.")
-            return
-
-        if isinstance(error, ValueError):
-            await ctx.send("You must seperate some values with a comma.")
-            return
-
-        if isinstance(error, commands.ChannelNotFound):
-            print(f"| {error} | ")
-            await ctx.send("Channel doesn't exist")
-
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You don't have the permissions to do that! Please contact a server admin to do that for you.")
-            return
-        
-        if isinstance(error, commands.MemberNotFound):
-            await ctx.send("That member doesn't exist.")
-            return
-
-        if isinstance(error, commands.MissingRole):
-            await ctx.send("You don't have have the role to use this")
-
-        if isinstance(error, discord.Forbidden):
-            await ctx.send("I can't do this. I'm forbidden to do this.")
-
-        if isinstance(error, discord.NotFound):
-            await ctx.send("Couldn't find that sorry")
-            return
-
-        if isinstance(error, asyncio.TimeoutError):
-            await ctx.send("You waited too long :(")
-            return
-
-        if isinstance(error, commands.errors.MissingRequiredArgument):
-            await ctx.send("There are required arguements/parameters you need to input")
-            return
-
+            embed = Embeds().OnError(ctx.command.qualified_name, self.time, "The number value you input was invalid")
+            await ctx.send(embed=embed)        
         elif isinstance(error, commands.NoPrivateMessage):
+            embed = Embeds().OnError(ctx.command.qualified_name, self.time, "The command can not be used in private messages")
+            await ctx.send(embed=embed)
+        elif isinstance(error, commands.DisabledCommand):
+            embed = Embeds().OnError(ctx.command.qualified_name, self.time, "The command is currently disabled and cannot be used")
+            await ctx.send(embed=embed)
+        elif isinstance(error, commands.CommandOnCooldown):
+            embed = Embeds().OnCooldown(ctx, error)
+            await ctx.send(embed=embed)
+        elif isinstance(error, commands.errors.NotOwner):
+            embed = Embeds().OnError(ctx.command.qualified_name, self.time, "The command is only used by the owner")
+            await ctx.send(embed=embed)
+        elif isinstance(error, commands.ChannelNotFound):
+            embed = Embeds().OnError(ctx.command.qualified_name, self.time, "The channel couldn't be found")
+            await ctx.send(embed=embed)
+        elif isinstance(error, commands.MemberNotFound):
+            embed = Embeds().OnError(ctx.command.qualified_name, self.time, "The user couldn't be found")
+            await ctx.send(embed=embed)
+        elif isinstance(error, discord.Forbidden):
+            embed = Embeds().OnError(ctx.command.qualified_name, self.time, "I am forbidden to do this")
+            await ctx.send(embed=embed)
+        elif isinstance(error, discord.NotFound):
+            embed = Embeds().OnError(ctx.command.qualified_name, self.time, "Couldn't find what you need")
+            await ctx.send(embed=embed)
+        elif isinstance(error, asyncio.TimeoutError):
+            embed = Embeds().OnError(ctx.command.qualified_name, self.time, "You have been timed out because you didn't respond in time")
+            await ctx.send(embed=embed)          
+        elif isinstance(error, discord.HTTPException):
+            embed = Embeds().OnError(ctx.command.qualified_name, self.time, "Something went wrong... Please Contact: Jerry.py#4249 or UnsoughtConch#9225 if it keeps happening")
+            await ctx.send(embed=embed)
+        if not isinstance(error, discord.HTTPException):
             try:
-                await ctx.author.send(f'Command can not be used in Private Messages.')
-                return
-            except discord.HTTPException:
-                await ctx.send("Something went wrong. We'll report it. Note: The bot might be ratelimited")
-        
-
-        elif isinstance(error, commands.BadArgument):
-            if ctx.command.qualified_name == 'tag list':
-                await ctx.send('I could not find that member. Please try again.')
-                return
-            else:
-                await ctx.send("You were supposed to type that but you ended typing that")
-                return
-
+                print(error, file=sys.stderr)
+            except:
+                print(error, file=sys.stderr)
         else:
-            now = datetime.datetime.now()
-            time = datetime.time(hour=now.hour, minute=now.minute).isoformat(timespec='minutes')
-            error_channel = self.client.get_channel(833508151802069002)
-            e = traceback.format_exception(type(error), error, error.__traceback__)
-            await error_channel.send(f'Error Occured at {time} and in {ctx.guild.name} by {ctx.author.name}#{ctx.author.discriminator} with the command `{ctx.command.name}`: ``` {error} ```')
-            return
+            creator = await self.bot.fetch_user(os.getenv("OWNER_ID"))
+            embed = discord.Embed(title="Oh no. An error occurred")
+            embed.add_field(
+                name=f"In {ctx.command.qualified_name}:", 
+                value=f"""```py
+            {error.__class__.__name__}: {error} - {sys.stderr}
+            ```"""
+            )
+            await creator.send(embed=embed)
 
 def setup(client):
     client.add_cog(CommandErrorHandler(client))

@@ -1,4 +1,3 @@
-from inspect import istraceback
 import discord
 from discord.ext import commands
 import sys
@@ -14,7 +13,7 @@ env = load_dotenv()
 class CommandErrorHandler(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.time = datetime.now().strftime('%Y:%m:%d %H:%M:%S')
+        self.time = datetime.datetime.utcnow().strftime('%Y:%m:%d %H:%M:%S')
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):

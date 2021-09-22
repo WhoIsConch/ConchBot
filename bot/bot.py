@@ -27,7 +27,7 @@ async def get_prefix(client, message):
 
 load_env = load_dotenv()
 
-initial_extensions = (
+initial_extensions = [
     "bot.cogs.BotConfig",
     "bot.cogs.Currency",
     "bot.cogs.Fun",
@@ -41,34 +41,26 @@ initial_extensions = (
     "bot.cogs.Support",
     "bot.cogs.tags",
     "bot.cogs.Utility"
-)
+]
 
-extra_extensions = (
+extra_extensions = [
     "bot.cogs.utils.handler"
-)
+]
 
 class ConchBot(commands.Bot):
     def __init__(self):
         allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)
         intents = discord.Intents.all()
         prefix = get_prefix
-        super().__init__(command_prefix=prefix, intents=intents, allowed_mentions=allowed_mentions, case_insensitive=True, strip_after_prefix=True)
+        super().__init__(command_prefix=prefix, intents=intents, allowed_mentions=allowed_mentions, case_insensitive=True, strip_after_prefix=True, help_command=None)
         self.launch_time = datetime.utcnow()
         os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
         os.environ['JISHAKU_RETAIN'] = "True"
-        for extension in initial_extensions:
-            try:
-                self.load_extension(extension)
-            except Exception as e:
-                print(f'Failed to load extension {extension}.', file=sys.stderr)
-                traceback.print_exc()
-        for extension in extra_extensions:
-            try:
-                self.load_extension(extension)
-            except Exception as e:
-                print(f'Failed to load extension {extension}.', file=sys.stderr)
-                traceback.print_exc()
-
+        for filename in os.listdir('./bot/cogs'):
+            if filename.endswith('.py'):
+                self.load_extension(f'bot.cogs.{filename[:-3]}')
+        self.load_extension('bot.cogs.utils.handler')
+    
     @tasks.loop(seconds=15.0)
     async def status_loop(self):
         statuses = cycle([f"{len(set(self.get_all_members()))} "
@@ -80,7 +72,6 @@ class ConchBot(commands.Bot):
     async def on_ready(self):
         print("------")
         print("ConchBot is online!")
-        print("Note:The fact that in owner.py cog in bot/cogs folder. We used @commands.has_role(). You could replacing whats inside () with your owner role id/name or use @commands.is_owner() for only the owner can use.")
         await self.status_loop()
 
     async def create_aiohttp_session(self):

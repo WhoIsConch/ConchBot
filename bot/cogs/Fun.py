@@ -1,5 +1,5 @@
 import json
-from aiohttp.streams import StreamReader
+import urllib.request
 from aiohttp_requests import requests
 from aiohttp import request
 import requests as req
@@ -21,8 +21,7 @@ import os
 import urllib
 import aiosqlite
 from bot.cogs.utils.embed import Embeds
-import ffmpeg
-import aiofiles
+import datetime
 
 load_dotenv('.env')
 
@@ -46,6 +45,7 @@ class Fun(commands.Cog):
         self.delete_snipes = dict()
         self.edit_snipes = dict()
         self.delete_snipes_attachments = dict()
+        self.time = datetime.datetime.utcnow().strftime('%Y:%m:%d %H:%M:%S')
         
     async def category_convert(self, category):
         cat = category.lower()
@@ -748,7 +748,33 @@ class Fun(commands.Cog):
             await ctx.send(bottoken)
 
 
+    @commands.command(description="Returns a video of obama saying the inputed text!")
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def ttsobama(self, ctx, *, text):
+        if len(text) > 280:
+            embed = Embeds().OnError(command_name=ctx.command.qualified_name, time=datetime.datetime.utcnow().strftime('%Y:%m:%d %H:%M:%S'), reason="The text is too long. Make it shorter than 280 characters")
+            return await ctx.send(embed=embed)
+        await ctx.channel.trigger_typing()
+        r = req.post(url='http://talkobamato.me/synthesize.py', data={
+                "input_text": text
+            })
 
+        if r.status_code == 200:
+            url = r.url.replace('http://talkobamato.me/synthesize.py?speech_key=', '')
+            url2 = 'http://talkobamato.me/synth/output/' + url + '/obama.mp4'
+            def download(url):
+                get_response = req.get(url,stream=True)
+                with open("obama.mp4", 'wb') as f:
+                    for chunk in get_response.iter_content(chunk_size=1024):
+                        if chunk:
+                            f.write(chunk)
+            download(url2)
+
+        else:
+            embed = Embeds().OnApiError(command_name=ctx.command.qualified_name, status=r.status_code)
+            await ctx.send(embed=embed)
+        await ctx.send(file=discord.File("obama.mp4"))
+        os.remove("obama.mp4")
 
 def setup(client):
     client.add_cog(Fun(client))

@@ -43,7 +43,7 @@ class CommandErrorHandler(commands.Cog):
             embed = Embeds().OnError(ctx.command.qualified_name, self.time, "The command is currently disabled and cannot be used")
             await ctx.send(embed=embed)
         elif isinstance(error, commands.CommandOnCooldown):
-            embed = Embeds().OnCooldown(ctx, error)
+            embed = Embeds().OnCooldown(error=error)
             await ctx.send(embed=embed)
         elif isinstance(error, commands.errors.NotOwner):
             embed = Embeds().OnError(ctx.command.qualified_name, self.time, "The command is only used by the owner")

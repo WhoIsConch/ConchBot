@@ -19,3 +19,8 @@ bot/db/
 
 # Website
 web/
+
+# ffmpeg
+bot/src/ffmpeg.exe
+bot/src/ffprobe.exe
+bot/src/ffplay.exe

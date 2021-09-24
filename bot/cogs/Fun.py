@@ -1,8 +1,12 @@
 import json
+from aiohttp.streams import StreamReader
 from aiohttp_requests import requests
 from aiohttp import request
+import requests as req
 import random
 import os
+import io
+import subprocess
 import dbl
 import aiohttp
 import asyncpraw
@@ -16,6 +20,9 @@ from prsaw import RandomStuff
 import os
 import urllib
 import aiosqlite
+from bot.cogs.utils.embed import Embeds
+import ffmpeg
+import aiofiles
 
 load_dotenv('.env')
 
@@ -613,7 +620,8 @@ class Fun(commands.Cog):
                             embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
                             await ctx.send(embed=embed)
                         else:
-                            await ctx.send(f"The api has troubles sorry try again later. Error code: {encoder.status}")
+                            embed = Embeds().OnApiError(command_name=ctx.command.qualified_name, status=encoder.status)
+                            await ctx.send(embed=embed)
                 else:
                     async with encodeSession.get(f"https://some-random-api.ml/base64?encode={code}") as encoder:
                         if encoder.status == 200:
@@ -625,7 +633,8 @@ class Fun(commands.Cog):
                             embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
                             await ctx.send(embed=embed)
                         else:
-                            await ctx.send(f"The api has troubles sorry try again later. Error code: {encoder.status}")
+                            embed = Embeds().OnApiError(command_name=ctx.command.qualified_name, status=encoder.status)
+                            await ctx.send(embed=embed)
         else:
             await ctx.send("Use binary or base64")
 
@@ -646,7 +655,8 @@ class Fun(commands.Cog):
                             embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
                             await ctx.send(embed=embed)
                         else:
-                            await ctx.send(f"The api has troubles sorry try again later. Error code: {decoder.status}")
+                            embed = Embeds().OnApiError(command_name=ctx.command.qualified_name, status=decoder.status)
+                            await ctx.send(embed=embed)
                 else:
                     async with decodeSession.get(f"https://some-random-api.ml/base64?decode={code}") as decoder:
                         if decoder.status == 200:
@@ -658,7 +668,8 @@ class Fun(commands.Cog):
                             embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar_url)
                             await ctx.send(embed=embed)
                         else:
-                            await ctx.send(f"The api has troubles sorry try again later. Error code: {decoder.status}")
+                            embed = Embeds().OnApiError(command_name=ctx.command.qualified_name, status=decoder.status)
+                            await ctx.send(embed=embed)
         else:
             await ctx.send("Use binary or base64")
 
@@ -692,7 +703,8 @@ class Fun(commands.Cog):
 
                     await paginator.run(embeds)
             else:
-                await ctx.send(f"API returned a {response.status} status.")
+                embed = Embeds().OnApiError(command_name=ctx.command.qualified_name, status=response.status)
+                await ctx.send(embed=embed)
 
     @commands.command(description="Define a word!")
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -717,7 +729,8 @@ class Fun(commands.Cog):
 
                 await paginator.run(embeds)
             else:
-                await ctx.send(f"API returned a {response.status} status.")    
+                embed = Embeds().OnApiError(command_name=ctx.command.qualified_name, status=response.status)
+                await ctx.send(embed=embed)
 
     @commands.command(description="Returns a real-looking Discord bot token.")
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -733,6 +746,8 @@ class Fun(commands.Cog):
                     await ctx.send(f"API returned a {response.status} status.")
 
             await ctx.send(bottoken)
+
+
 
 
 def setup(client):

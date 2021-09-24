@@ -12,7 +12,9 @@ import psutil
 import time
 import aiohttp
 from bot.cogs.Currency import Currency
-
+import asyncio
+import sys
+from jishaku.codeblocks import codeblock_converter
 
 obj_Disk = psutil.disk_usage('/')
 start_time = time.time()
@@ -297,6 +299,35 @@ class Utility(commands.Cog):
         await Currency.open_account(self, user)
         await Currency.update_bank(self, user, amount)
         await ctx.send(f"Successfully given {user.name} {amount} moners.")
+
+    @commands.command(aliases=["pull"])
+    @commands.is_owner()
+    async def refresh(self, ctx):
+        cog = self.client.get_cog("Jishaku")
+        await cog.jsk_git(ctx, argument=codeblock_converter(f'stash'))
+        await asyncio.sleep(2)
+        await cog.jsk_git(ctx, argument=codeblock_converter(f'pull --ff-only --allow-unrelated-histories https://www.github.com/ConchDev/ConchBot master'))
+        await asyncio.sleep(2)
+        restart = self.client.get_command('restart')
+        await ctx.invoke(restart)
+
+    @commands.command()
+    @commands.is_owner()
+    async def restart(self, ctx):
+        def restarter():
+            python = sys.executable
+            os.execl(python, python, * sys.argv)
+
+        embed = discord.Embed(title="Bot Restarting...")
+        embed.add_field(name="I'll be back soon...", value="Don't worry", inline=True)
+        await ctx.send(embed=embed)
+        restarter()
+
+    @commands.command(aliases=["close"])
+    @commands.is_owner()
+    async def shutdown(self, ctx):
+        await ctx.send("Ending Python process ConchBot... Goodbye")
+        await self.client.close()
     
     @commands.command()
     @commands.is_owner()

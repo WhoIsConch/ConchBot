@@ -45,7 +45,7 @@ class Embeds():
         return self.Embed
 
     @staticmethod
-    def get_error_codes():
+    def _error_codes():
         error_codes = {
             400 : "Bad request",
             401 : "Unauthorized",
@@ -56,7 +56,7 @@ class Embeds():
         return error_codes
 
     @staticmethod
-    def get_all_cooldown_messages():
+    def _cooldown_messages():
         cooldown_choices = [
             "Woah, slow down man",
             "A little too quick there",
@@ -66,5 +66,5 @@ class Embeds():
         return cooldown_choices
 
     @staticmethod
-    def time():
+    def _time():
         return datetime.datetime.utcnow().strftime('%Y:%m:%d %H:%M:%S')

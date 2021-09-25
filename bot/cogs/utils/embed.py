@@ -7,11 +7,11 @@ import datetime
 class Embeds():
     def __init__(self):
         self.cooldown_choices = [
-        "Woah, slow down man",
-        "A little too quick there",
-        "Too fast man",
-        "Spamming is cool"
-    ]
+            "Woah, slow down man",
+            "A little too quick there",
+            "Too fast man",
+            "Spamming is cool"
+        ]
         self.time = datetime.datetime.utcnow().strftime('%Y:%m:%d %H:%M:%S')
         self.error_codes = {
             400 : "Bad request",
@@ -44,3 +44,27 @@ class Embeds():
             self.Embed.add_field(name="API Status", value=f"{status}")
         return self.Embed
 
+    @staticmethod
+    def get_error_codes():
+        error_codes = {
+            400 : "Bad request",
+            401 : "Unauthorized",
+            403 : "Forbidden",
+            404 : "Page Not found",
+            429 : "Too many requests",
+        }
+        return error_codes
+
+    @staticmethod
+    def get_all_cooldown_messages():
+        cooldown_choices = [
+            "Woah, slow down man",
+            "A little too quick there",
+            "Too fast man",
+            "Spamming is cool"
+        ]
+        return cooldown_choices
+
+    @staticmethod
+    def time():
+        return datetime.datetime.utcnow().strftime('%Y:%m:%d %H:%M:%S')

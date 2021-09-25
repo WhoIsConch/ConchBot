@@ -779,7 +779,7 @@ class Fun(commands.Cog):
                 except:
                     return
 
-                if get_response.status_code is not 200:
+                if get_response.status_code > 200 or get_response.status_code < 200:
                     embed = Embeds().OnApiError(command_name=ctx.command.qualified_name, status=get_response.status_code)
                     await ctx.send(embed=embed)
             await download(url2)

@@ -10,19 +10,14 @@ from bot.cogs.Currency import Currency
 import asyncio
 import time
 import aiohttp
-import sys
-import traceback
 from bot.cogs.utils.embed import Embeds
 
-async def get_prefix(client, message):
+def get_prefix(client, message):
     prefixes = []
     prefixes.append('cb!')
     prefixes.append('cB ')
     prefixes.append('CB ')
     prefixes.append('Cb ')
-    id = client.user.id
-    prefixes.append(f'<@!{id}> ')
-    prefixes.append(f'<@!{id}>')
     return commands.when_mentioned_or(*prefixes)(client, message)
 
 load_env = load_dotenv()
@@ -43,7 +38,7 @@ initial_extensions = [
     "bot.cogs.Utility"
 ]
 
-extra_extensions = [
+utils_extensions = [
     "bot.cogs.utils.handler"
 ]
 

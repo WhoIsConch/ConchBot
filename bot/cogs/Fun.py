@@ -20,6 +20,7 @@ from prsaw import RandomStuff
 import os
 import urllib
 import aiosqlite
+from requests.api import get
 from bot.cogs.utils.embed import Embeds
 import datetime
 
@@ -775,17 +776,27 @@ class Fun(commands.Cog):
                             embed = Embeds().OnError(command_name=ctx.command.qualified_name, time=datetime.datetime.utcnow().strftime('%Y:%m:%d %H:%M:%S'), reason="The video is not available due to the api.")
                             await ctx.send(embed=embed)
                             return os.remove("obama.mp4")
+                            pass
+                    
                 except:
                     return
 
-                if get_response.status_code != 200:
+                if get_response.status_code is not 200:
                     embed = Embeds().OnApiError(command_name=ctx.command.qualified_name, status=get_response.status_code)
                     await ctx.send(embed=embed)
             await download(url2)
-
-        
-        await ctx.send(file=discord.File("obama.mp4"))
-        os.remove("obama.mp4")
+            file = discord.File("obama.mp4")
+            try:
+                with open("obama.mp4", "r") as f:
+                    if f.read().startswith("\x00\x00\x00"):
+                        embed = Embeds().OnError(command_name=ctx.command.qualified_name, time=datetime.datetime.utcnow().strftime('%Y:%m:%d %H:%M:%S'), reason="The video is not loading...\n Please Try again.\n If it keeps happening please contact Jerry.p#4249")
+                        await ctx.send(embed=embed)
+                        os.remove("obama.mp4") 
+                        pass
+            except:
+                return os.remove("obama.mp4") 
+            await ctx.send(file=file)
+            os.remove("obama.mp4")
 
 def setup(client):
     client.add_cog(Fun(client))

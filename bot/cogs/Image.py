@@ -3,7 +3,6 @@ import os
 import random
 import textwrap
 from io import BytesIO
-
 import aiohttp
 import discord
 from bot.cogs.utils.embed import Embeds

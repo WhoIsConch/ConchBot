@@ -11,6 +11,7 @@ import asyncio
 import time
 import aiohttp
 from bot.cogs.utils.embed import Embeds
+import logging
 
 def get_prefix(client, message):
     prefixes = []
@@ -55,6 +56,12 @@ class ConchBot(commands.Bot):
             if filename.endswith('.py'):
                 self.load_extension(f'bot.cogs.{filename[:-3]}')
         self.load_extension('bot.cogs.utils.handler')
+        logging.basicConfig(level=logging.INFO)
+        logger = logging.getLogger('discord')
+        logger.setLevel(logging.DEBUG)
+        handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+        handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+        logger.addHandler(handler)
     
     @tasks.loop(seconds=15.0)
     async def status_loop(self):

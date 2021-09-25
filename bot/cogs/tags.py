@@ -1,6 +1,4 @@
-from os import DirEntry
 import discord
-from discord.enums import NotificationLevel
 from discord.ext import commands
 import aiosqlite
 import datetime

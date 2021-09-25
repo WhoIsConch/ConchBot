@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands.cooldowns import BucketType
 from ifunny import Client
-from ifunny.objects import User, Post
+from ifunny.objects import User
 import DiscordUtils
 from dotenv import load_dotenv
 import os 

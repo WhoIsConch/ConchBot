@@ -2,7 +2,6 @@ import os
 import platform
 import datetime
 import discord
-from discord import embeds
 from discord.ext import commands
 import aiosqlite
 import inspect
@@ -10,7 +9,6 @@ import os
 from dotenv import load_dotenv
 import psutil
 import time
-import aiohttp
 from bot.cogs.Currency import Currency
 import asyncio
 import sys

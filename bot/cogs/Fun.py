@@ -5,8 +5,6 @@ from aiohttp import request
 import requests as req
 import random
 import os
-import io
-import subprocess
 import dbl
 import aiohttp
 import asyncpraw

@@ -743,7 +743,8 @@ class Fun(commands.Cog):
                     api = await response.json()
                     bottoken = api["token"]
                 else:
-                    await ctx.send(f"API returned a {response.status} status.")
+                    embed = Embeds().OnApiError(command_name=ctx.command.qualified_name, status=response.status)
+                    await ctx.send(embed = embed)
 
             await ctx.send(bottoken)
 
@@ -762,17 +763,27 @@ class Fun(commands.Cog):
         if r.status_code == 200:
             url = r.url.replace('http://talkobamato.me/synthesize.py?speech_key=', '')
             url2 = 'http://talkobamato.me/synth/output/' + url + '/obama.mp4'
-            def download(url):
+            async def download(url):
                 get_response = req.get(url,stream=True)
                 with open("obama.mp4", 'wb') as f:
                     for chunk in get_response.iter_content(chunk_size=1024):
                         if chunk:
                             f.write(chunk)
-            download(url2)
+                try:
+                    with open("obama.mp4", "r") as f:
+                        if f.read().startswith("<!DOCTYPE"):
+                            embed = Embeds().OnError(command_name=ctx.command.qualified_name, time=datetime.datetime.utcnow().strftime('%Y:%m:%d %H:%M:%S'), reason="The video is not available due to the api.")
+                            await ctx.send(embed=embed)
+                            return os.remove("obama.mp4")
+                except:
+                    return
 
-        else:
-            embed = Embeds().OnApiError(command_name=ctx.command.qualified_name, status=r.status_code)
-            await ctx.send(embed=embed)
+                if get_response.status_code != 200:
+                    embed = Embeds().OnApiError(command_name=ctx.command.qualified_name, status=get_response.status_code)
+                    await ctx.send(embed=embed)
+            await download(url2)
+
+        
         await ctx.send(file=discord.File("obama.mp4"))
         os.remove("obama.mp4")
 

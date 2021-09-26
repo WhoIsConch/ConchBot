@@ -24,3 +24,6 @@ web/
 bot/src/ffmpeg.exe
 bot/src/ffprobe.exe
 bot/src/ffplay.exe
+
+# Logging
+discord.log

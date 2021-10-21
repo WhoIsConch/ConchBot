@@ -72,7 +72,7 @@ class CommandErrorHandler(commands.Cog):
             except:
                 print(error, file=sys.stderr)
         else:
-            creator = await self.bot.fetch_user(os.getenv("OWNER_ID"))
+            creator = await self.client.fetch_user(os.getenv("OWNER_ID"))
             embed = discord.Embed(title="Oh no. An error occurred")
             embed.add_field(
                 name=f"In {ctx.command.qualified_name}:", 

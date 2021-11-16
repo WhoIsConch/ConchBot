@@ -7,6 +7,7 @@ Bot has been shutdown and is gone.
 
 Note: It has not been archived. You can create forks
 
+---
 
 
 Welcome to the Offical GitHub repository of [Conchbot](https://github.com/ConchDev/ConchBot/)
